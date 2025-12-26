@@ -19,8 +19,11 @@ import {
   BIGGER_FONT_SIZE,
   SMALL_FONT_SIZE
 } from '../common/CommonConstants';
+import promptAction from '@ohos.promptAction';
+import { ThemeType, getThemeColors, ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 interface MenuItem {
+  id:number;
   icon: Resource;
   title: Resource;
   showArrow: boolean;
@@ -30,14 +33,19 @@ interface MenuItem {
 export default struct PersonalPage {
   @State userName: string = '用户名';
   @State userAvatar: Resource = $r('app.media.ic_avatar');
+  //与全局 AppStorage 建立双向同步
+  // 当 themeType 改变时，UI 会自动刷新（如果有依赖它的 UI），且我们修改它会同步回全局
+  @StorageLink('themeType') currentThemeType: ThemeType = ThemeType.LIGHT;
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
 
+  //为菜单项添加 id，方便识别 (id: 3 对应主题设置)
   private menuItems: MenuItem[] = [
-    { icon: $r('app.media.ic_order'), title: $r('app.string.my_orders'), showArrow: true },
-    { icon: $r('app.media.ic_history'), title: $r('app.string.browse_history'), showArrow: true },
-    { icon: $r('app.media.ic_theme'), title: $r('app.string.theme_settings'), showArrow: true },
-    { icon: $r('app.media.ic_compare'), title: $r('app.string.goods_compare'), showArrow: true },
-    { icon: $r('app.media.ic_clear'), title: $r('app.string.clear_cache'), showArrow: true },
-    { icon: $r('app.media.ic_about'), title: $r('app.string.about_us'), showArrow: true }
+    { id:1, icon: $r('app.media.ic_order'), title: $r('app.string.my_orders'), showArrow: true },
+    { id:2, icon: $r('app.media.ic_history'), title: $r('app.string.browse_history'), showArrow: true },
+    { id:3, icon: $r('app.media.ic_theme'), title: $r('app.string.theme_settings'), showArrow: true },
+    { id:4, icon: $r('app.media.ic_compare'), title: $r('app.string.goods_compare'), showArrow: true },
+    { id:5, icon: $r('app.media.ic_clear'), title: $r('app.string.clear_cache'), showArrow: true },
+    { id:6, icon: $r('app.media.ic_about'), title: $r('app.string.about_us'), showArrow: true }
   ];
 
   @Builder
@@ -161,6 +169,42 @@ export default struct PersonalPage {
       // 菜单项点击逻辑
     })
   }
+
+  //显示主题选择弹窗的方法
+  showThemeDialog() {
+    promptAction.showActionMenu({
+      title: '选择应用主题',
+      buttons: [
+        { text: '默认白', color: '#333333' },
+        { text: '深色模式', color: '#000000' },
+        { text: '护眼模式', color: '#FF6B35' }
+      ]
+    }).then(data => {
+      let selectedType: ThemeType;
+      // 根据点击的按钮索引决定切换哪个主题
+      switch (data.index) {
+        case 0:
+          selectedType = ThemeType.LIGHT;
+          break;
+        case 1:
+          selectedType = ThemeType.DARK;
+          break;
+        case 2:
+          selectedType = ThemeType.EYECARE;
+          break;
+        default:
+          return;
+      }
+
+      // 核心逻辑：修改状态变量，AppStorage 会自动同步到全局
+      this.currentThemeType = selectedType;
+      this.currentThemeColors = getThemeColors(selectedType);
+
+      // 可以在这里打印日志验证
+      console.info('Theme changed to:', selectedType);
+    });
+  }
+
 
   build() {
     Scroll() {
