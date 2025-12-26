@@ -1,0 +1,440 @@
+Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚ3ûif (!("finalizeConstruction" in ViewPU.prototype)) {
+    Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
+}
+/*
+ * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Licensed under the Apache License,Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import CategoryTab from '../view/CategoryTabComponent';
+import CategorySub from '../view/CategorySubComponent';
+import GoodsList from '../view/GoodsListComponent';
+import { LAYOUT_WIDTH_OR_HEIGHT } from '../common/CommonConstants';
+export default class CategoryPage extends ViewPU {
+    constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
+        super(parent, __localStorage, elmtId, extraInfo);
+        if (typeof paramsLambda === "function") {
+            this.paramsGenerator_ = paramsLambda;
+        }
+        this.__selectedCategoryIndex = new ObservedPropertySimplePU(0, this, "selectedCategoryIndex");
+        this.__selectedSubCategoryIndex = new ObservedPropertySimplePU(0, this, "selectedSubCategoryIndex");
+        this.__showSubCategory = new ObservedPropertySimplePU(true, this, "showSubCategory");
+        this.categoryData = [
+            {
+                id: 0,
+                name: { "id": 16777271, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                subCategories: [
+                    { id: 0, name: { "id": 16777274, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 1, name: { "id": 16777280, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 2, name: { "id": 16777283, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } }
+                ]
+            },
+            {
+                id: 1,
+                name: { "id": 16777247, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                subCategories: [
+                    { id: 0, name: { "id": 16777274, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 1, name: { "id": 16777275, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 2, name: { "id": 16777281, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } }
+                ]
+            },
+            {
+                id: 2,
+                name: { "id": 16777230, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                subCategories: [
+                    { id: 0, name: { "id": 16777274, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 1, name: { "id": 16777282, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 2, name: { "id": 16777284, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } }
+                ]
+            },
+            {
+                id: 3,
+                name: { "id": 16777288, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                subCategories: [
+                    { id: 0, name: { "id": 16777274, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 1, name: { "id": 16777276, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 2, name: { "id": 16777278, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } }
+                ]
+            },
+            {
+                id: 4,
+                name: { "id": 16777243, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                subCategories: [
+                    { id: 0, name: { "id": 16777274, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 1, name: { "id": 16777279, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 2, name: { "id": 16777277, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } }
+                ]
+            }
+        ];
+        this.setInitiallyProvidedValue(params);
+        this.finalizeConstruction();
+    }
+    setInitiallyProvidedValue(params) {
+        if (params.selectedCategoryIndex !== undefined) {
+            this.selectedCategoryIndex = params.selectedCategoryIndex;
+        }
+        if (params.selectedSubCategoryIndex !== undefined) {
+            this.selectedSubCategoryIndex = params.selectedSubCategoryIndex;
+        }
+        if (params.showSubCategory !== undefined) {
+            this.showSubCategory = params.showSubCategory;
+        }
+        if (params.categoryData !== undefined) {
+            this.categoryData = params.categoryData;
+        }
+    }
+    updateStateVars(params) {
+    }
+    purgeVariableDependenciesOnElmtId(rmElmtId) {
+        this.__selectedCategoryIndex.purgeDependencyOnElmtId(rmElmtId);
+        this.__selectedSubCategoryIndex.purgeDependencyOnElmtId(rmElmtId);
+        this.__showSubCategory.purgeDependencyOnElmtId(rmElmtId);
+    }
+    aboutToBeDeleted() {
+        this.__selectedCategoryIndex.aboutToBeDeleted();
+        this.__selectedSubCategoryIndex.aboutToBeDeleted();
+        this.__showSubCategory.aboutToBeDeleted();
+        SubscriberManager.Get().delete(this.id__());
+        this.aboutToBeDeletedInternal();
+    }
+    get selectedCategoryIndex() {
+        return this.__selectedCategoryIndex.get();
+    }
+    set selectedCategoryIndex(newValue) {
+        this.__selectedCategoryIndex.set(newValue);
+    }
+    get selectedSubCategoryIndex() {
+        return this.__selectedSubCategoryIndex.get();
+    }
+    set selectedSubCategoryIndex(newValue) {
+        this.__selectedSubCategoryIndex.set(newValue);
+    }
+    get showSubCategory() {
+        return this.__showSubCategory.get();
+    }
+    set showSubCategory(newValue) {
+        this.__showSubCategory.set(newValue);
+    }
+    getSubCategoriesForCurrentTab() {
+        return this.categoryData[this.selectedCategoryIndex].subCategories;
+    }
+    getCurrentSubCategoryName() {
+        const subCategories = this.getSubCategoriesForCurrentTab();
+        return subCategories[this.selectedSubCategoryIndex].name;
+    }
+    initialRender() {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create();
+            Column.width(LAYOUT_WIDTH_OR_HEIGHT);
+            Column.height(LAYOUT_WIDTH_OR_HEIGHT);
+            Column.backgroundColor('#F5F5F5');
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // ä¸€çº§åˆ†ç±» Tabï¼ˆæ¨ªå‘ï¼‰
+            Row.create();
+            // ä¸€çº§åˆ†ç±» Tabï¼ˆæ¨ªå‘ï¼‰
+            Row.width(LAYOUT_WIDTH_OR_HEIGHT);
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            __Common__.create();
+            __Common__.layoutWeight(1);
+        }, __Common__);
+        {
+            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                if (isInitialRender) {
+                    let componentCall = new CategoryTab(this, {
+                        selectedCategoryIndex: this.__selectedCategoryIndex,
+                        selectedSubCategoryIndex: this.__selectedSubCategoryIndex
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 90, col: 9 });
+                    ViewPU.create(componentCall);
+                    let paramsLambda = () => {
+                        return {
+                            selectedCategoryIndex: this.selectedCategoryIndex,
+                            selectedSubCategoryIndex: this.selectedSubCategoryIndex
+                        };
+                    };
+                    componentCall.paramsGenerator_ = paramsLambda;
+                }
+                else {
+                    this.updateStateVarsOfChildByElmtId(elmtId, {});
+                }
+            }, { name: "CategoryTab" });
+        }
+        __Common__.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.create(this.showSubCategory ? 'â—€' : 'â–¶');
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.fontSize(16);
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.fontColor('#666666');
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.width(40);
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.height(56);
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.textAlign(TextAlign.Center);
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.backgroundColor('#FFFFFF');
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.onClick(() => {
+                this.showSubCategory = !this.showSubCategory;
+            });
+        }, Text);
+        // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+        Text.pop();
+        // ä¸€çº§åˆ†ç±» Tabï¼ˆæ¨ªå‘ï¼‰
+        Row.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // äºŒçº§åˆ†ç±»å’Œå•†å“åˆ—è¡¨ï¼ˆå·¦å³åˆ†æ ï¼‰
+            Row.create();
+            // äºŒçº§åˆ†ç±»å’Œå•†å“åˆ—è¡¨ï¼ˆå·¦å³åˆ†æ ï¼‰
+            Row.width(LAYOUT_WIDTH_OR_HEIGHT);
+            // äºŒçº§åˆ†ç±»å’Œå•†å“åˆ—è¡¨ï¼ˆå·¦å³åˆ†æ ï¼‰
+            Row.layoutWeight(1);
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            __Common__.create();
+            __Common__.width(this.showSubCategory ? '25%' : '0%');
+            __Common__.visibility(this.showSubCategory ? Visibility.Visible : Visibility.Hidden);
+        }, __Common__);
+        {
+            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                if (isInitialRender) {
+                    let componentCall = new 
+                    // å·¦ä¾§ï¼šäºŒçº§å­åˆ†ç±»ï¼ˆå¯éšè—ï¼‰
+                    CategorySub(this, {
+                        selectedSubCategoryIndex: this.__selectedSubCategoryIndex,
+                        subCategories: this.getSubCategoriesForCurrentTab()
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 113, col: 9 });
+                    ViewPU.create(componentCall);
+                    let paramsLambda = () => {
+                        return {
+                            selectedSubCategoryIndex: this.selectedSubCategoryIndex,
+                            subCategories: this.getSubCategoriesForCurrentTab()
+                        };
+                    };
+                    componentCall.paramsGenerator_ = paramsLambda;
+                }
+                else {
+                    this.updateStateVarsOfChildByElmtId(elmtId, {
+                        subCategories: this.getSubCategoriesForCurrentTab()
+                    });
+                }
+            }, { name: "CategorySub" });
+        }
+        __Common__.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            __Common__.create();
+            __Common__.layoutWeight(1);
+        }, __Common__);
+        {
+            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                if (isInitialRender) {
+                    let componentCall = new 
+                    // å³ä¾§ï¼šå•†å“åˆ—è¡¨
+                    GoodsList(this, {}, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 121, col: 9 });
+                    ViewPU.create(componentCall);
+                    let paramsLambda = () => {
+                        return {};
+                    };
+                    componentCall.paramsGenerator_ = paramsLambda;
+                }
+                else {
+                    this.updateStateVarsOfChildByElmtId(elmtId, {});
+                }
+            }, { name: "GoodsList" });
+        }
+        __Common__.pop();
+        // äºŒçº§åˆ†ç±»å’Œå•†å“åˆ—è¡¨ï¼ˆå·¦å³åˆ†æ ï¼‰
+        Row.pop();
+        Column.pop();
+    }
+    rerender() {
+        this.updateDirtyElements();
+    }
+}
+//# sourceMappingURL=CategoryPage.js.mapÂ”ÙY/Users/changchen/working_place/cybermall/entry/src/main/ets/view/CategoryTabComponent.etsÙY/Users/changchen/working_place/cybermall/entry/src/main/ets/view/CategorySubComponent.etsÙW/Users/changchen/working_place/cybermall/entry/src/main/ets/view/GoodsListComponent.etsÙV/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.etsÙR/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/CategoryPage.etsÔrBœªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo¯hostModulesInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙ./Users/changchen/working_place/cybermall/entryÙ(/Users/changchen/working_place/cybermall¥entry¥1.0.0Ô  ‘ÔrC’²hostDependencyName®hostModuleName®./CategoryPage¥entryÙ./Users/changchen/working_place/cybermall/entryÔrDÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFile³createIntrinsicTypeÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚÁ/*
+ * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Licensed under the Apache License,Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import CategoryTab, { CategoryData, SubCategoryData } from '../view/CategoryTabComponent';
+import CategorySub from '../view/CategorySubComponent';
+import GoodsList from '../view/GoodsListComponent';
+import {
+  LAYOUT_WIDTH_OR_HEIGHT
+} from '../common/CommonConstants';
+
+@Component
+export default struct CategoryPage {
+  @State selectedCategoryIndex: number = 0;
+  @State selectedSubCategoryIndex: number = 0;
+  @State showSubCategory: boolean = true;
+
+  private categoryData: CategoryData[] = [
+    {
+      id: 0,
+      name: $r('app.string.selected'),
+      subCategories: [
+        { id: 0, name: $r('app.string.sub_all') },
+        { id: 1, name: $r('app.string.sub_hot') },
+        { id: 2, name: $r('app.string.sub_new') }
+      ]
+    },
+    {
+      id: 1,
+      name: $r('app.string.mobile_phone'),
+      subCategories: [
+        { id: 0, name: $r('app.string.sub_all') },
+        { id: 1, name: $r('app.string.sub_android') },
+        { id: 2, name: $r('app.string.sub_ios') }
+      ]
+    },
+    {
+      id: 2,
+      name: $r('app.string.clothes'),
+      subCategories: [
+        { id: 0, name: $r('app.string.sub_all') },
+        { id: 1, name: $r('app.string.sub_mens') },
+        { id: 2, name: $r('app.string.sub_womens') }
+      ]
+    },
+    {
+      id: 3,
+      name: $r('app.string.wear'),
+      subCategories: [
+        { id: 0, name: $r('app.string.sub_all') },
+        { id: 1, name: $r('app.string.sub_casual') },
+        { id: 2, name: $r('app.string.sub_formal') }
+      ]
+    },
+    {
+      id: 4,
+      name: $r('app.string.home_furnishing'),
+      subCategories: [
+        { id: 0, name: $r('app.string.sub_all') },
+        { id: 1, name: $r('app.string.sub_furniture') },
+        { id: 2, name: $r('app.string.sub_decor') }
+      ]
+    }
+  ];
+
+  getSubCategoriesForCurrentTab(): SubCategoryData[] {
+    return this.categoryData[this.selectedCategoryIndex].subCategories;
+  }
+
+  getCurrentSubCategoryName(): Resource {
+    const subCategories = this.getSubCategoriesForCurrentTab();
+    return subCategories[this.selectedSubCategoryIndex].name;
+  }
+
+  build() {
+    Column() {
+      // ä¸€çº§åˆ†ç±» Tabï¼ˆæ¨ªå‘ï¼‰
+      Row() {
+        CategoryTab({
+          selectedCategoryIndex: $selectedCategoryIndex,
+          selectedSubCategoryIndex: $selectedSubCategoryIndex
+        })
+          .layoutWeight(1)
+
+        // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+        Text(this.showSubCategory ? 'â—€' : 'â–¶')
+          .fontSize(16)
+          .fontColor('#666666')
+          .width(40)
+          .height(56)
+          .textAlign(TextAlign.Center)
+          .backgroundColor('#FFFFFF')
+          .onClick(() => {
+            this.showSubCategory = !this.showSubCategory;
+          })
+      }
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+
+      // äºŒçº§åˆ†ç±»å’Œå•†å“åˆ—è¡¨ï¼ˆå·¦å³åˆ†æ ï¼‰
+      Row() {
+        // å·¦ä¾§ï¼šäºŒçº§å­åˆ†ç±»ï¼ˆå¯éšè—ï¼‰
+        CategorySub({
+          selectedSubCategoryIndex: $selectedSubCategoryIndex,
+          subCategories: this.getSubCategoriesForCurrentTab()
+        })
+          .width(this.showSubCategory ? '25%' : '0%')
+          .visibility(this.showSubCategory ? Visibility.Visible : Visibility.Hidden)
+
+        // å³ä¾§ï¼šå•†å“åˆ—è¡¨
+        GoodsList()
+          .layoutWeight(1)
+      }
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+      .layoutWeight(1)
+    }
+    .width(LAYOUT_WIDTH_OR_HEIGHT)
+    .height(LAYOUT_WIDTH_OR_HEIGHT)
+    .backgroundColor('#F5F5F5')
+  }
+}ÀÔrE”º../view/GoodsListComponent¹../common/CommonConstants¼../view/CategorySubComponent¼../view/CategoryTabComponentÔrF—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÂÙW/Users/changchen/working_place/cybermall/entry/src/main/ets/view/GoodsListComponent.etsAÃªoh-resolveÂFAÂÙV/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.etsAÃªoh-resolveÂFAÂÙY/Users/changchen/working_place/cybermall/entry/src/main/ets/view/CategorySubComponent.etsAÃªoh-resolveÂFAÂÙY/Users/changchen/working_place/cybermall/entry/src/main/ets/view/CategoryTabComponent.etsAÃªoh-resolveÂ“ÔrG–§version¤fileªsourceRoot§sources¥names¨mappings¯CategoryPage.js ‘°CategoryPage.etsÜ‘”    ‘” –”   ” ” 5” ;”6 ÌY”7 ÌZ–”   ” ” ” ”6 6”7 7–”   ” ” ” ”2 2”3 3˜”   ” ”	 ” ”! ”' ”ÌB "”ÌC #–”   ” ” ” ” ”! "‘”  ’”ÌD )”ÌE *’”ÌG ,”ÌH -’”> $”ÌB (‘” )‘” ”” ” ” 
+” “” ” 
+”Ì„ %“”  ”  ”  ™” !” !
+” !” !” !” !”! !”Ì‘ !/”Ì“ !1™” "” "
+” "” "” "” "”! "”Ì‘ "/”Ì“ "1™” #” #
+” #” #” #” #”! #”Ì‘ #/”Ì“ #1‘” $‘” %‘” &”” '” '” '
+” '“” (” (
+”Ì„ ()“” )” )” )™” *” *
+” *” *” *” *”! *”Ì‘ */”Ì“ *1™” +” +
+” +” +” +” +”! +”Ì‘ +3”Ì“ +5™” ,” ,
+” ,” ,” ,” ,”! ,”Ì‘ ,/”Ì“ ,1‘” -‘” .‘” /”” 0” 0” 0
+” 0“” 1” 1
+”Ì„ 1$“” 2” 2” 2™” 3” 3
+” 3” 3” 3” 3”! 3”Ì‘ 3/”Ì“ 31™” 4” 4
+” 4” 4” 4” 4”! 4”Ì‘ 40”Ì“ 42™” 5” 5
+” 5” 5” 5” 5”! 5”Ì‘ 52”Ì“ 54‘” 6‘” 7‘” 8”” 9” 9” 9
+” 9“” :” :
+”Ì„ :!“” ;” ;” ;™” <” <
+” <” <” <” <”! <”Ì‘ </”Ì“ <1™” =” =
+” =” =” =” =”! =”Ì‘ =2”Ì“ =4™” >” >
+” >” >” >” >”! >”Ì‘ >2”Ì“ >4‘” ?‘” Ì@‘” ÌA”” ÌB” ÌB” ÌB
+” ÌB“” ÌC” ÌC
+”Ì„ ÌC,“” ÌD” ÌD” ÌD™” ÌE” ÌE
+” ÌE” ÌE” ÌE” ÌE”! ÌE”Ì‘ ÌE/”Ì“ ÌE1™” ÌF” ÌF
+” ÌF” ÌF” ÌF” ÌF”! ÌF”Ì‘ ÌF5”Ì“ ÌF7™” ÌG” ÌG
+” ÌG” ÌG” ÌG” ÌG”! ÌG”Ì‘ ÌG1”Ì“ ÌG3‘” ÌH‘” ÌI‘”	 ÌJ‘” #’” 	” ’” 	” ’” 	”  !’” 	”  !’” 	” ’” 	” ’” ÌL”! ÌL” ÌM” ÌM” ÌM” ÌM”  ÌM”! ÌM”% ÌM!”& ÌM"”; ÌM7”< ÌM8”= ÌM9”ÌJ ÌMÌF”ÌK ÌMÌG’” ÌN” ÌN’” ÌP” ÌP™” ÌQ” ÌQ
+” ÌQ” ÌQ”" ÌQ”# ÌQ”Ì@ ÌQ<”ÌB ÌQ>”ÌC ÌQ?›” ÌR” ÌR” ÌR” ÌR”! ÌR”" ÌR”: ÌR6”; ÌR7”< ÌR8”Ì@ ÌR<”ÌA ÌR=’” ÌS” ÌS‘” ÌU’” ÌV” ÌV
+–” ÌV” ÌV
+” Ì~” Ì~
+” Ì~”/ Ì~!–” ÌV” ÌV
+” Ì” Ì” Ì”0 Ì"–” ÌV” ÌV
+” Ì€”" Ì€”# Ì€”, Ì€’” ÌW” ÌW’” ÌX” ÌX	’” ÌW” ÌW–” ÌX” ÌX	” Ìk” Ìk” Ìk”, Ìk#”” Ì]”# Ì]”$ Ì]”% Ì]“”, ÌY”7 ÌY”> ÌY“” ÌZ
+”- ÌZ”ÌK ÌZ7“” Ì[
+”0 Ì["”ÌQ Ì[=‘” Ì\	’” ÌZ
+”1 ÌZ’” Ì[
+”4 Ì["’” Ì_” Ì_ž” Ì`” Ì`” Ì`” Ì`” Ì`”, Ì`!”- Ì`"”. Ì`#”/ Ì`$”2 Ì`'”3 Ì`(”4 Ì`)”5 Ì`*”8 Ì`-’” Ì_” Ì_–” Ì`” Ì`” Ìa” Ìa” Ìa” Ìa’” Ì_” Ì_–” Ì`” Ì`” Ìb” Ìb” Ìb”$ Ìb’” Ì_” Ì_–” Ì`” Ì`” Ìc” Ìc” Ìc” Ìc’” Ì_” Ì_–” Ì`” Ì`” Ìd” Ìd” Ìd” Ìd’” Ì_” Ì_˜” Ì`” Ì`” Ìe” Ìe” Ìe”$ Ìe”% Ìe”+ Ìe%’” Ì_” Ì_–” Ì`” Ì`” Ìf”  Ìf”! Ìf”* Ìf$’” Ì_” Ì_—” Ì`” Ì`” Ìg” Ìg” Ìg” Ìg” Ìgš” Ìh” Ìh” Ìh”$ Ìh ”' Ìh#”( Ìh$”, Ìh(”- Ìh)”< Ìh8”= Ìh9’” Ìi
+” Ìi’” Ì_” Ì_’” Ì`” Ì`’” ÌW” ÌW’” ÌX” ÌX	’” Ìm” Ìm’” Ìn” Ìn	’” Ìm” Ìm–” Ìn” Ìn	” Ì{” Ì{” Ì{”, Ì{#’” Ìm” Ìm–” Ìn” Ìn	” Ì|” Ì|” Ì|” Ì|ž” Ìt” Ìt” Ìt”! Ìt”" Ìt”1 Ìt%”2 Ìt&”3 Ìt'”4 Ìt(”9 Ìt-”: Ìt.”; Ìt/”< Ìt0”Ì@ Ìt4Ü ” Ìu”! Ìu”" Ìu”& Ìu”' Ìu”6 Ìu*”7 Ìu+”8 Ìu,”9 Ìu-”ÌC Ìu7”ÌD Ìu8”ÌK Ìu?”ÌL ÌuÌ@”ÌM ÌuÌA”ÌN ÌuÌB”ÌX ÌuÌL”ÌY ÌuÌM”Ì_ ÌuÌS’” Ìo”$ Ìo“” Ìp” Ìp”& Ìp“” Ìq
+”0 Ìq"”ÌQ Ìq=—” Ìr
+”% Ìr”' Ìr”+ Ìr”, Ìr”ÌI Ìr;”ÌK Ìr=‘” Ìs	’” Ìq
+”4 Ìq"—” Ìr
+”) Ìr”+ Ìr”/ Ìr”0 Ìr”ÌM Ìr;”ÌO Ìr=—” Ìr
+”% Ìr”' Ìr”+ Ìr”, Ìr”ÌI Ìr;”ÌK Ìr=”” Ìy”# Ìy”$ Ìy”% Ìy’” Ìw” Ìw’” Ìx” Ìx’” Ìm” Ìm’” Ìn” Ìn	’” ÌV” ÌV
+‘” ÌÔrH–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜ
+‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
+ ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”    ‘”  ! ‘”  " ‘”  # ‘”  $ ‘”  % ‘”  & ‘”  ' ‘”  ( ‘”  ) ‘”  * ‘”  + ‘”  , ‘”  - ‘”  . ‘”  / ‘”  0 ‘”  1 ‘”  2 ‘”  3 ‘”  4 ‘”  5 ‘”  6 ‘”  7 ‘”  8 ‘”  9 ‘”  : ‘”  ; ‘”  < ‘”  = ‘”  > ‘”  ? ‘”  Ì@ ‘”  ÌA ‘”  ÌB ‘”  ÌC ‘”  ÌD ‘”  ÌE ‘”  ÌF ‘”  ÌG ‘”  ÌH ‘”  ÌI ‘”  ÌJ ‘”  ÌK ‘”  ÌL ‘”  ÌM ‘”  ÌN ‘”  ÌO ‘”  ÌP ‘”  ÌQ ‘”  ÌR ‘”  ÌS ‘”  ÌT ‘”  ÌU ‘”  ÌV ‘”  ÌW ‘”  ÌX ‘”  ÌY ‘”  ÌZ ‘”  Ì[ ‘”  Ì\ ‘”  Ì] ‘”  Ì^ ‘”  Ì_ ‘”  Ì` ‘”  Ìa ‘”  Ìb ‘”  Ìc ‘”  Ìd ‘”  Ìe ‘”  Ìf ‘”  Ìg ‘”  Ìh ‘”  Ìi ‘”  Ìj ‘”  Ìk ‘”  Ìl ‘”  Ìm ‘”  Ìn ‘”  Ìo ‘”  Ìp ‘”  Ìq ‘”  Ìr ‘”  Ìs ‘”  Ìt ‘”  Ìu ‘”  Ìv ‘”  Ìw ‘”  Ìx ‘”  Ìy ‘”  Ìz ‘”  Ì{ ‘”  Ì| ‘”  Ì} ‘”  Ì~ ‘”  Ì ‘”  Ì€ ‘”  Ì ‘”  Ì‚ ‘”  Ìƒ ‘”  Ì„ ‘”  Ì… ‘”  Ì† ‘”  Ì‡ ‘”  Ìˆ ‘”  Ì‰ ‘”  ÌŠ ‘”  Ì‹ ‘”  ÌŒ ‘”  Ì ‘”  ÌŽ ‘”  Ì ‘”  Ì ‘”  Ì‘ ‘”  Ì’ ‘”  Ì“ ‘”  Ì” ‘”  Ì• ‘”  Ì– ‘”  Ì— ‘”  Ì˜ ‘”  Ì™ ‘”  Ìš ‘”  Ì› ‘”  Ìœ ‘”  Ì ‘”  Ìž ‘”  ÌŸ ‘”  Ì  ‘”  Ì¡ ‘”  Ì¢ ‘”  Ì£ ‘”  Ì¤ ‘”  Ì¥ ‘”  Ì¦ ‘”  Ì§ ‘”  Ì¨ ‘”  Ì© ‘”  Ìª ‘”  Ì« ‘”  Ì¬ ‘”  Ì­ ‘”  Ì® ‘”  Ì¯ ‘”  Ì° ‘”  Ì± ‘”  Ì² ‘”  Ì³ ‘”  Ì´ ‘”  Ìµ ‘”  Ì¶ ‘”  Ì· ‘”  Ì¸ ‘”  Ì¹ ‘”  Ìº ‘”  Ì» ‘”  Ì¼ ‘”  Ì½ ‘”  Ì¾ ‘”  Ì¿ ‘”  ÌÀ ‘”  ÌÁ ‘”  ÌÂ ‘”  ÌÃ ‘”  ÌÄ ‘”  ÌÅ ‘”  ÌÆ ‘”  ÌÇ ‘”  ÌÈ ‘”  ÌÉ ‘”  ÌÊ ‘”  ÌË ‘”  ÌÌ ‘”  ÌÍ ‘”  ÌÎ ‘”  ÌÏ ‘”  ÌÐ ‘”  ÌÑ ‘”  ÌÒ ‘”  ÌÓ ‘”  ÌÔ ‘”  ÌÕ ‘”  ÌÖ ‘”  Ì× ‘”  ÌØ ‘”  ÌÙ ‘”  ÌÚ ‘”  ÌÛ ‘”  ÌÜ ‘”  ÌÝ ‘”  ÌÞ ‘”  Ìß ‘”  Ìà ‘”  Ìá ‘”  Ìâ ‘”  Ìã ‘”  Ìä ‘”  Ìå ‘”  Ìæ ‘”  Ìç ‘”  Ìè ‘”  Ìé ‘”  Ìê ‘”  Ìë ‘”  Ìì ‘”  Ìí ‘”  Ìî ‘”  Ìï ‘”  Ìð ‘”  Ìñ ‘”  Ìò ‘”  Ìó ‘”  Ìô ‘”  Ìõ ‘”  Ìö ‘”  Ì÷ ‘”  Ìø ‘”  Ìù ‘”  Ìú ‘”  Ìû ‘”  Ìü ‘”  Ìý ‘”  Ìþ ‘”  Ìÿ ‘”  Í  ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í	 ÔrI’§missing¦pluginÃ¦genAbcÂÔ  ÔrJ”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache”ÔrK•¤type¥start£endªspecifiers¦source±ImportDeclarationÍéÍ ‘ÔrL”¤type¥start£end¥local¶ImportDefaultSpecifierÍðÍûÔrM”¤type¥start£end¤nameªIdentifierÍðÍû«CategoryTabÔrN•¤type¥start£end¥value£raw§LiteralÍÍ¼../view/CategoryTabComponent¾'../view/CategoryTabComponent'K±ImportDeclarationÍ"ÍY‘L¶ImportDefaultSpecifierÍ)Í4MªIdentifierÍ)Í4«CategorySubN§LiteralÍ:ÍX¼../view/CategorySubComponent¾'../view/CategorySubComponent'K±ImportDeclarationÍ[ÍŽ‘L¶ImportDefaultSpecifierÍbÍkMªIdentifierÍbÍk©GoodsListN§LiteralÍqÍº../view/GoodsListComponent¼'../view/GoodsListComponent'K±ImportDeclarationÍÍÓ‘ÔrO•¤type¥start£end¨imported¥local¯ImportSpecifierÍ™Í¯MªIdentifierÍ™Í¯¶LAYOUT_WIDTH_OR_HEIGHTMªIdentifierÍ™Í¯¶LAYOUT_WIDTH_OR_HEIGHTN§LiteralÍ·ÍÒ¹../common/CommonConstants»'../common/CommonConstants'

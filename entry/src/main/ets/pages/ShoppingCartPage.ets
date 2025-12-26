@@ -21,6 +21,7 @@ import {
   BUTTON_HEIGHT,
   BUTTON_BORDER_RADIUS
 } from '../common/CommonConstants';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 interface CartItem {
   id: number;
@@ -53,6 +54,7 @@ export default struct ShoppingCartPage {
   ];
   @State isAllSelected: boolean = false;
   @State totalPrice: number = 0;
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;//使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
 
   calculateTotalPrice() {
     this.totalPrice = 0;
@@ -98,7 +100,7 @@ export default struct ShoppingCartPage {
       // 选择框
       Checkbox()
         .select(item.selected)
-        .selectedColor('#FF4D4F')
+        .selectedColor(this.currentThemeColors.accentColor)
         .onChange((value: boolean) => {
           this.toggleItemSelect(index);
         })
@@ -114,13 +116,13 @@ export default struct ShoppingCartPage {
       Column({ space: 8 }) {
         Text(item.name)
           .fontSize(NORMAL_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .maxLines(2)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
 
         Text(item.price)
           .fontSize(BIGGER_FONT_SIZE)
-          .fontColor('#FF4D4F')
+          .fontColor(this.currentThemeColors.accentColor)
           .fontWeight(FontWeight.Bold)
 
         // 数量选择器
@@ -129,8 +131,8 @@ export default struct ShoppingCartPage {
             .width(28)
             .height(28)
             .fontSize(NORMAL_FONT_SIZE)
-            .backgroundColor(item.quantity <= 1 ? '#F5F5F5' : '#FF4D4F')
-            .fontColor(item.quantity <= 1 ? '#CCCCCC' : '#FFFFFF')
+            .backgroundColor(item.quantity <= 1 ? this.currentThemeColors.tabUnselectedColor : this.currentThemeColors.accentColor)
+            .fontColor(item.quantity <= 1 ? this.currentThemeColors.secondaryTextColor : this.currentThemeColors.accentColor)
             .enabled(item.quantity > 1)
             .onClick(() => {
               this.updateQuantity(index, -1);
@@ -138,7 +140,7 @@ export default struct ShoppingCartPage {
 
           Text(item.quantity.toString())
             .fontSize(NORMAL_FONT_SIZE)
-            .fontColor('#333333')
+            .fontColor(this.currentThemeColors.primaryTextColor)
             .width(32)
             .textAlign(TextAlign.Center)
 
@@ -146,8 +148,8 @@ export default struct ShoppingCartPage {
             .width(28)
             .height(28)
             .fontSize(NORMAL_FONT_SIZE)
-            .backgroundColor('#FF4D4F')
-            .fontColor('#FFFFFF')
+            .backgroundColor(this.currentThemeColors.accentColor)
+            .fontColor(this.currentThemeColors.primaryTextColor)
             .onClick(() => {
               this.updateQuantity(index, 1);
             })
@@ -158,7 +160,7 @@ export default struct ShoppingCartPage {
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .padding(12)
-    .backgroundColor('#FFFFFF')
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     .borderRadius(8)
     .alignItems(VerticalAlign.Top)
   }
@@ -182,7 +184,7 @@ export default struct ShoppingCartPage {
       Button($r('app.string.go_shopping'))
         .fontSize(NORMAL_FONT_SIZE)
         .fontColor('#FFFFFF')
-        .backgroundColor('#FF4D4F')
+        .backgroundColor(this.currentThemeColors.accentColor)
         .height(BUTTON_HEIGHT)
         .borderRadius(BUTTON_BORDER_RADIUS)
         .width(200)
@@ -199,14 +201,14 @@ export default struct ShoppingCartPage {
       Row({ space: 8 }) {
         Checkbox()
           .select(this.isAllSelected)
-          .selectedColor('#FF4D4F')
+          .selectedColor(this.currentThemeColors.accentColor)
           .onChange(() => {
             this.toggleSelectAll();
           })
 
         Text($r('app.string.select_all'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
       }
 
       // 总价
@@ -214,11 +216,11 @@ export default struct ShoppingCartPage {
         Row({ space: 4 }) {
           Text($r('app.string.total'))
             .fontSize(SMALL_FONT_SIZE)
-            .fontColor('#666666')
+            .fontColor(this.currentThemeColors.secondaryTextColor)
 
           Text('¥' + this.totalPrice.toFixed(2))
             .fontSize(BIGGER_FONT_SIZE)
-            .fontColor('#FF4D4F')
+            .fontColor(this.currentThemeColors.accentColor)
             .fontWeight(FontWeight.Bold)
         }
       }
@@ -229,7 +231,7 @@ export default struct ShoppingCartPage {
       Button($r('app.string.checkout'))
         .fontSize(NORMAL_FONT_SIZE)
         .fontColor('#FFFFFF')
-        .backgroundColor('#FF4D4F')
+        .backgroundColor(this.currentThemeColors.accentColor)
         .height(BUTTON_HEIGHT)
         .borderRadius(BUTTON_BORDER_RADIUS)
         .width(120)
@@ -237,10 +239,10 @@ export default struct ShoppingCartPage {
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(72)
     .padding({ left: 16, right: 16, top: 12, bottom: 12 })
-    .backgroundColor('#FFFFFF')
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     .shadow({
       radius: 8,
-      color: '#00000015',
+      color: '#00000015', //'#00000015'
       offsetY: -2
     })
   }
@@ -260,7 +262,7 @@ export default struct ShoppingCartPage {
         }
         .layoutWeight(1)
         .padding(8)
-        .backgroundColor('#F5F5F5')
+        .backgroundColor(this.currentThemeColors.backgroundColor)
 
         // 底部操作栏
         this.BottomBar()
@@ -268,6 +270,6 @@ export default struct ShoppingCartPage {
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .backgroundColor('#F5F5F5')
+    .backgroundColor(this.currentThemeColors.backgroundColor)
   }
 }

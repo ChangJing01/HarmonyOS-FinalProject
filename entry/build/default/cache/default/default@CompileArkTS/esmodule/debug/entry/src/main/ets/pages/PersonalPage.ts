@@ -4,10 +4,16 @@ if (!("finalizeConstruction" in ViewPU.prototype)) {
 interface PersonalPage_Params {
     userName?: string;
     userAvatar?: Resource;
+    currentThemeType?: ThemeType;
+    currentThemeColors?: ThemeColors;
     menuItems?: MenuItem[];
 }
 import { LAYOUT_WIDTH_OR_HEIGHT, NORMAL_FONT_SIZE, BIGGER_FONT_SIZE, SMALL_FONT_SIZE } from "@bundle:com.example.list_harmony/entry/ets/common/CommonConstants";
+import promptAction from "@ohos:promptAction";
+import { ThemeType, getThemeColors, DEFAULT_THEME } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
+import type { ThemeColors } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
 interface MenuItem {
+    id: number;
     icon: Resource;
     title: Resource;
     showArrow: boolean;
@@ -20,13 +26,15 @@ export default class PersonalPage extends ViewPU {
         }
         this.__userName = new ObservedPropertySimplePU('用户名', this, "userName");
         this.__userAvatar = new ObservedPropertyObjectPU({ "id": 16777300, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, this, "userAvatar");
+        this.__currentThemeType = this.createStorageLink('themeType', ThemeType.LIGHT, "currentThemeType");
+        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
         this.menuItems = [
-            { icon: { "id": 16777310, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777248, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
-            { icon: { "id": 16777307, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777224, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
-            { icon: { "id": 16777314, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777285, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
-            { icon: { "id": 16777306, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777239, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
-            { icon: { "id": 16777305, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777228, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
-            { icon: { "id": 16777298, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777220, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true }
+            { id: 1, icon: { "id": 16777310, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777248, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
+            { id: 2, icon: { "id": 16777307, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777224, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
+            { id: 3, icon: { "id": 16777314, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777285, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
+            { id: 4, icon: { "id": 16777306, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777239, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
+            { id: 5, icon: { "id": 16777305, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777228, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
+            { id: 6, icon: { "id": 16777298, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777220, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true }
         ];
         this.setInitiallyProvidedValue(params);
         this.finalizeConstruction();
@@ -47,10 +55,14 @@ export default class PersonalPage extends ViewPU {
     purgeVariableDependenciesOnElmtId(rmElmtId) {
         this.__userName.purgeDependencyOnElmtId(rmElmtId);
         this.__userAvatar.purgeDependencyOnElmtId(rmElmtId);
+        this.__currentThemeType.purgeDependencyOnElmtId(rmElmtId);
+        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__userName.aboutToBeDeleted();
         this.__userAvatar.aboutToBeDeleted();
+        this.__currentThemeType.aboutToBeDeleted();
+        this.__currentThemeColors.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -68,6 +80,23 @@ export default class PersonalPage extends ViewPU {
     set userAvatar(newValue: Resource) {
         this.__userAvatar.set(newValue);
     }
+    //与全局 AppStorage 建立双向同步
+    // 当 themeType 改变时，UI 会自动刷新（如果有依赖它的 UI），且我们修改它会同步回全局
+    private __currentThemeType: ObservedPropertyAbstractPU<ThemeType>;
+    get currentThemeType() {
+        return this.__currentThemeType.get();
+    }
+    set currentThemeType(newValue: ThemeType) {
+        this.__currentThemeType.set(newValue);
+    }
+    private __currentThemeColors: ObservedPropertyAbstractPU<ThemeColors>;
+    get currentThemeColors() {
+        return this.__currentThemeColors.get();
+    }
+    set currentThemeColors(newValue: ThemeColors) {
+        this.__currentThemeColors.set(newValue);
+    }
+    //为菜单项添加 id，方便识别 (id: 3 对应主题设置)
     private menuItems: MenuItem[];
     UserInfoSection(parent = null) {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -213,13 +242,21 @@ export default class PersonalPage extends ViewPU {
             Row.padding({ left: 16, right: 16 });
             Row.backgroundColor('#FFFFFF');
             Row.onClick(() => {
-                // 菜单项点击逻辑
+                // 菜单项点击逻辑 根据id判断点击逻辑 update1.2
+                if (item.id === 3) {
+                    this.showThemeDialog();
+                }
+                else {
+                    // 其他菜单项逻辑
+                    console.info('Clicked menu item:', item.id);
+                }
             });
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Image.create(item.icon);
             Image.width(24);
             Image.height(24);
+            Image.fillColor(this.currentThemeColors.primaryTextColor);
         }, Image);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(item.title);
@@ -246,6 +283,38 @@ export default class PersonalPage extends ViewPU {
         }, If);
         If.pop();
         Row.pop();
+    }
+    //显示主题选择弹窗的方法
+    showThemeDialog() {
+        promptAction.showActionMenu({
+            title: '选择应用主题',
+            buttons: [
+                { text: '默认白', color: '#333333' },
+                { text: '深色模式', color: '#000000' },
+                { text: '护眼模式', color: '#FF6B35' }
+            ]
+        }).then(data => {
+            let selectedType: ThemeType;
+            // 根据点击的按钮索引决定切换哪个主题
+            switch (data.index) {
+                case 0:
+                    selectedType = ThemeType.LIGHT;
+                    break;
+                case 1:
+                    selectedType = ThemeType.DARK;
+                    break;
+                case 2:
+                    selectedType = ThemeType.EYECARE;
+                    break;
+                default:
+                    return;
+            }
+            // 核心逻辑：修改状态变量，AppStorage 会自动同步到全局
+            this.currentThemeType = selectedType;
+            this.currentThemeColors = getThemeColors(selectedType);
+            // 可以在这里打印日志验证
+            console.info('Theme changed to:', selectedType);
+        });
     }
     initialRender() {
         this.observeComponentCreation2((elmtId, isInitialRender) => {

@@ -4,8 +4,12 @@ import type Want from "@ohos:app.ability.Want";
 import type { BusinessError as BusinessError } from "@ohos:base";
 import hilog from "@ohos:hilog";
 import window from "@ohos:window";
+import { ThemeType, getThemeColors } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
 export default class EntryAbility extends UIAbility {
     onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+        const defaultThemeType = ThemeType.LIGHT; // 设置默认主题类型为 LIGHT
+        AppStorage.SetOrCreate('themeType', defaultThemeType); // 将 'themeType' 存入 AppStorage，用于在设置页判断当前选中的是哪个模式
+        AppStorage.SetOrCreate('themeColors', getThemeColors(defaultThemeType)); // 将具体的 'themeColors' 对象存入 AppStorage，用于各页面获取颜色值
         hilog.isLoggable(0x0000, 'testTag', hilog.LogLevel.INFO);
         hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
         hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');

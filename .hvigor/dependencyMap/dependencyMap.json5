@@ -1,1 +1,1 @@
-{"basePath":"D:\\Codes\\DevEcoStudio\\List_commodity\\.hvigor\\dependencyMap\\dependencyMap.json5","rootDependency":"./oh-package.json5","dependencyMap":{"entry":"./entry/oh-package.json5"},"modules":[{"name":"entry","srcPath":"..\\..\\..\\entry"}]}
+{"basePath":"/Users/changchen/working_place/cybermall/.hvigor/dependencyMap/dependencyMap.json5","rootDependency":"./oh-package.json5","dependencyMap":{"entry":"./entry/oh-package.json5"},"modules":[{"name":"entry","srcPath":"../../../entry"}]}

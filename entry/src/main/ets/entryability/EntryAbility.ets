@@ -17,9 +17,13 @@ import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { ThemeType, getThemeColors } from '../common/Colors';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+    const defaultThemeType = ThemeType.LIGHT;// 设置默认主题类型为 LIGHT
+    AppStorage.SetOrCreate('themeType', defaultThemeType);// 将 'themeType' 存入 AppStorage，用于在设置页判断当前选中的是哪个模式
+    AppStorage.SetOrCreate('themeColors', getThemeColors(defaultThemeType));// 将具体的 'themeColors' 对象存入 AppStorage，用于各页面获取颜色值
     hilog.isLoggable(0x0000, 'testTag', hilog.LogLevel.INFO);
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
     hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');
