@@ -1405,6 +1405,56 @@ export default struct ShoppingCartPage {
 
 
 
+# 问题
+
+购物车按按钮，数字不会增加，但勾选结算时计算总价却会改变。
+
+
+
+
+
+
+
+
+
+
+
+
+
+# update
+
+1.1 : 修改PersonalPages.ets，为菜单项添加 id，添加显示主题选择弹窗的方法。
+
+1.2 颜色替换： '#FF4D4F' 换成 this.currentThemeColors.accentColor
+
+​			'#333333' 换成 this.currentThemeColors.primaryTextColor
+
+​			'#FFFFFF' 换成 this.currentThemeColors.cardBackgroundColor
+
+​			'#F5F5F5'是默认的背景色
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

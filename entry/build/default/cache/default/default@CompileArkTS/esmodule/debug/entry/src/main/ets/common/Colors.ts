@@ -24,7 +24,7 @@ export interface ThemeColors {
 }
 // 默认主题
 export const DEFAULT_THEME: ThemeColors = {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F5F5F5',
     primaryTextColor: '#333333',
     secondaryTextColor: '#666666',
     accentColor: '#FF4D4F',

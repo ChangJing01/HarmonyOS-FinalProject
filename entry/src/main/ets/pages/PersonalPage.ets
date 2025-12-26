@@ -149,6 +149,7 @@ export default struct PersonalPage {
       Image(item.icon)
         .width(24)
         .height(24)
+        .fillColor(this.currentThemeColors.primaryTextColor) //让图标颜色也随主题变
 
       Text(item.title)
         .fontSize(NORMAL_FONT_SIZE)
@@ -166,7 +167,13 @@ export default struct PersonalPage {
     .padding({ left: 16, right: 16 })
     .backgroundColor('#FFFFFF')
     .onClick(() => {
-      // 菜单项点击逻辑
+      // 菜单项点击逻辑 根据id判断点击逻辑 update1.2
+      if (item.id === 3) {
+        this.showThemeDialog();
+      } else {
+        // 其他菜单项逻辑
+        console.info('Clicked menu item:', item.id);
+      }
     })
   }
 

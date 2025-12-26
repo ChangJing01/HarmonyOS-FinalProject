@@ -616,7 +616,8 @@
         "/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony/ets/build-tools/ets-loader/declarations/action_sheet.d.ts",
         "/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony/ets/build-tools/ets-loader/declarations/alert_dialog.d.ts",
         "/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony/ets/build-tools/ets-loader/declarations/common.d.ts",
-        "/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony/ets/build-tools/ets-loader/declarations/custom_dialog_controller.d.ts"
+        "/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony/ets/build-tools/ets-loader/declarations/custom_dialog_controller.d.ts",
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/PersonalPage.ets"
       ],
       "error": false
     },
@@ -1490,9 +1491,10 @@
       "error": false
     },
     "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/ShoppingCartPage.ets": {
-      "mtimeMs": 1766650150543.553,
+      "mtimeMs": 1766765609445.9492,
       "children": [
-        "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.ets"
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.ets",
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/Colors.ets"
       ],
       "parent": [
         "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/ListIndex.ets"
@@ -1500,14 +1502,20 @@
       "error": false
     },
     "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/PersonalPage.ets": {
-      "mtimeMs": 1766650150543.373,
+      "mtimeMs": 1766736683992.5286,
       "children": [
-        "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.ets"
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.ets",
+        "/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony/ets/api/@ohos.promptAction.d.ts",
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/Colors.ets"
       ],
       "parent": [
         "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/ListIndex.ets"
       ],
-      "error": false
+      "error": true,
+      "errorCodes": [
+        28040,
+        28007
+      ]
     },
     "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.ets": {
       "mtimeMs": 1766650150542.7542,
@@ -2053,10 +2061,12 @@
       "error": false
     },
     "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/Colors.ets": {
-      "mtimeMs": 1766650150542.6833,
+      "mtimeMs": 1766765486720.0112,
       "children": [],
       "parent": [
-        "/Users/changchen/working_place/cybermall/entry/src/main/ets/entryability/EntryAbility.ets"
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/entryability/EntryAbility.ets",
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/PersonalPage.ets",
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/ShoppingCartPage.ets"
       ],
       "error": false
     }

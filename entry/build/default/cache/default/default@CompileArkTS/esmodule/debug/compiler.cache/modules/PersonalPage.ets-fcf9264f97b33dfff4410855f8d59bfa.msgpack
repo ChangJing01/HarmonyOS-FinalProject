@@ -1,4 +1,4 @@
-Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚ8Ìif (!("finalizeConstruction" in ViewPU.prototype)) {
+Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚCif (!("finalizeConstruction" in ViewPU.prototype)) {
     Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
 }
 /*
@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 import { LAYOUT_WIDTH_OR_HEIGHT, NORMAL_FONT_SIZE, BIGGER_FONT_SIZE, SMALL_FONT_SIZE } from '../common/CommonConstants';
+import promptAction from '@ohos.promptAction';
+import { ThemeType, getThemeColors, DEFAULT_THEME } from '../common/Colors';
 export default class PersonalPage extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
         super(parent, __localStorage, elmtId, extraInfo);
@@ -24,13 +26,15 @@ export default class PersonalPage extends ViewPU {
         }
         this.__userName = new ObservedPropertySimplePU('ç”¨æˆ·å', this, "userName");
         this.__userAvatar = new ObservedPropertyObjectPU({ "id": 16777300, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, this, "userAvatar");
+        this.__currentThemeType = this.createStorageLink('themeType', ThemeType.LIGHT, "currentThemeType");
+        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
         this.menuItems = [
-            { icon: { "id": 16777310, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777248, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
-            { icon: { "id": 16777307, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777224, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
-            { icon: { "id": 16777314, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777285, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
-            { icon: { "id": 16777306, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777239, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
-            { icon: { "id": 16777305, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777228, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
-            { icon: { "id": 16777298, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777220, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true }
+            { id: 1, icon: { "id": 16777310, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777248, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
+            { id: 2, icon: { "id": 16777307, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777224, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
+            { id: 3, icon: { "id": 16777314, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777285, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
+            { id: 4, icon: { "id": 16777306, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777239, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
+            { id: 5, icon: { "id": 16777305, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777228, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true },
+            { id: 6, icon: { "id": 16777298, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, title: { "id": 16777220, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, showArrow: true }
         ];
         this.setInitiallyProvidedValue(params);
         this.finalizeConstruction();
@@ -51,10 +55,14 @@ export default class PersonalPage extends ViewPU {
     purgeVariableDependenciesOnElmtId(rmElmtId) {
         this.__userName.purgeDependencyOnElmtId(rmElmtId);
         this.__userAvatar.purgeDependencyOnElmtId(rmElmtId);
+        this.__currentThemeType.purgeDependencyOnElmtId(rmElmtId);
+        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__userName.aboutToBeDeleted();
         this.__userAvatar.aboutToBeDeleted();
+        this.__currentThemeType.aboutToBeDeleted();
+        this.__currentThemeColors.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -69,6 +77,18 @@ export default class PersonalPage extends ViewPU {
     }
     set userAvatar(newValue) {
         this.__userAvatar.set(newValue);
+    }
+    get currentThemeType() {
+        return this.__currentThemeType.get();
+    }
+    set currentThemeType(newValue) {
+        this.__currentThemeType.set(newValue);
+    }
+    get currentThemeColors() {
+        return this.__currentThemeColors.get();
+    }
+    set currentThemeColors(newValue) {
+        this.__currentThemeColors.set(newValue);
     }
     UserInfoSection(parent = null) {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -214,13 +234,21 @@ export default class PersonalPage extends ViewPU {
             Row.padding({ left: 16, right: 16 });
             Row.backgroundColor('#FFFFFF');
             Row.onClick(() => {
-                // èœå•é¡¹ç‚¹å‡»é€»è¾‘
+                // èœå•é¡¹ç‚¹å‡»é€»è¾‘ æ ¹æ®idåˆ¤æ–­ç‚¹å‡»é€»è¾‘ update1.2
+                if (item.id === 3) {
+                    this.showThemeDialog();
+                }
+                else {
+                    // å…¶ä»–èœå•é¡¹é€»è¾‘
+                    console.info('Clicked menu item:', item.id);
+                }
             });
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Image.create(item.icon);
             Image.width(24);
             Image.height(24);
+            Image.fillColor(this.currentThemeColors.primaryTextColor);
         }, Image);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(item.title);
@@ -247,6 +275,38 @@ export default class PersonalPage extends ViewPU {
         }, If);
         If.pop();
         Row.pop();
+    }
+    //æ˜¾ç¤ºä¸»é¢˜é€‰æ‹©å¼¹çª—çš„æ–¹æ³•
+    showThemeDialog() {
+        promptAction.showActionMenu({
+            title: 'é€‰æ‹©åº”ç”¨ä¸»é¢˜',
+            buttons: [
+                { text: 'é»˜è®¤ç™½', color: '#333333' },
+                { text: 'æ·±è‰²æ¨¡å¼', color: '#000000' },
+                { text: 'æŠ¤çœ¼æ¨¡å¼', color: '#FF6B35' }
+            ]
+        }).then(data => {
+            let selectedType;
+            // æ ¹æ®ç‚¹å‡»çš„æŒ‰é’®ç´¢å¼•å†³å®šåˆ‡æ¢å“ªä¸ªä¸»é¢˜
+            switch (data.index) {
+                case 0:
+                    selectedType = ThemeType.LIGHT;
+                    break;
+                case 1:
+                    selectedType = ThemeType.DARK;
+                    break;
+                case 2:
+                    selectedType = ThemeType.EYECARE;
+                    break;
+                default:
+                    return;
+            }
+            // æ ¸å¿ƒé€»è¾‘ï¼šä¿®æ”¹çŠ¶æ€å˜é‡ï¼ŒAppStorage ä¼šè‡ªåŠ¨åŒæ­¥åˆ°å…¨å±€
+            this.currentThemeType = selectedType;
+            this.currentThemeColors = getThemeColors(selectedType);
+            // å¯ä»¥åœ¨è¿™é‡Œæ‰“å°æ—¥å¿—éªŒè¯
+            console.info('Theme changed to:', selectedType);
+        });
     }
     initialRender() {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -319,7 +379,7 @@ export default class PersonalPage extends ViewPU {
         this.updateDirtyElements();
     }
 }
-//# sourceMappingURL=PersonalPage.js.mapÂ‘ÙV/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.etsÙR/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/PersonalPage.etsÔrBœªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo¯hostModulesInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙ./Users/changchen/working_place/cybermall/entryÙ(/Users/changchen/working_place/cybermall¥entry¥1.0.0Ô  ‘ÔrC’²hostDependencyName®hostModuleName®./PersonalPage¥entryÙ./Users/changchen/working_place/cybermall/entryÔrDÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFile³createIntrinsicTypeÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚ2/*
+//# sourceMappingURL=PersonalPage.js.mapÂ“ÙV/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.etsÙo hvigor_ignore__Applications_DevEco-Studio.app_Contents_sdk_default_openharmony_ets_api_@ohos.promptAction.d.tsÙM/Users/changchen/working_place/cybermall/entry/src/main/ets/common/Colors.etsÙR/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/PersonalPage.etsÔrBœªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo¯hostModulesInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙ./Users/changchen/working_place/cybermall/entryÙ(/Users/changchen/working_place/cybermall¥entry¥1.0.0Ô  ‘ÔrC’²hostDependencyName®hostModuleName®./PersonalPage¥entryÙ./Users/changchen/working_place/cybermall/entryÔrDÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFile³createIntrinsicTypeÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚ–/*
  * Copyright (c) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License,Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -340,8 +400,11 @@ import {
   BIGGER_FONT_SIZE,
   SMALL_FONT_SIZE
 } from '../common/CommonConstants';
+import promptAction from '@ohos.promptAction';
+import { ThemeType, getThemeColors, ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 interface MenuItem {
+  id:number;
   icon: Resource;
   title: Resource;
   showArrow: boolean;
@@ -351,14 +414,19 @@ interface MenuItem {
 export default struct PersonalPage {
   @State userName: string = 'ç”¨æˆ·å';
   @State userAvatar: Resource = $r('app.media.ic_avatar');
+  //ä¸å…¨å±€ AppStorage å»ºç«‹åŒå‘åŒæ­¥
+  // å½“ themeType æ”¹å˜æ—¶ï¼ŒUI ä¼šè‡ªåŠ¨åˆ·æ–°ï¼ˆå¦‚æœæœ‰ä¾èµ–å®ƒçš„ UIï¼‰ï¼Œä¸”æˆ‘ä»¬ä¿®æ”¹å®ƒä¼šåŒæ­¥å›å…¨å±€
+  @StorageLink('themeType') currentThemeType: ThemeType = ThemeType.LIGHT;
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
 
+  //ä¸ºèœå•é¡¹æ·»åŠ  idï¼Œæ–¹ä¾¿è¯†åˆ« (id: 3 å¯¹åº”ä¸»é¢˜è®¾ç½®)
   private menuItems: MenuItem[] = [
-    { icon: $r('app.media.ic_order'), title: $r('app.string.my_orders'), showArrow: true },
-    { icon: $r('app.media.ic_history'), title: $r('app.string.browse_history'), showArrow: true },
-    { icon: $r('app.media.ic_theme'), title: $r('app.string.theme_settings'), showArrow: true },
-    { icon: $r('app.media.ic_compare'), title: $r('app.string.goods_compare'), showArrow: true },
-    { icon: $r('app.media.ic_clear'), title: $r('app.string.clear_cache'), showArrow: true },
-    { icon: $r('app.media.ic_about'), title: $r('app.string.about_us'), showArrow: true }
+    { id:1, icon: $r('app.media.ic_order'), title: $r('app.string.my_orders'), showArrow: true },
+    { id:2, icon: $r('app.media.ic_history'), title: $r('app.string.browse_history'), showArrow: true },
+    { id:3, icon: $r('app.media.ic_theme'), title: $r('app.string.theme_settings'), showArrow: true },
+    { id:4, icon: $r('app.media.ic_compare'), title: $r('app.string.goods_compare'), showArrow: true },
+    { id:5, icon: $r('app.media.ic_clear'), title: $r('app.string.clear_cache'), showArrow: true },
+    { id:6, icon: $r('app.media.ic_about'), title: $r('app.string.about_us'), showArrow: true }
   ];
 
   @Builder
@@ -462,6 +530,7 @@ export default struct PersonalPage {
       Image(item.icon)
         .width(24)
         .height(24)
+        .fillColor(this.currentThemeColors.primaryTextColor) //è®©å›¾æ ‡é¢œè‰²ä¹Ÿéšä¸»é¢˜å˜
 
       Text(item.title)
         .fontSize(NORMAL_FONT_SIZE)
@@ -479,9 +548,51 @@ export default struct PersonalPage {
     .padding({ left: 16, right: 16 })
     .backgroundColor('#FFFFFF')
     .onClick(() => {
-      // èœå•é¡¹ç‚¹å‡»é€»è¾‘
+      // èœå•é¡¹ç‚¹å‡»é€»è¾‘ æ ¹æ®idåˆ¤æ–­ç‚¹å‡»é€»è¾‘ update1.2
+      if (item.id === 3) {
+        this.showThemeDialog();
+      } else {
+        // å…¶ä»–èœå•é¡¹é€»è¾‘
+        console.info('Clicked menu item:', item.id);
+      }
     })
   }
+
+  //æ˜¾ç¤ºä¸»é¢˜é€‰æ‹©å¼¹çª—çš„æ–¹æ³•
+  showThemeDialog() {
+    promptAction.showActionMenu({
+      title: 'é€‰æ‹©åº”ç”¨ä¸»é¢˜',
+      buttons: [
+        { text: 'é»˜è®¤ç™½', color: '#333333' },
+        { text: 'æ·±è‰²æ¨¡å¼', color: '#000000' },
+        { text: 'æŠ¤çœ¼æ¨¡å¼', color: '#FF6B35' }
+      ]
+    }).then(data => {
+      let selectedType: ThemeType;
+      // æ ¹æ®ç‚¹å‡»çš„æŒ‰é’®ç´¢å¼•å†³å®šåˆ‡æ¢å“ªä¸ªä¸»é¢˜
+      switch (data.index) {
+        case 0:
+          selectedType = ThemeType.LIGHT;
+          break;
+        case 1:
+          selectedType = ThemeType.DARK;
+          break;
+        case 2:
+          selectedType = ThemeType.EYECARE;
+          break;
+        default:
+          return;
+      }
+
+      // æ ¸å¿ƒé€»è¾‘ï¼šä¿®æ”¹çŠ¶æ€å˜é‡ï¼ŒAppStorage ä¼šè‡ªåŠ¨åŒæ­¥åˆ°å…¨å±€
+      this.currentThemeType = selectedType;
+      this.currentThemeColors = getThemeColors(selectedType);
+
+      // å¯ä»¥åœ¨è¿™é‡Œæ‰“å°æ—¥å¿—éªŒè¯
+      console.info('Theme changed to:', selectedType);
+    });
+  }
+
 
   build() {
     Scroll() {
@@ -523,41 +634,51 @@ export default struct PersonalPage {
     .height(LAYOUT_WIDTH_OR_HEIGHT)
     .backgroundColor('#F5F5F5')
   }
-}ÀÔrE‘¹../common/CommonConstantsÔrF—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÂÙV/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.etsAÃªoh-resolveÂ“ÔrG–§version¤fileªsourceRoot§sources¥names¨mappings¯PersonalPage.js ‘°PersonalPage.etsÜ=‘”    ‘” ”   ” ”	 ” ”! ”1 ”3 ”ÌC ”ÌE ”ÌT ”ÌV ”Ì\ ”Ìw "”Ìx #–”   ” ” ” ” ”! "‘”  ’”7 ”< !‘” !"œ” "” "” "
-”Ì‚ "$”Ì„ "&”Ì‰ "+”Ìù "ÌG”Ìû "ÌI”Í "ÌR”Í "ÌT”Í
- "ÌX”Í "ÌZœ” #” #” #
-”Ì‚ #&”Ì„ #(”Ì‰ #-”Ìù #ÌN”Ìû #ÌP”Í #ÌY”Í #Ì[”Í
- #Ì_”Í #Ìaœ” $” $” $
-”Ì‚ $$”Ì„ $&”Ì‰ $+”Ìù $ÌL”Ìû $ÌN”Í $ÌW”Í $ÌY”Í
- $Ì]”Í $Ì_œ” %” %” %
-”Ì‚ %&”Ì„ %(”Ì‰ %-”Ìù %ÌM”Ìû %ÌO”Í %ÌX”Í %ÌZ”Í
- %Ì^”Í %Ì`œ” &” &” &
-”Ì‚ &$”Ì„ &&”Ì‰ &+”Ìù &ÌI”Ìû &ÌK”Í &ÌT”Í &ÌV”Í
- &ÌZ”Í &Ì\œ” '” '” '
-”Ì‚ '$”Ì„ '&”Ì‰ '+”Ìù 'ÌF”Ìû 'ÌH”Í 'ÌQ”Í 'ÌS”Í
- 'ÌW”Í 'ÌY‘”	 (‘” ’” 	” ’” 	” ’” 	” ’” 	” ’” +” +˜” ,” ,” ,” ,
-” ,”  ,”" ,”$ ,–” ,” ,” ÌI” ÌI
-” ÌI”, ÌI!–” ,” ,” ÌJ” ÌJ” ÌJ” ÌJ–” ,” ,” ÌK” ÌK”  ÌK”) ÌK–” ,” ,” ÌL” ÌL” ÌL” ÌL’” -” -–” .” .” .” .” .”( .’” -” -–” .” .” /	” /” /” /’” -” -–” .” .” 0	” 0” 0” 0’” -” -–” .” .” 1	” 1” 1”! 1’” -” -–” .” .” 2	”! 2”" 2”+ 2"’” 4” 4˜” 5” 5” 5” 5”! 5”# 5”$ 5”& 5’” 4” 4˜” 5” 5” ÌB” ÌB” ÌB”- ÌB!”. ÌB"”3 ÌB'’” 4” 4–” 5” 5” ÌC” ÌC”  ÌC”! ÌC–” 6” 6” 6” 6” 6”% 6–” 6” 6” 7” 7” 7”* 7$–” 6” 6” 8” 8” 8”$ 8˜” 6” 6” 9” 9” 9”& 9 ”' 9!”+ 9%’” 6” 6’” ;” ;–” ;” ;” <” <” <”) <#–” ;” ;” =” =” =”$ =—” ;” ;” >” >” >” >” >’” ?” ?’” Ì@
-” Ì@’” ;” ;’” 4” 4’” 5” 5’” ÌE” ÌE–” ÌE” ÌE” ÌF	” ÌF” ÌF” ÌF–” ÌE” ÌE” ÌG	” ÌG” ÌG” ÌG’” ,” ,‘” ÌM’” ÌP” ÌP’” ÌQ” ÌQ–” ÌQ” ÌQ” Ì‚” Ì‚
-” Ì‚”, Ì‚!–” ÌQ” ÌQ” Ìƒ” Ìƒ” Ìƒ” Ìƒ–” ÌQ” ÌQ” Ì„” Ì„”  Ì„”) Ì„–” ÌQ” ÌQ” Ì…” Ì…” Ì…” Ì…š” ÌQ” ÌQ” Ì†” Ì†” Ì†” Ì†” Ì†” Ì†” Ì†”! Ì†˜” ÌR” ÌR” ÌR” ÌR”! ÌR”# ÌR”$ ÌR”& ÌR–” ÌR” ÌR” Ì\” Ì\”  Ì\”! Ì\”” ÌS” ÌS” ÌS” ÌS–” ÌS” ÌS” ÌT” ÌT” ÌT”* ÌT$–” ÌS” ÌS” ÌU” ÌU” ÌU”$ ÌU˜” ÌS” ÌS” ÌV” ÌV” ÌV”& ÌV ”' ÌV!”+ ÌV%’” ÌS” ÌS’” ÌX” ÌX–” ÌX” ÌX” ÌY” ÌY” ÌY”) ÌY#–” ÌX” ÌX” ÌZ” ÌZ” ÌZ”$ ÌZ’” ÌX” ÌX’” ÌR” ÌR˜” Ì^” Ì^” Ì^” Ì^”! Ì^”# Ì^”$ Ì^”& Ì^–” Ì^” Ì^” Ìh” Ìh”  Ìh”! Ìh”” Ì_” Ì_” Ì_” Ì_–” Ì_” Ì_” Ì`” Ì`” Ì`”* Ì`$–” Ì_” Ì_” Ìa” Ìa” Ìa”$ Ìa˜” Ì_” Ì_” Ìb” Ìb” Ìb”& Ìb ”' Ìb!”+ Ìb%’” Ì_” Ì_’” Ìd” Ìd–” Ìd” Ìd” Ìe” Ìe” Ìe”) Ìe#–” Ìd” Ìd” Ìf” Ìf” Ìf”$ Ìf’” Ìd” Ìd’” Ì^” Ì^˜” Ìj” Ìj” Ìj” Ìj”! Ìj”# Ìj”$ Ìj”& Ìj–” Ìj” Ìj” Ìt” Ìt”  Ìt”! Ìt”” Ìk” Ìk” Ìk” Ìk–” Ìk” Ìk” Ìl” Ìl” Ìl”* Ìl$–” Ìk” Ìk” Ìm” Ìm” Ìm”$ Ìm˜” Ìk” Ìk” Ìn” Ìn” Ìn”& Ìn ”' Ìn!”+ Ìn%’” Ìk” Ìk’” Ìp” Ìp–” Ìp” Ìp” Ìq” Ìq” Ìq”) Ìq#–” Ìp” Ìp” Ìr” Ìr” Ìr”$ Ìr’” Ìp” Ìp’” Ìj” Ìj˜” Ìv” Ìv” Ìv” Ìv”! Ìv”# Ìv”$ Ìv”& Ìv–” Ìv” Ìv” Ì€” Ì€”  Ì€”! Ì€”” Ìw” Ìw” Ìw” Ìw–” Ìw” Ìw” Ìx” Ìx” Ìx”* Ìx$–” Ìw” Ìw” Ìy” Ìy” Ìy”$ Ìy˜” Ìw” Ìw” Ìz” Ìz” Ìz”& Ìz ”' Ìz!”+ Ìz%’” Ìw” Ìw’” Ì|” Ì|–” Ì|” Ì|” Ì}” Ì}” Ì}”) Ì}#–” Ì|” Ì|” Ì~” Ì~” Ì~”$ Ì~’” Ì|” Ì|’” Ìv” Ìv’” ÌQ” ÌQ‘” Ì‡”” ÌŠ” ÌŠ” ÌŠ” ÌŠ ˜” Ì‹” Ì‹” Ì‹” Ì‹
-” Ì‹”  Ì‹”" Ì‹”$ Ì‹–” Ì‹” Ì‹” Ì›” Ì›
-” Ì›”, Ì›!–” Ì‹” Ì‹” Ìœ” Ìœ” Ìœ” Ìœ” Ì‹” Ì‹” Ì” Ì” Ì” Ì” Ì”  Ì”" Ì”$ Ì”) Ì”+ Ì ”- Ì"”/ Ì$–” Ì‹” Ì‹” Ì” Ì”  Ì”) Ì—” Ì‹” Ì‹” ÌŸ” ÌŸ” ÌŸ” ÌŸ” ÌŸ’” Ì ” Ì ’” Ì¡” Ì¡–” ÌŒ” ÌŒ” ÌŒ” ÌŒ” ÌŒ”" ÌŒ–” ÌŒ” ÌŒ” Ì	” Ì” Ì” Ì–” ÌŒ” ÌŒ” Ì	” Ì” Ì” Ì–” Ì” Ì
-” Ì” Ì” Ì”" Ì–” Ì” Ì
-” Ì‘	” Ì‘” Ì‘”* Ì‘"–” Ì” Ì
-” Ì’	” Ì’” Ì’”$ Ì’–” Ì” Ì
-” Ì“	” Ì“” Ì“” Ì“’” Ì” Ì
-–” Ì•” Ì•
-” Ì•” Ì•” Ì•”  Ì•’” Ì–” Ì––” Ì–” Ì–” Ì—”# Ì—”$ Ì—”& Ì—–” Ì–” Ì–” Ì˜”$ Ì˜”% Ì˜”' Ì˜‘” Ì™‘” Ì™’” Ì‹” Ì‹‘” Ì¢‘” Ì¤’” Ì¥” Ì¥
-–” Ì¥” Ì¥
-” ÌÈ” ÌÈ
-” ÌÈ”/ ÌÈ!–” Ì¥” Ì¥
-” ÌÉ” ÌÉ” ÌÉ”0 ÌÉ"–” Ì¥” Ì¥
-” ÌÊ”" ÌÊ”# ÌÊ”, ÌÊ’” Ì¦” Ì¦–” Ì¦” Ì¦” ÌÅ” ÌÅ” ÌÅ”/ ÌÅ#–” Ì¦” Ì¦” ÌÆ” ÌÆ” ÌÆ” ÌÆ’” Ì§” Ì§•” Ì¨” Ì¨” Ì¨” Ì¨”) Ì¨’” Ìª” Ìª•” Ì«” Ì«” Ì«” Ì«”) Ì«’” Ì­” Ì­’” Ì®” Ì®’” Ì­” Ì­–” Ì®” Ì®” Ì¶	” Ì¶” Ì¶”/ Ì¶%’” Ì­” Ì­–” Ì®” Ì®” Ì·	”" Ì·”# Ì·”, Ì·"’” Ì­” Ì­–” Ì®” Ì®” Ì¸	” Ì¸”  Ì¸”! Ì¸’” Ì­” Ì­š” Ì®” Ì®” Ì¹	” Ì¹” Ì¹” Ì¹” Ì¹”! Ì¹”" Ì¹”$ Ì¹’” Ì¯
-” Ì¯—” Ì°” Ì°” Ì°”$ Ì° ”0 Ì°!”4 Ì°%”5 Ì°&’” Ì±” Ì±–” Ì±” Ì±” Ì²”' Ì²”( Ì²”) Ì²–” Ì±” Ì±” Ì³”! Ì³”" Ì³”+ Ì³””/ Ì¯”3 Ì¯”4 Ì¯”= Ì¯ ’” Ì¯
-” Ì¯’” Ì­” Ì­’” Ì®” Ì®’” Ì»” Ì»’” Ì¼” Ì¼’” Ì»” Ì»–” Ì¼” Ì¼” Ì½” Ì½” Ì½”, Ì½$’” Ì»” Ì»–” Ì¼” Ì¼” Ì¾” Ì¾” Ì¾”& Ì¾’” Ì»” Ì»–” Ì¼” Ì¼” Ì¿”" Ì¿”# Ì¿”, Ì¿$’” Ì»” Ì»–” Ì¼” Ì¼” ÌÀ” ÌÀ” ÌÀ”/ ÌÀ'’” Ì»” Ì»–” Ì¼” Ì¼” ÌÁ” ÌÁ” ÌÁ” ÌÁ’” Ì»” Ì»” Ì¼” Ì¼” ÌÂ” ÌÂ” ÌÂ” ÌÂ” ÌÂ”! ÌÂ”# ÌÂ”% ÌÂ”+ ÌÂ#”- ÌÂ%”/ ÌÂ'”1 ÌÂ)’” Ì»” Ì»–” Ì¼” Ì¼” ÌÃ” ÌÃ”  ÌÃ”! ÌÃ’” Ì»” Ì»’” Ì¼” Ì¼’” Ì¦” Ì¦’” Ì¥” Ì¥
-‘” ÌËÔrH–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜB‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
+}ÀÔrE“²@ohos.promptAction°../common/Colors¹../common/CommonConstantsÔrF—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÃÙo hvigor_ignore__Applications_DevEco-Studio.app_Contents_sdk_default_openharmony_ets_api_@ohos.promptAction.d.tsÔrG‘¯hostModulesInfo‘C²@ohos.promptAction¥entryÃªoh-resolveÂFAÂÙM/Users/changchen/working_place/cybermall/entry/src/main/ets/common/Colors.etsAÃªoh-resolveÂFAÂÙV/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.etsAÃªoh-resolveÂ“ÔrH–§version¤fileªsourceRoot§sources¥names¨mappings¯PersonalPage.js ‘°PersonalPage.etsÜy‘”    ‘” ”   ” ”	 ” ”! ”1 ”3 ”ÌC ”ÌE ”ÌT ”ÌV ”Ì\ ”Ìw "”Ìx #–”   ” ” ” ”- -”. .œ”   ” ”	 	” ” ”" "”$ 1”1 >”3 Ì@”9 ÌF”ÌK ÌX”ÌL ÌY–”    ”  ”  ”  ”  ”!  "‘”  ’”7 !”< !!–”9 %”ÌD %”ÌF %:”ÌO %ÌC”ÌP %ÌD”ÌU %ÌI””; &”ÌH &”ÌJ &Ì@”ÌW &ÌM‘” )"Ü ” *” *” *” *	” *
+” *” *”Ì‰ **”Ì‹ *,”Ì *1”Í  *ÌM”Í *ÌO”Í *ÌX”Í *ÌZ”Í *Ì^”Í *Ì`Ü ” +” +” +” +	” +
+” +” +”Ì‰ +,”Ì‹ +.”Ì +3”Í  +ÌT”Í +ÌV”Í +Ì_”Í +Ìa”Í +Ìe”Í +ÌgÜ ” ,” ,” ,” ,	” ,
+” ,” ,”Ì‰ ,*”Ì‹ ,,”Ì ,1”Í  ,ÌR”Í ,ÌT”Í ,Ì]”Í ,Ì_”Í ,Ìc”Í ,ÌeÜ ” -” -” -” -	” -
+” -” -”Ì‰ -,”Ì‹ -.”Ì -3”Í  -ÌS”Í -ÌU”Í -Ì^”Í -Ì`”Í -Ìd”Í -ÌfÜ ” .” .” .” .	” .
+” .” .”Ì‰ .*”Ì‹ .,”Ì .1”Í  .ÌO”Í .ÌQ”Í .ÌZ”Í .Ì\”Í .Ì`”Í .ÌbÜ ” /” /” /” /	” /
+” /” /”Ì‰ /*”Ì‹ /,”Ì /1”Í  /ÌL”Í /ÌN”Í /ÌW”Í /ÌY”Í /Ì]”Í /Ì_‘”	 0‘” ’” !	” !’” !	” !’” "	” "’” "	” "’” %” %,’” %” %,’” &” &0’” &” &0’” 3” 3˜” 4” 4” 4” 4
+” 4”  4”" 4”$ 4–” 4” 4” ÌQ” ÌQ
+” ÌQ”, ÌQ!–” 4” 4” ÌR” ÌR” ÌR” ÌR–” 4” 4” ÌS” ÌS”  ÌS”) ÌS–” 4” 4” ÌT” ÌT” ÌT” ÌT’” 5” 5–” 6” 6” 6” 6” 6”( 6’” 5” 5–” 6” 6” 7	” 7” 7” 7’” 5” 5–” 6” 6” 8	” 8” 8” 8’” 5” 5–” 6” 6” 9	” 9” 9”! 9’” 5” 5–” 6” 6” :	”! :”" :”+ :"’” <” <˜” =” =” =” =”! =”# =”$ =”& =’” <” <˜” =” =” ÌJ” ÌJ” ÌJ”- ÌJ!”. ÌJ"”3 ÌJ'’” <” <–” =” =” ÌK” ÌK”  ÌK”! ÌK–” >” >” >” >” >”% >–” >” >” ?” ?” ?”* ?$–” >” >” Ì@” Ì@” Ì@”$ Ì@˜” >” >” ÌA” ÌA” ÌA”& ÌA ”' ÌA!”+ ÌA%’” >” >’” ÌC” ÌC–” ÌC” ÌC” ÌD” ÌD” ÌD”) ÌD#–” ÌC” ÌC” ÌE” ÌE” ÌE”$ ÌE—” ÌC” ÌC” ÌF” ÌF” ÌF” ÌF” ÌF’” ÌG” ÌG’” ÌH
+” ÌH’” ÌC” ÌC’” <” <’” =” =’” ÌM” ÌM–” ÌM” ÌM” ÌN	” ÌN” ÌN” ÌN–” ÌM” ÌM” ÌO	” ÌO” ÌO” ÌO’” 4” 4‘” ÌU’” ÌX” ÌX’” ÌY” ÌY–” ÌY” ÌY” ÌŠ” ÌŠ
+” ÌŠ”, ÌŠ!–” ÌY” ÌY” Ì‹” Ì‹” Ì‹” Ì‹–” ÌY” ÌY” ÌŒ” ÌŒ”  ÌŒ”) ÌŒ–” ÌY” ÌY” Ì” Ì” Ì” Ìš” ÌY” ÌY” Ì” Ì” Ì” Ì” Ì” Ì” Ì”! Ì˜” ÌZ” ÌZ” ÌZ” ÌZ”! ÌZ”# ÌZ”$ ÌZ”& ÌZ–” ÌZ” ÌZ” Ìd” Ìd”  Ìd”! Ìd”” Ì[” Ì[” Ì[” Ì[–” Ì[” Ì[” Ì\” Ì\” Ì\”* Ì\$–” Ì[” Ì[” Ì]” Ì]” Ì]”$ Ì]˜” Ì[” Ì[” Ì^” Ì^” Ì^”& Ì^ ”' Ì^!”+ Ì^%’” Ì[” Ì[’” Ì`” Ì`–” Ì`” Ì`” Ìa” Ìa” Ìa”) Ìa#–” Ì`” Ì`” Ìb” Ìb” Ìb”$ Ìb’” Ì`” Ì`’” ÌZ” ÌZ˜” Ìf” Ìf” Ìf” Ìf”! Ìf”# Ìf”$ Ìf”& Ìf–” Ìf” Ìf” Ìp” Ìp”  Ìp”! Ìp”” Ìg” Ìg” Ìg” Ìg–” Ìg” Ìg” Ìh” Ìh” Ìh”* Ìh$–” Ìg” Ìg” Ìi” Ìi” Ìi”$ Ìi˜” Ìg” Ìg” Ìj” Ìj” Ìj”& Ìj ”' Ìj!”+ Ìj%’” Ìg” Ìg’” Ìl” Ìl–” Ìl” Ìl” Ìm” Ìm” Ìm”) Ìm#–” Ìl” Ìl” Ìn” Ìn” Ìn”$ Ìn’” Ìl” Ìl’” Ìf” Ìf˜” Ìr” Ìr” Ìr” Ìr”! Ìr”# Ìr”$ Ìr”& Ìr–” Ìr” Ìr” Ì|” Ì|”  Ì|”! Ì|”” Ìs” Ìs” Ìs” Ìs–” Ìs” Ìs” Ìt” Ìt” Ìt”* Ìt$–” Ìs” Ìs” Ìu” Ìu” Ìu”$ Ìu˜” Ìs” Ìs” Ìv” Ìv” Ìv”& Ìv ”' Ìv!”+ Ìv%’” Ìs” Ìs’” Ìx” Ìx–” Ìx” Ìx” Ìy” Ìy” Ìy”) Ìy#–” Ìx” Ìx” Ìz” Ìz” Ìz”$ Ìz’” Ìx” Ìx’” Ìr” Ìr˜” Ì~” Ì~” Ì~” Ì~”! Ì~”# Ì~”$ Ì~”& Ì~–” Ì~” Ì~” Ìˆ” Ìˆ”  Ìˆ”! Ìˆ”” Ì” Ì” Ì” Ì–” Ì” Ì” Ì€” Ì€” Ì€”* Ì€$–” Ì” Ì” Ì” Ì” Ì”$ Ì˜” Ì” Ì” Ì‚” Ì‚” Ì‚”& Ì‚ ”' Ì‚!”+ Ì‚%’” Ì” Ì’” Ì„” Ì„–” Ì„” Ì„” Ì…” Ì…” Ì…”) Ì…#–” Ì„” Ì„” Ì†” Ì†” Ì†”$ Ì†’” Ì„” Ì„’” Ì~” Ì~’” ÌY” ÌY‘” Ì”” Ì’” Ì’” Ì’” Ì’ ˜” Ì“” Ì“” Ì“” Ì“
+” Ì“”  Ì“”" Ì“”$ Ì“–” Ì“” Ì“” Ì¤” Ì¤
+” Ì¤”, Ì¤!–” Ì“” Ì“” Ì¥” Ì¥” Ì¥” Ì¥” Ì“” Ì“” Ì¦” Ì¦” Ì¦” Ì¦” Ì¦”  Ì¦”" Ì¦”$ Ì¦”) Ì¦”+ Ì¦ ”- Ì¦"”/ Ì¦$–” Ì“” Ì“” Ì§” Ì§”  Ì§”) Ì§—” Ì“” Ì“” Ì¨” Ì¨” Ì¨” Ì¨” Ì¨’” Ì©”/ Ì©%˜” Ìª” Ìª
+” Ìª” Ìª” Ìª”  Ìª”! Ìª”# Ìª–” Ì«” Ì«” Ì«”( Ì«”* Ì«”+ Ì«‘” Ì¬‘” Ì¬’” Ì­” Ì­œ” Ì®” Ì®” Ì®”  Ì®”! Ì®”5 Ì®)”7 Ì®+”; Ì®/”< Ì®0”> Ì®2”? Ì®3”Ì@ Ì®4‘” Ì¯’” Ì°” Ì°–” Ì”” Ì”” Ì”” Ì”” Ì””" Ì”–” Ì”” Ì”” Ì•	” Ì•” Ì•” Ì•–” Ì”” Ì”” Ì–	” Ì–” Ì–” Ì–š” Ì”” Ì”” Ì—	” Ì—” Ì—”  Ì—”! Ì—”3 Ì—*”4 Ì—+”ÌD Ì—;–” Ì™” Ì™
+” Ì™” Ì™” Ì™”" Ì™–” Ì™” Ì™
+” Ìš	” Ìš” Ìš”* Ìš"–” Ì™” Ì™
+” Ì›	” Ì›” Ì›”$ Ì›–” Ì™” Ì™
+” Ìœ	” Ìœ” Ìœ” Ìœ’” Ì™” Ì™
+–” Ì” Ì
+” Ì” Ì” Ì”  Ì’” ÌŸ” ÌŸ–” ÌŸ” ÌŸ” Ì ”# Ì ”$ Ì ”& Ì –” ÌŸ” ÌŸ” Ì¡”$ Ì¡”% Ì¡”' Ì¡‘” Ì¢‘” Ì¢’” Ì“” Ì“‘” Ì±’” Ì³” Ì³’” Ì´” Ì´•” Ìµ” Ìµ” Ìµ”# Ìµ”$ Ìµ ”” Ì¶” Ì¶” Ì¶” Ì¶“” Ì·” Ì·” Ì·š” Ì¸” Ì¸
+” Ì¸” Ì¸” Ì¸” Ì¸”$ Ì¸”& Ì¸”/ Ì¸'”1 Ì¸)š” Ì¹” Ì¹
+” Ì¹” Ì¹” Ì¹”  Ì¹”% Ì¹”' Ì¹”0 Ì¹(”2 Ì¹*š” Ìº” Ìº
+” Ìº” Ìº” Ìº”  Ìº”% Ìº”' Ìº”0 Ìº(”2 Ìº*‘” Ì»˜”	 Ì¼”
+ Ì¼” Ì¼” Ì¼” Ì¼” Ì¼” Ì¼” Ì¼”” Ì½” Ì½
+” Ì½!” Ì½"’” Ì¾”  Ì¾–” Ì¿” Ì¿” Ì¿” Ì¿” Ì¿”  Ì¿“” ÌÀ” ÌÀ” ÌÀ—” ÌÁ
+”  ÌÁ”# ÌÁ”, ÌÁ"”- ÌÁ#”2 ÌÁ(”3 ÌÁ)’” ÌÂ
+” ÌÂ“” ÌÃ” ÌÃ” ÌÃ—” ÌÄ
+”  ÌÄ”# ÌÄ”, ÌÄ"”- ÌÄ#”1 ÌÄ'”2 ÌÄ(’” ÌÅ
+” ÌÅ“” ÌÆ” ÌÆ” ÌÆ—” ÌÇ
+”  ÌÇ”# ÌÇ”, ÌÇ"”- ÌÇ#”4 ÌÇ*”5 ÌÇ+’” ÌÈ
+” ÌÈ‘” ÌÉ’” ÌÊ
+” ÌÊ‘” ÌË’” ÌÍ”. ÌÍ(—” ÌÎ” ÌÎ
+” ÌÎ”! ÌÎ”$ ÌÎ”0 ÌÎ*”1 ÌÎ+š” ÌÏ” ÌÏ
+” ÌÏ”# ÌÏ”& ÌÏ ”4 ÌÏ.”5 ÌÏ/”ÌA ÌÏ;”ÌB ÌÏ<”ÌC ÌÏ=’” ÌÑ” ÌÑš” ÌÒ” ÌÒ” ÌÒ” ÌÒ” ÌÒ”, ÌÒ&”. ÌÒ(”: ÌÒ4”; ÌÒ5”< ÌÒ6”” ÌÓ”	 ÌÓ”
+ ÌÓ” ÌÓ’” ÌÔ” ÌÔ‘” Ì×’” ÌØ” ÌØ
+–” ÌØ” ÌØ
+” Ìû” Ìû
+” Ìû”/ Ìû!–” ÌØ” ÌØ
+” Ìü” Ìü” Ìü”0 Ìü"–” ÌØ” ÌØ
+” Ìı”" Ìı”# Ìı”, Ìı’” ÌÙ” ÌÙ–” ÌÙ” ÌÙ” Ìø” Ìø” Ìø”/ Ìø#–” ÌÙ” ÌÙ” Ìù” Ìù” Ìù” Ìù’” ÌÚ” ÌÚ•” ÌÛ” ÌÛ” ÌÛ” ÌÛ”) ÌÛ’” Ìİ” Ìİ•” ÌŞ” ÌŞ” ÌŞ” ÌŞ”) ÌŞ’” Ìà” Ìà’” Ìá” Ìá’” Ìà” Ìà–” Ìá” Ìá” Ìé	” Ìé” Ìé”/ Ìé%’” Ìà” Ìà–” Ìá” Ìá” Ìê	”" Ìê”# Ìê”, Ìê"’” Ìà” Ìà–” Ìá” Ìá” Ìë	” Ìë”  Ìë”! Ìë’” Ìà” Ìàš” Ìá” Ìá” Ìì	” Ìì” Ìì” Ìì” Ìì”! Ìì”" Ìì”$ Ìì’” Ìâ
+” Ìâ—” Ìã” Ìã” Ìã”$ Ìã ”0 Ìã!”4 Ìã%”5 Ìã&’” Ìä” Ìä–” Ìä” Ìä” Ìå”' Ìå”( Ìå”) Ìå–” Ìä” Ìä” Ìæ”! Ìæ”" Ìæ”+ Ìæ””/ Ìâ”3 Ìâ”4 Ìâ”= Ìâ ’” Ìâ
+” Ìâ’” Ìà” Ìà’” Ìá” Ìá’” Ìî” Ìî’” Ìï” Ìï’” Ìî” Ìî–” Ìï” Ìï” Ìğ” Ìğ” Ìğ”, Ìğ$’” Ìî” Ìî–” Ìï” Ìï” Ìñ” Ìñ” Ìñ”& Ìñ’” Ìî” Ìî–” Ìï” Ìï” Ìò”" Ìò”# Ìò”, Ìò$’” Ìî” Ìî–” Ìï” Ìï” Ìó” Ìó” Ìó”/ Ìó'’” Ìî” Ìî–” Ìï” Ìï” Ìô” Ìô” Ìô” Ìô’” Ìî” Ìî” Ìï” Ìï” Ìõ” Ìõ” Ìõ” Ìõ” Ìõ”! Ìõ”# Ìõ”% Ìõ”+ Ìõ#”- Ìõ%”/ Ìõ'”1 Ìõ)’” Ìî” Ìî–” Ìï” Ìï” Ìö” Ìö”  Ìö”! Ìö’” Ìî” Ìî’” Ìï” Ìï’” ÌÙ” ÌÙ’” ÌØ” ÌØ
+‘” ÌşÔrI–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜ~‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
  ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”    ‘”  ! ‘”  " ‘”  # ‘”  $ ‘”  % ‘”  & ‘”  ' ‘”  ( ‘”  ) ‘”  * ‘”  + ‘”  , ‘”  - ‘”  . ‘”  / ‘”  0 ‘”  1 ‘”  2 ‘”  3 ‘”  4 ‘”  5 ‘”  6 ‘”  7 ‘”  8 ‘”  9 ‘”  : ‘”  ; ‘”  < ‘”  = ‘”  > ‘”  ? ‘”  Ì@ ‘”  ÌA ‘”  ÌB ‘”  ÌC ‘”  ÌD ‘”  ÌE ‘”  ÌF ‘”  ÌG ‘”  ÌH ‘”  ÌI ‘”  ÌJ ‘”  ÌK ‘”  ÌL ‘”  ÌM ‘”  ÌN ‘”  ÌO ‘”  ÌP ‘”  ÌQ ‘”  ÌR ‘”  ÌS ‘”  ÌT ‘”  ÌU ‘”  ÌV ‘”  ÌW ‘”  ÌX ‘”  ÌY ‘”  ÌZ ‘”  Ì[ ‘”  Ì\ ‘”  Ì] ‘”  Ì^ ‘”  Ì_ ‘”  Ì` ‘”  Ìa ‘”  Ìb ‘”  Ìc ‘”  Ìd ‘”  Ìe ‘”  Ìf ‘”  Ìg ‘”  Ìh ‘”  Ìi ‘”  Ìj ‘”  Ìk ‘”  Ìl ‘”  Ìm ‘”  Ìn ‘”  Ìo ‘”  Ìp ‘”  Ìq ‘”  Ìr ‘”  Ìs ‘”  Ìt ‘”  Ìu ‘”  Ìv ‘”  Ìw ‘”  Ìx ‘”  Ìy ‘”  Ìz ‘”  Ì{ ‘”  Ì| ‘”  Ì} ‘”  Ì~ ‘”  Ì ‘”  Ì€ ‘”  Ì ‘”  Ì‚ ‘”  Ìƒ ‘”  Ì„ ‘”  Ì… ‘”  Ì† ‘”  Ì‡ ‘”  Ìˆ ‘”  Ì‰ ‘”  ÌŠ ‘”  Ì‹ ‘”  ÌŒ ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì‘ ‘”  Ì’ ‘”  Ì“ ‘”  Ì” ‘”  Ì• ‘”  Ì– ‘”  Ì— ‘”  Ì˜ ‘”  Ì™ ‘”  Ìš ‘”  Ì› ‘”  Ìœ ‘”  Ì ‘”  Ì ‘”  ÌŸ ‘”  Ì  ‘”  Ì¡ ‘”  Ì¢ ‘”  Ì£ ‘”  Ì¤ ‘”  Ì¥ ‘”  Ì¦ ‘”  Ì§ ‘”  Ì¨ ‘”  Ì© ‘”  Ìª ‘”  Ì« ‘”  Ì¬ ‘”  Ì­ ‘”  Ì® ‘”  Ì¯ ‘”  Ì° ‘”  Ì± ‘”  Ì² ‘”  Ì³ ‘”  Ì´ ‘”  Ìµ ‘”  Ì¶ ‘”  Ì· ‘”  Ì¸ ‘”  Ì¹ ‘”  Ìº ‘”  Ì» ‘”  Ì¼ ‘”  Ì½ ‘”  Ì¾ ‘”  Ì¿ ‘”  ÌÀ ‘”  ÌÁ ‘”  ÌÂ ‘”  ÌÃ ‘”  ÌÄ ‘”  ÌÅ ‘”  ÌÆ ‘”  ÌÇ ‘”  ÌÈ ‘”  ÌÉ ‘”  ÌÊ ‘”  ÌË ‘”  ÌÌ ‘”  ÌÍ ‘”  ÌÎ ‘”  ÌÏ ‘”  ÌĞ ‘”  ÌÑ ‘”  ÌÒ ‘”  ÌÓ ‘”  ÌÔ ‘”  ÌÕ ‘”  ÌÖ ‘”  Ì× ‘”  ÌØ ‘”  ÌÙ ‘”  ÌÚ ‘”  ÌÛ ‘”  ÌÜ ‘”  Ìİ ‘”  ÌŞ ‘”  Ìß ‘”  Ìà ‘”  Ìá ‘”  Ìâ ‘”  Ìã ‘”  Ìä ‘”  Ìå ‘”  Ìæ ‘”  Ìç ‘”  Ìè ‘”  Ìé ‘”  Ìê ‘”  Ìë ‘”  Ìì ‘”  Ìí ‘”  Ìî ‘”  Ìï ‘”  Ìğ ‘”  Ìñ ‘”  Ìò ‘”  Ìó ‘”  Ìô ‘”  Ìõ ‘”  Ìö ‘”  Ì÷ ‘”  Ìø ‘”  Ìù ‘”  Ìú ‘”  Ìû ‘”  Ìü ‘”  Ìı ‘”  Ìş ‘”  Ìÿ ‘”  Í  ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í	 ‘”  Í
- ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í  ‘”  Í! ‘”  Í" ‘”  Í# ‘”  Í$ ‘”  Í% ‘”  Í& ‘”  Í' ‘”  Í( ‘”  Í) ‘”  Í* ‘”  Í+ ‘”  Í, ‘”  Í- ‘”  Í. ‘”  Í/ ‘”  Í0 ‘”  Í1 ‘”  Í2 ‘”  Í3 ‘”  Í4 ‘”  Í5 ‘”  Í6 ‘”  Í7 ‘”  Í8 ‘”  Í9 ‘”  Í: ‘”  Í; ‘”  Í< ‘”  Í= ‘”  Í> ‘”  Í? ‘”  Í@ ‘”  ÍA ÔrI’§missing¦pluginÃ¦genAbcÂÔ  ÔrJ”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache‘ÔrK•¤type¥start£endªspecifiers¦source±ImportDeclarationÍéÍa”ÔrL•¤type¥start£end¨imported¥local¯ImportSpecifierÍòÍÔrM”¤type¥start£end¤nameªIdentifierÍòÍ¶LAYOUT_WIDTH_OR_HEIGHTMªIdentifierÍòÍ¶LAYOUT_WIDTH_OR_HEIGHTL¯ImportSpecifierÍ
-ÍMªIdentifierÍ
-Í°NORMAL_FONT_SIZEMªIdentifierÍ
-Í°NORMAL_FONT_SIZEL¯ImportSpecifierÍÍ,MªIdentifierÍÍ,°BIGGER_FONT_SIZEMªIdentifierÍÍ,°BIGGER_FONT_SIZEL¯ImportSpecifierÍ.Í=MªIdentifierÍ.Í=¯SMALL_FONT_SIZEMªIdentifierÍ.Í=¯SMALL_FONT_SIZEÔrN•¤type¥start£end¥value£raw§LiteralÍEÍ`¹../common/CommonConstants»'../common/CommonConstants'
+ ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í  ‘”  Í! ‘”  Í" ‘”  Í# ‘”  Í$ ‘”  Í% ‘”  Í& ‘”  Í' ‘”  Í( ‘”  Í) ‘”  Í* ‘”  Í+ ‘”  Í, ‘”  Í- ‘”  Í. ‘”  Í/ ‘”  Í0 ‘”  Í1 ‘”  Í2 ‘”  Í3 ‘”  Í4 ‘”  Í5 ‘”  Í6 ‘”  Í7 ‘”  Í8 ‘”  Í9 ‘”  Í: ‘”  Í; ‘”  Í< ‘”  Í= ‘”  Í> ‘”  Í? ‘”  Í@ ‘”  ÍA ‘”  ÍB ‘”  ÍC ‘”  ÍD ‘”  ÍE ‘”  ÍF ‘”  ÍG ‘”  ÍH ‘”  ÍI ‘”  ÍJ ‘”  ÍK ‘”  ÍL ‘”  ÍM ‘”  ÍN ‘”  ÍO ‘”  ÍP ‘”  ÍQ ‘”  ÍR ‘”  ÍS ‘”  ÍT ‘”  ÍU ‘”  ÍV ‘”  ÍW ‘”  ÍX ‘”  ÍY ‘”  ÍZ ‘”  Í[ ‘”  Í\ ‘”  Í] ‘”  Í^ ‘”  Í_ ‘”  Í` ‘”  Ía ‘”  Íb ‘”  Íc ‘”  Íd ‘”  Íe ‘”  Íf ‘”  Íg ‘”  Íh ‘”  Íi ‘”  Íj ‘”  Ík ‘”  Íl ‘”  Ím ‘”  Ín ‘”  Ío ‘”  Íp ‘”  Íq ‘”  Ír ‘”  Ís ‘”  Ít ‘”  Íu ‘”  Ív ‘”  Íw ‘”  Íx ‘”  Íy ‘”  Íz ‘”  Í{ ‘”  Í| ‘”  Í} ÔrJ’§missing¦pluginÃ¦genAbcÂÔ  ÔrK”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache“ÔrL•¤type¥start£endªspecifiers¦source±ImportDeclarationÍéÍa”ÔrM•¤type¥start£end¨imported¥local¯ImportSpecifierÍòÍÔrN”¤type¥start£end¤nameªIdentifierÍòÍ¶LAYOUT_WIDTH_OR_HEIGHTNªIdentifierÍòÍ¶LAYOUT_WIDTH_OR_HEIGHTM¯ImportSpecifierÍ
+ÍNªIdentifierÍ
+Í°NORMAL_FONT_SIZENªIdentifierÍ
+Í°NORMAL_FONT_SIZEM¯ImportSpecifierÍÍ,NªIdentifierÍÍ,°BIGGER_FONT_SIZENªIdentifierÍÍ,°BIGGER_FONT_SIZEM¯ImportSpecifierÍ.Í=NªIdentifierÍ.Í=¯SMALL_FONT_SIZENªIdentifierÍ.Í=¯SMALL_FONT_SIZEÔrO•¤type¥start£end¥value£raw§LiteralÍEÍ`¹../common/CommonConstants»'../common/CommonConstants'L±ImportDeclarationÍcÍ‘‘ÔrP”¤type¥start£end¥local¶ImportDefaultSpecifierÍjÍvNªIdentifierÍjÍv¬promptActionO§LiteralÍ|Í²@ohos.promptAction´'@ohos.promptAction'L±ImportDeclarationÍ“Íß“M¯ImportSpecifierÍœÍ¥NªIdentifierÍœÍ¥©ThemeTypeNªIdentifierÍœÍ¥©ThemeTypeM¯ImportSpecifierÍ§ÍµNªIdentifierÍ§Íµ®getThemeColorsNªIdentifierÍ§Íµ®getThemeColorsM¯ImportSpecifierÍ·ÍÄNªIdentifierÍ·ÍÄ­DEFAULT_THEMENªIdentifierÍ·ÍÄ­DEFAULT_THEMEO§LiteralÍÌÍŞ°../common/Colors²'../common/Colors'
