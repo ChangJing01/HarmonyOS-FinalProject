@@ -62,12 +62,12 @@ export default struct PersonalPage {
       Column({ space: 8 }) {
         Text(this.userName)
           .fontSize(BIGGER_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .fontWeight(FontWeight.Bold)
 
         Text($r('app.string.edit_profile'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#999999')
+          .fontColor(this.currentThemeColors.secondaryTextColor)
           .onClick(() => {
             // 编辑资料逻辑
           })
@@ -81,7 +81,7 @@ export default struct PersonalPage {
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .padding(16)
-    .backgroundColor('#FFFFFF')
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     .borderRadius(8)
   }
 
@@ -91,54 +91,54 @@ export default struct PersonalPage {
       Column({ space: 8 }) {
         Text('0')
           .fontSize(BIGGER_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .fontWeight(FontWeight.Bold)
 
         Text($r('app.string.pending_payment'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#666666')
+          .fontColor(this.currentThemeColors.secondaryTextColor)
       }
       .layoutWeight(1)
 
       Column({ space: 8 }) {
         Text('0')
           .fontSize(BIGGER_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .fontWeight(FontWeight.Bold)
 
         Text($r('app.string.pending_shipment'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#666666')
+          .fontColor(this.currentThemeColors.secondaryTextColor)
       }
       .layoutWeight(1)
 
       Column({ space: 8 }) {
         Text('0')
           .fontSize(BIGGER_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .fontWeight(FontWeight.Bold)
 
         Text($r('app.string.pending_receipt'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#666666')
+          .fontColor(this.currentThemeColors.secondaryTextColor)
       }
       .layoutWeight(1)
 
       Column({ space: 8 }) {
         Text('0')
           .fontSize(BIGGER_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .fontWeight(FontWeight.Bold)
 
         Text($r('app.string.completed'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#666666')
+          .fontColor(this.currentThemeColors.secondaryTextColor)
       }
       .layoutWeight(1)
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .padding(16)
-    .backgroundColor('#FFFFFF')
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     .borderRadius(8)
     .margin({ top: 8 })
   }
@@ -153,7 +153,7 @@ export default struct PersonalPage {
 
       Text(item.title)
         .fontSize(NORMAL_FONT_SIZE)
-        .fontColor('#333333')
+        .fontColor(this.currentThemeColors.primaryTextColor)
         .layoutWeight(1)
 
       if (item.showArrow) {
@@ -165,7 +165,7 @@ export default struct PersonalPage {
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(56)
     .padding({ left: 16, right: 16 })
-    .backgroundColor('#FFFFFF')
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     .onClick(() => {
       // 菜单项点击逻辑 根据id判断点击逻辑 update1.2
       if (item.id === 3) {
@@ -228,19 +228,19 @@ export default struct PersonalPage {
             this.MenuItemBuilder(item)
             Divider()
               .strokeWidth(1)
-              .color('#F0F0F0')
+              .color(this.currentThemeColors.dividerColor)
           })
         }
         .width(LAYOUT_WIDTH_OR_HEIGHT)
-        .backgroundColor('#FFFFFF')
+        .backgroundColor(this.currentThemeColors.cardBackgroundColor)
         .borderRadius(8)
         .margin({ top: 8 })
 
         // 退出登录按钮
         Button($r('app.string.logout'))
           .fontSize(NORMAL_FONT_SIZE)
-          .fontColor('#FF4D4F')
-          .backgroundColor('#FFFFFF')
+          .fontColor(this.currentThemeColors.accentColor)
+          .backgroundColor(this.currentThemeColors.cardBackgroundColor)
           .width(LAYOUT_WIDTH_OR_HEIGHT)
           .height(48)
           .margin({ top: 16, bottom: 16 })
@@ -251,6 +251,6 @@ export default struct PersonalPage {
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .backgroundColor('#F5F5F5')
+    .backgroundColor(this.currentThemeColors.backgroundColor)
   }
 }

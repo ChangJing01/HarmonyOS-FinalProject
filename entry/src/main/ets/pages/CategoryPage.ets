@@ -19,12 +19,14 @@ import GoodsList from '../view/GoodsListComponent';
 import {
   LAYOUT_WIDTH_OR_HEIGHT
 } from '../common/CommonConstants';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 @Component
 export default struct CategoryPage {
   @State selectedCategoryIndex: number = 0;
   @State selectedSubCategoryIndex: number = 0;
   @State showSubCategory: boolean = true;
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
 
   private categoryData: CategoryData[] = [
     {

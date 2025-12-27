@@ -1478,12 +1478,13 @@
       "error": false
     },
     "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/CategoryPage.ets": {
-      "mtimeMs": 1766650150543.0679,
+      "mtimeMs": 1766766272583.6787,
       "children": [
         "/Users/changchen/working_place/cybermall/entry/src/main/ets/view/CategoryTabComponent.ets",
         "/Users/changchen/working_place/cybermall/entry/src/main/ets/view/CategorySubComponent.ets",
         "/Users/changchen/working_place/cybermall/entry/src/main/ets/view/GoodsListComponent.ets",
-        "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.ets"
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.ets",
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/Colors.ets"
       ],
       "parent": [
         "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/ListIndex.ets"
@@ -1502,7 +1503,7 @@
       "error": false
     },
     "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/PersonalPage.ets": {
-      "mtimeMs": 1766736683992.5286,
+      "mtimeMs": 1766767331192.6726,
       "children": [
         "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/CommonConstants.ets",
         "/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony/ets/api/@ohos.promptAction.d.ts",
@@ -2061,12 +2062,13 @@
       "error": false
     },
     "/Users/changchen/working_place/cybermall/entry/src/main/ets/common/Colors.ets": {
-      "mtimeMs": 1766765486720.0112,
+      "mtimeMs": 1766767313785.5493,
       "children": [],
       "parent": [
         "/Users/changchen/working_place/cybermall/entry/src/main/ets/entryability/EntryAbility.ets",
         "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/PersonalPage.ets",
-        "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/ShoppingCartPage.ets"
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/ShoppingCartPage.ets",
+        "/Users/changchen/working_place/cybermall/entry/src/main/ets/pages/CategoryPage.ets"
       ],
       "error": false
     }

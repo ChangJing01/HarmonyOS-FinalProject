@@ -31,7 +31,7 @@ export const DEFAULT_THEME: ThemeColors = {
   secondaryTextColor: '#666666',
   accentColor: '#FF4D4F',
   cardBackgroundColor: '#FFFFFF',
-  dividerColor: '#EEEEEE',
+  dividerColor: '#EEEEEE', //'#F0F0F0'
   tabSelectedColor: '#FF4D4F',
   tabUnselectedColor: '#666666',
 };

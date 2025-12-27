@@ -103,7 +103,7 @@ export default class PersonalPage extends ViewPU {
             Row.create({ space: 16 });
             Row.width(LAYOUT_WIDTH_OR_HEIGHT);
             Row.padding(16);
-            Row.backgroundColor('#FFFFFF');
+            Row.backgroundColor(this.currentThemeColors.cardBackgroundColor);
             Row.borderRadius(8);
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -129,14 +129,14 @@ export default class PersonalPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(this.userName);
             Text.fontSize(BIGGER_FONT_SIZE);
-            Text.fontColor('#333333');
+            Text.fontColor(this.currentThemeColors.primaryTextColor);
             Text.fontWeight(FontWeight.Bold);
         }, Text);
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create({ "id": 16777232, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
             Text.fontSize(SMALL_FONT_SIZE);
-            Text.fontColor('#999999');
+            Text.fontColor(this.currentThemeColors.secondaryTextColor);
             Text.onClick(() => {
                 // 编辑资料逻辑
             });
@@ -156,7 +156,7 @@ export default class PersonalPage extends ViewPU {
             Row.create();
             Row.width(LAYOUT_WIDTH_OR_HEIGHT);
             Row.padding(16);
-            Row.backgroundColor('#FFFFFF');
+            Row.backgroundColor(this.currentThemeColors.cardBackgroundColor);
             Row.borderRadius(8);
             Row.margin({ top: 8 });
         }, Row);
@@ -167,14 +167,14 @@ export default class PersonalPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('0');
             Text.fontSize(BIGGER_FONT_SIZE);
-            Text.fontColor('#333333');
+            Text.fontColor(this.currentThemeColors.primaryTextColor);
             Text.fontWeight(FontWeight.Bold);
         }, Text);
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create({ "id": 16777251, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
             Text.fontSize(SMALL_FONT_SIZE);
-            Text.fontColor('#666666');
+            Text.fontColor(this.currentThemeColors.secondaryTextColor);
         }, Text);
         Text.pop();
         Column.pop();
@@ -185,14 +185,14 @@ export default class PersonalPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('0');
             Text.fontSize(BIGGER_FONT_SIZE);
-            Text.fontColor('#333333');
+            Text.fontColor(this.currentThemeColors.primaryTextColor);
             Text.fontWeight(FontWeight.Bold);
         }, Text);
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create({ "id": 16777253, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
             Text.fontSize(SMALL_FONT_SIZE);
-            Text.fontColor('#666666');
+            Text.fontColor(this.currentThemeColors.secondaryTextColor);
         }, Text);
         Text.pop();
         Column.pop();
@@ -203,14 +203,14 @@ export default class PersonalPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('0');
             Text.fontSize(BIGGER_FONT_SIZE);
-            Text.fontColor('#333333');
+            Text.fontColor(this.currentThemeColors.primaryTextColor);
             Text.fontWeight(FontWeight.Bold);
         }, Text);
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create({ "id": 16777252, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
             Text.fontSize(SMALL_FONT_SIZE);
-            Text.fontColor('#666666');
+            Text.fontColor(this.currentThemeColors.secondaryTextColor);
         }, Text);
         Text.pop();
         Column.pop();
@@ -221,14 +221,14 @@ export default class PersonalPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('0');
             Text.fontSize(BIGGER_FONT_SIZE);
-            Text.fontColor('#333333');
+            Text.fontColor(this.currentThemeColors.primaryTextColor);
             Text.fontWeight(FontWeight.Bold);
         }, Text);
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create({ "id": 16777231, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
             Text.fontSize(SMALL_FONT_SIZE);
-            Text.fontColor('#666666');
+            Text.fontColor(this.currentThemeColors.secondaryTextColor);
         }, Text);
         Text.pop();
         Column.pop();
@@ -240,7 +240,7 @@ export default class PersonalPage extends ViewPU {
             Row.width(LAYOUT_WIDTH_OR_HEIGHT);
             Row.height(56);
             Row.padding({ left: 16, right: 16 });
-            Row.backgroundColor('#FFFFFF');
+            Row.backgroundColor(this.currentThemeColors.cardBackgroundColor);
             Row.onClick(() => {
                 // 菜单项点击逻辑 根据id判断点击逻辑 update1.2
                 if (item.id === 3) {
@@ -261,7 +261,7 @@ export default class PersonalPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(item.title);
             Text.fontSize(NORMAL_FONT_SIZE);
-            Text.fontColor('#333333');
+            Text.fontColor(this.currentThemeColors.primaryTextColor);
             Text.layoutWeight(1);
         }, Text);
         Text.pop();
@@ -321,7 +321,7 @@ export default class PersonalPage extends ViewPU {
             Scroll.create();
             Scroll.width(LAYOUT_WIDTH_OR_HEIGHT);
             Scroll.height(LAYOUT_WIDTH_OR_HEIGHT);
-            Scroll.backgroundColor('#F5F5F5');
+            Scroll.backgroundColor(this.currentThemeColors.backgroundColor);
         }, Scroll);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Column.create();
@@ -338,7 +338,7 @@ export default class PersonalPage extends ViewPU {
             // 功能菜单列表
             Column.width(LAYOUT_WIDTH_OR_HEIGHT);
             // 功能菜单列表
-            Column.backgroundColor('#FFFFFF');
+            Column.backgroundColor(this.currentThemeColors.cardBackgroundColor);
             // 功能菜单列表
             Column.borderRadius(8);
             // 功能菜单列表
@@ -352,7 +352,7 @@ export default class PersonalPage extends ViewPU {
                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                     Divider.create();
                     Divider.strokeWidth(1);
-                    Divider.color('#F0F0F0');
+                    Divider.color(this.currentThemeColors.dividerColor);
                 }, Divider);
             };
             this.forEachUpdateFunction(elmtId, this.menuItems, forEachItemGenFunction);
@@ -366,9 +366,9 @@ export default class PersonalPage extends ViewPU {
             // 退出登录按钮
             Button.fontSize(NORMAL_FONT_SIZE);
             // 退出登录按钮
-            Button.fontColor('#FF4D4F');
+            Button.fontColor(this.currentThemeColors.accentColor);
             // 退出登录按钮
-            Button.backgroundColor('#FFFFFF');
+            Button.backgroundColor(this.currentThemeColors.cardBackgroundColor);
             // 退出登录按钮
             Button.width(LAYOUT_WIDTH_OR_HEIGHT);
             // 退出登录按钮
