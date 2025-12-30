@@ -88,8 +88,33 @@ export default struct ShoppingCartPage {
 
   deleteSelectedItems() {
     this.cartItems = this.cartItems.filter(item => !item.selected);
-    this.isAllSelected = false;
-    this.calculateTotalPrice();
+    this.updateDataState();
+  }
+
+  // 一键清空购物车
+  clearCart() {
+    this.cartItems = [];
+    this.updateDataState();
+  }
+
+  @Builder
+  PageHeader() {
+    Row() {
+      Text('购物车')
+        .fontSize(BIGGER_FONT_SIZE)
+        .fontWeight(FontWeight.Bold)
+        .fontColor(this.currentThemeColors.primaryTextColor)
+
+      if (this.cartItems.length > 0) {
+        Text('全部清空')
+          .fontSize(SMALL_FONT_SIZE)
+          .fontColor('#FF4D4F') // 使用红色提示风险
+          .onClick(() => this.clearCart())
+      }
+    }
+    .width(LAYOUT_WIDTH_OR_HEIGHT)
+    .justifyContent(FlexAlign.SpaceBetween)
+    .padding({ left: 16, right: 16, top: 12, bottom: 12 })
   }
 
   @Builder

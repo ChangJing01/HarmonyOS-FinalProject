@@ -1,0 +1,21 @@
+# =========================
+# HarmonyOS / DevEco Studio
+# =========================
+
+# hvigor build cache & logs
+.hvigor/
+
+# Build outputs
+entry/build/
+
+# ArkTS / TypeScript cache
+**/.tsbuildinfo
+**/.ts_checker_cache
+**/compiler.cache/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

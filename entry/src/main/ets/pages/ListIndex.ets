@@ -17,6 +17,7 @@ import TabBar from '../view/TabBarsComponent';
 import BottomTabBar from '../view/BottomTabBarComponent';
 import CategoryPage from './CategoryPage';
 import ShoppingCartPage from './ShoppingCartPage';
+import SearchPage from './SearchPage';
 import PersonalPage from './PersonalPage';
 import {
   LAYOUT_WIDTH_OR_HEIGHT,
@@ -48,9 +49,13 @@ struct ListIndex {
       case 1:
         return $r('app.string.category');
       case 2:
-        return $r('app.string.shopping_cart');
+        return $r('app.string.search');
       case 3:
+        return $r('app.string.shopping_cart');
+      case 4:
         return $r('app.string.personal');
+      case 4:
+        return $r('app.string.search');
       default:
         return $r('app.string.shopping_mall');
     }
@@ -69,11 +74,17 @@ struct ListIndex {
       // 分类页面
       CategoryPage()
     } else if (this.currentTabIndex === 2) {
+      // 搜索页面
+      SearchPage()
+    } else if (this.currentTabIndex === 3) {
       // 购物车页面
       ShoppingCartPage()
-    } else if (this.currentTabIndex === 3) {
+    }  else if (this.currentTabIndex === 4) {
       // 个人中心页面
       PersonalPage()
+    } else if (this.currentTabIndex === 4) {
+      // 搜索页面
+      SearchPage()
     }
   }
 
