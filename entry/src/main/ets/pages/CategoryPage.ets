@@ -19,14 +19,12 @@ import GoodsList from '../view/GoodsListComponent';
 import {
   LAYOUT_WIDTH_OR_HEIGHT
 } from '../common/CommonConstants';
-import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 @Component
 export default struct CategoryPage {
   @State selectedCategoryIndex: number = 0;
   @State selectedSubCategoryIndex: number = 0;
   @State showSubCategory: boolean = true;
-  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
 
   private categoryData: CategoryData[] = [
     {
@@ -98,11 +96,11 @@ export default struct CategoryPage {
         // 切换左侧栏显示/隐藏按钮
         Text(this.showSubCategory ? '◀' : '▶')
           .fontSize(16)
-          .fontColor(this.currentThemeColors.secondaryTextColor)
+          .fontColor('#666666')
           .width(40)
           .height(56)
           .textAlign(TextAlign.Center)
-          .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+          .backgroundColor('#FFFFFF')
           .onClick(() => {
             this.showSubCategory = !this.showSubCategory;
           })
@@ -128,6 +126,6 @@ export default struct CategoryPage {
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .backgroundColor(this.currentThemeColors.backgroundColor)
+    .backgroundColor('#F5F5F5')
   }
 }

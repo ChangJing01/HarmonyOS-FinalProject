@@ -4,12 +4,9 @@ if (!("finalizeConstruction" in ViewPU.prototype)) {
 interface CategoryTab_Params {
     selectedCategoryIndex?: number;
     selectedSubCategoryIndex?: number;
-    currentThemeColors?: ThemeColors;
     categoryData?: CategoryData[];
 }
 import { LAYOUT_WIDTH_OR_HEIGHT, NORMAL_FONT_SIZE, BIGGER_FONT_SIZE, GOODS_EVALUATE_FONT_SIZE, MAX_LINES_TEXT } from "@bundle:com.example.list_harmony/entry/ets/common/CommonConstants";
-import { DEFAULT_THEME } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
-import type { ThemeColors } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
 export interface CategoryData {
     id: number;
     name: Resource;
@@ -27,7 +24,6 @@ export default class CategoryTab extends ViewPU {
         }
         this.__selectedCategoryIndex = new SynchedPropertySimpleTwoWayPU(params.selectedCategoryIndex, this, "selectedCategoryIndex");
         this.__selectedSubCategoryIndex = new SynchedPropertySimpleTwoWayPU(params.selectedSubCategoryIndex, this, "selectedSubCategoryIndex");
-        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
         this.categoryData = [
             {
                 id: 0,
@@ -88,12 +84,10 @@ export default class CategoryTab extends ViewPU {
     purgeVariableDependenciesOnElmtId(rmElmtId) {
         this.__selectedCategoryIndex.purgeDependencyOnElmtId(rmElmtId);
         this.__selectedSubCategoryIndex.purgeDependencyOnElmtId(rmElmtId);
-        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__selectedCategoryIndex.aboutToBeDeleted();
         this.__selectedSubCategoryIndex.aboutToBeDeleted();
-        this.__currentThemeColors.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -111,13 +105,6 @@ export default class CategoryTab extends ViewPU {
     set selectedSubCategoryIndex(newValue: number) {
         this.__selectedSubCategoryIndex.set(newValue);
     }
-    private __currentThemeColors: ObservedPropertyAbstractPU<ThemeColors>;
-    get currentThemeColors() {
-        return this.__currentThemeColors.get();
-    }
-    set currentThemeColors(newValue: ThemeColors) {
-        this.__currentThemeColors.set(newValue);
-    }
     private categoryData: CategoryData[];
     TabItem(item: CategoryData, index: number, parent = null) {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -133,7 +120,7 @@ export default class CategoryTab extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(item.name);
             Text.fontSize(this.selectedCategoryIndex === index ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
-            Text.fontColor(this.selectedCategoryIndex === index ? this.currentThemeColors.primaryTextColor : this.currentThemeColors.secondaryTextColor);
+            Text.fontColor(this.selectedCategoryIndex === index ? Color.Black : { "id": 16777291, "type": 10001, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
             Text.maxLines(MAX_LINES_TEXT);
             Text.minFontSize(this.selectedCategoryIndex === index ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE);
             Text.maxFontSize(this.selectedCategoryIndex === index ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
@@ -148,7 +135,7 @@ export default class CategoryTab extends ViewPU {
                         Divider.create();
                         Divider.width(40);
                         Divider.height(3);
-                        Divider.color(this.currentThemeColors.accentColor);
+                        Divider.color('#FF4D4F');
                         Divider.margin({ top: 4 });
                     }, Divider);
                 });
@@ -168,7 +155,7 @@ export default class CategoryTab extends ViewPU {
             Scroll.scrollBar(BarState.Off);
             Scroll.width(LAYOUT_WIDTH_OR_HEIGHT);
             Scroll.height(56);
-            Scroll.backgroundColor(this.currentThemeColors.cardBackgroundColor);
+            Scroll.backgroundColor('#FFFFFF');
         }, Scroll);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Row.create({ space: 12 });

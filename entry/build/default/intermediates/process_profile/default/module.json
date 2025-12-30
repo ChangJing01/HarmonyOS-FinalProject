@@ -6,7 +6,7 @@
 		"versionName": "1.0.0",
 		"icon": "$media:app_icon",
 		"label": "$string:app_name",
-		"apiReleaseType": "Release",
+		"apiReleaseType": "Beta5",
 		"compileSdkVersion": "6.0.0.47",
 		"targetAPIVersion": 60000020,
 		"minAPIVersion": 50005017,

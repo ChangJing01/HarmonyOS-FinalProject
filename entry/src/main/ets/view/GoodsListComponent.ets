@@ -16,12 +16,9 @@
 import * as commonConst from '../common/CommonConstants';
 import { GoodsListItemType } from '../viewmodel/InitialData';
 import { ListDataSource } from '../viewmodel/ListDataSource';
-import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
-import router from '@ohos.router'; // 引入路由模块
 
 @Component
 export default struct GoodsList {
-  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
   @Provide goodsListData: ListDataSource = new ListDataSource();
   private startTouchOffsetY: number = 0;
   private endTouchOffsetY: number = 0;
@@ -44,19 +41,18 @@ export default struct GoodsList {
               Column() {
                 Text(item?.goodsName)
                   .fontSize(commonConst.NORMAL_FONT_SIZE)
-                  .fontColor(this.currentThemeColors.primaryTextColor)
 
                 Text(item?.advertisingLanguage)
-                  .fontColor(this.currentThemeColors.primaryTextColor)
+                  .fontColor($r('app.color.gray'))
                   .fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE)
                   .margin({ right: commonConst.MARGIN_RIGHT })
 
                 Row() {
                   Text(item?.evaluate)
                     .fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE)
-                    .fontColor(this.currentThemeColors.accentColor)
+                    .fontColor($r('app.color.deepGray'))
                     .width(commonConst.EVALUATE_WIDTH)
-                  Text(item?.price).fontSize(commonConst.NORMAL_FONT_SIZE).fontColor(this.currentThemeColors.accentColor)
+                  Text(item?.price).fontSize(commonConst.NORMAL_FONT_SIZE).fontColor($r('app.color.freshRed'))
                 }
                 .justifyContent(FlexAlign.SpaceAround)
                 .width(commonConst.GOODS_LIST_WIDTH)
@@ -88,25 +84,9 @@ export default struct GoodsList {
                 break;
             }
           })
-          .onClick(() => {
-            // 使用 router.pushUrl 跳转到详情页
-            router.pushUrl({
-              url: 'pages/GoodsDetailPage', // 目标页面的路径
-              params: {
-                goodsId: item.id, // 传递参数：将当前点击商品的 ID 传过去
-                goodsName: item.goodsName,
-                goodsPrice: item.price,
-                goodsImg: item.goodsImg
-              }
-            })
-          })
         })
       }
       .width(commonConst.GOODS_LIST_WIDTH)
-      .divider({
-        strokeWidth: 1, // 分割线粗细，单位 vp
-        color: this.currentThemeColors.dividerColor, // 使用主题定义的分割线颜色
-      })
     }
     .justifyContent(FlexAlign.Center)
     .width(commonConst.LAYOUT_WIDTH_OR_HEIGHT)

@@ -5,11 +5,8 @@ interface ShoppingCartPage_Params {
     cartItems?: CartItem[];
     isAllSelected?: boolean;
     totalPrice?: number;
-    currentThemeColors?: ThemeColors;
 }
 import { LAYOUT_WIDTH_OR_HEIGHT, NORMAL_FONT_SIZE, BIGGER_FONT_SIZE, SMALL_FONT_SIZE, BUTTON_HEIGHT, BUTTON_BORDER_RADIUS } from "@bundle:com.example.list_harmony/entry/ets/common/CommonConstants";
-import { DEFAULT_THEME } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
-import type { ThemeColors } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
 interface CartItem {
     id: number;
     name: Resource;
@@ -44,7 +41,6 @@ export default class ShoppingCartPage extends ViewPU {
         ], this, "cartItems");
         this.__isAllSelected = new ObservedPropertySimplePU(false, this, "isAllSelected");
         this.__totalPrice = new ObservedPropertySimplePU(0, this, "totalPrice");
-        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
         this.setInitiallyProvidedValue(params);
         this.finalizeConstruction();
     }
@@ -65,13 +61,11 @@ export default class ShoppingCartPage extends ViewPU {
         this.__cartItems.purgeDependencyOnElmtId(rmElmtId);
         this.__isAllSelected.purgeDependencyOnElmtId(rmElmtId);
         this.__totalPrice.purgeDependencyOnElmtId(rmElmtId);
-        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__cartItems.aboutToBeDeleted();
         this.__isAllSelected.aboutToBeDeleted();
         this.__totalPrice.aboutToBeDeleted();
-        this.__currentThemeColors.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -95,13 +89,6 @@ export default class ShoppingCartPage extends ViewPU {
     }
     set totalPrice(newValue: number) {
         this.__totalPrice.set(newValue);
-    }
-    private __currentThemeColors: ObservedPropertyAbstractPU<ThemeColors>; //使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
-    get currentThemeColors() {
-        return this.__currentThemeColors.get();
-    }
-    set currentThemeColors(newValue: ThemeColors) {
-        this.__currentThemeColors.set(newValue);
     }
     calculateTotalPrice() {
         this.totalPrice = 0;
@@ -141,7 +128,7 @@ export default class ShoppingCartPage extends ViewPU {
             Row.create({ space: 12 });
             Row.width(LAYOUT_WIDTH_OR_HEIGHT);
             Row.padding(12);
-            Row.backgroundColor(this.currentThemeColors.cardBackgroundColor);
+            Row.backgroundColor('#FFFFFF');
             Row.borderRadius(8);
             Row.alignItems(VerticalAlign.Top);
         }, Row);
@@ -151,7 +138,7 @@ export default class ShoppingCartPage extends ViewPU {
             // 选择框
             Checkbox.select(item.selected);
             // 选择框
-            Checkbox.selectedColor(this.currentThemeColors.accentColor);
+            Checkbox.selectedColor('#FF4D4F');
             // 选择框
             Checkbox.onChange((value: boolean) => {
                 this.toggleItemSelect(index);
@@ -182,7 +169,7 @@ export default class ShoppingCartPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(item.name);
             Text.fontSize(NORMAL_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.primaryTextColor);
+            Text.fontColor('#333333');
             Text.maxLines(2);
             Text.textOverflow({ overflow: TextOverflow.Ellipsis });
         }, Text);
@@ -190,7 +177,7 @@ export default class ShoppingCartPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(item.price);
             Text.fontSize(BIGGER_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.accentColor);
+            Text.fontColor('#FF4D4F');
             Text.fontWeight(FontWeight.Bold);
         }, Text);
         Text.pop();
@@ -203,8 +190,8 @@ export default class ShoppingCartPage extends ViewPU {
             Button.width(28);
             Button.height(28);
             Button.fontSize(NORMAL_FONT_SIZE);
-            Button.backgroundColor(item.quantity <= 1 ? this.currentThemeColors.tabUnselectedColor : this.currentThemeColors.accentColor);
-            Button.fontColor(item.quantity <= 1 ? this.currentThemeColors.secondaryTextColor : this.currentThemeColors.accentColor);
+            Button.backgroundColor(item.quantity <= 1 ? '#F5F5F5' : '#FF4D4F');
+            Button.fontColor(item.quantity <= 1 ? '#CCCCCC' : '#FFFFFF');
             Button.enabled(item.quantity > 1);
             Button.onClick(() => {
                 this.updateQuantity(index, -1);
@@ -214,7 +201,7 @@ export default class ShoppingCartPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(item.quantity.toString());
             Text.fontSize(NORMAL_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.primaryTextColor);
+            Text.fontColor('#333333');
             Text.width(32);
             Text.textAlign(TextAlign.Center);
         }, Text);
@@ -224,8 +211,8 @@ export default class ShoppingCartPage extends ViewPU {
             Button.width(28);
             Button.height(28);
             Button.fontSize(NORMAL_FONT_SIZE);
-            Button.backgroundColor(this.currentThemeColors.accentColor);
-            Button.fontColor(this.currentThemeColors.primaryTextColor);
+            Button.backgroundColor('#FF4D4F');
+            Button.fontColor('#FFFFFF');
             Button.onClick(() => {
                 this.updateQuantity(index, 1);
             });
@@ -276,7 +263,7 @@ export default class ShoppingCartPage extends ViewPU {
             Button.createWithLabel({ "id": 16777237, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
             Button.fontSize(NORMAL_FONT_SIZE);
             Button.fontColor('#FFFFFF');
-            Button.backgroundColor(this.currentThemeColors.accentColor);
+            Button.backgroundColor('#FF4D4F');
             Button.height(BUTTON_HEIGHT);
             Button.borderRadius(BUTTON_BORDER_RADIUS);
             Button.width(200);
@@ -290,7 +277,7 @@ export default class ShoppingCartPage extends ViewPU {
             Row.width(LAYOUT_WIDTH_OR_HEIGHT);
             Row.height(72);
             Row.padding({ left: 16, right: 16, top: 12, bottom: 12 });
-            Row.backgroundColor(this.currentThemeColors.cardBackgroundColor);
+            Row.backgroundColor('#FFFFFF');
             Row.shadow({
                 radius: 8,
                 color: '#00000015',
@@ -304,7 +291,7 @@ export default class ShoppingCartPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Checkbox.create();
             Checkbox.select(this.isAllSelected);
-            Checkbox.selectedColor(this.currentThemeColors.accentColor);
+            Checkbox.selectedColor('#FF4D4F');
             Checkbox.onChange(() => {
                 this.toggleSelectAll();
             });
@@ -313,7 +300,7 @@ export default class ShoppingCartPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create({ "id": 16777270, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
             Text.fontSize(SMALL_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.primaryTextColor);
+            Text.fontColor('#333333');
         }, Text);
         Text.pop();
         // 全选
@@ -332,13 +319,13 @@ export default class ShoppingCartPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create({ "id": 16777287, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
             Text.fontSize(SMALL_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.secondaryTextColor);
+            Text.fontColor('#666666');
         }, Text);
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('¥' + this.totalPrice.toFixed(2));
             Text.fontSize(BIGGER_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.accentColor);
+            Text.fontColor('#FF4D4F');
             Text.fontWeight(FontWeight.Bold);
         }, Text);
         Text.pop();
@@ -353,7 +340,7 @@ export default class ShoppingCartPage extends ViewPU {
             // 结算按钮
             Button.fontColor('#FFFFFF');
             // 结算按钮
-            Button.backgroundColor(this.currentThemeColors.accentColor);
+            Button.backgroundColor('#FF4D4F');
             // 结算按钮
             Button.height(BUTTON_HEIGHT);
             // 结算按钮
@@ -370,7 +357,7 @@ export default class ShoppingCartPage extends ViewPU {
             Column.create();
             Column.width(LAYOUT_WIDTH_OR_HEIGHT);
             Column.height(LAYOUT_WIDTH_OR_HEIGHT);
-            Column.backgroundColor(this.currentThemeColors.backgroundColor);
+            Column.backgroundColor('#F5F5F5');
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             If.create();
@@ -389,7 +376,7 @@ export default class ShoppingCartPage extends ViewPU {
                         // 购物车列表
                         List.padding(8);
                         // 购物车列表
-                        List.backgroundColor(this.currentThemeColors.backgroundColor);
+                        List.backgroundColor('#F5F5F5');
                     }, List);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         ForEach.create();
