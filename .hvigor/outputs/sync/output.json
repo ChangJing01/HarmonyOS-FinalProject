@@ -1,26 +1,26 @@
 {
   "ohos-module-entry": {
     "SELECT_TARGET": "default",
-    "MODULE_BUILD_DIR": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build",
+    "MODULE_BUILD_DIR": "/Users/changchen/working_place/cybermall/entry/build",
     "TARGETS": {
       "default": {
-        "SOURCE_ROOT": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\src\\main",
+        "SOURCE_ROOT": "/Users/changchen/working_place/cybermall/entry/src/main",
         "RESOURCES_PATH": [
-          "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\src\\main\\resources"
+          "/Users/changchen/working_place/cybermall/entry/src/main/resources"
         ],
         "BUILD_PATH": {
-          "OUTPUT_PATH": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\outputs\\default",
-          "INTERMEDIA_PATH": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates",
-          "JS_ASSETS_PATH": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates\\loader_out\\default",
-          "JS_LITE_ASSETS_PATH": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates\\loader_out_lite\\default",
-          "RES_PATH": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates\\res\\default",
-          "RES_PROFILE_PATH": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates\\res\\default\\resources\\base\\profile",
-          "ETS_SUPER_VISUAL_PATH": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\cache\\default\\default@CompileArkTS\\esmodule",
-          "JS_SUPER_VISUAL_PATH": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\cache\\default\\default@CompileJS\\jsbundle",
-          "WORKER_LOADER": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates\\loader\\default\\loader.json",
-          "MANIFEST_JSON": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates\\manifest\\default",
-          "OUTPUT_METADATA_JSON": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates\\hap_metadata\\default\\output_metadata.json",
-          "SOURCE_MAP_DIR": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates\\source_map\\default"
+          "OUTPUT_PATH": "/Users/changchen/working_place/cybermall/entry/build/default/outputs/default",
+          "INTERMEDIA_PATH": "/Users/changchen/working_place/cybermall/entry/build/default/intermediates",
+          "JS_ASSETS_PATH": "/Users/changchen/working_place/cybermall/entry/build/default/intermediates/loader_out/default",
+          "JS_LITE_ASSETS_PATH": "/Users/changchen/working_place/cybermall/entry/build/default/intermediates/loader_out_lite/default",
+          "RES_PATH": "/Users/changchen/working_place/cybermall/entry/build/default/intermediates/res/default",
+          "RES_PROFILE_PATH": "/Users/changchen/working_place/cybermall/entry/build/default/intermediates/res/default/resources/base/profile",
+          "ETS_SUPER_VISUAL_PATH": "/Users/changchen/working_place/cybermall/entry/build/default/cache/default/default@CompileArkTS/esmodule",
+          "JS_SUPER_VISUAL_PATH": "/Users/changchen/working_place/cybermall/entry/build/default/cache/default/default@CompileJS/jsbundle",
+          "WORKER_LOADER": "/Users/changchen/working_place/cybermall/entry/build/default/intermediates/loader/default/loader.json",
+          "MANIFEST_JSON": "/Users/changchen/working_place/cybermall/entry/build/default/intermediates/manifest/default",
+          "OUTPUT_METADATA_JSON": "/Users/changchen/working_place/cybermall/entry/build/default/intermediates/hap_metadata/default/output_metadata.json",
+          "SOURCE_MAP_DIR": "/Users/changchen/working_place/cybermall/entry/build/default/intermediates/source_map/default"
         },
         "BUILD_OPTION": {
           "debuggable": true
@@ -47,15 +47,15 @@
   },
   "ohos-project": {
     "SELECT_PRODUCT_NAME": "default",
-    "MODULE_BUILD_DIR": "D:\\Codes\\DevEcoStudio\\List_commodity\\build",
+    "MODULE_BUILD_DIR": "/Users/changchen/working_place/cybermall/build",
     "BUNDLE_NAME": "com.example.list_harmony",
     "BUILD_PATH": {
-      "OUTPUT_PATH": "D:\\Codes\\DevEcoStudio\\List_commodity\\build\\outputs\\default"
+      "OUTPUT_PATH": "/Users/changchen/working_place/cybermall/build/outputs/default"
     },
     "MODULES": [
       {
         "name": "entry",
-        "srcPath": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry",
+        "srcPath": "/Users/changchen/working_place/cybermall/entry",
         "targets": [
           {
             "name": "default",
@@ -64,7 +64,7 @@
             ]
           }
         ],
-        "belongProjectPath": "D:\\Codes\\DevEcoStudio\\List_commodity"
+        "belongProjectPath": "/Users/changchen/working_place/cybermall"
       }
     ],
     "PROFILE_OPT": {
@@ -101,7 +101,7 @@
       "hvigor.keepDependency": true
     },
     "OVERALL_PROJECT_PATHS": [
-      "D:\\Codes\\DevEcoStudio\\List_commodity"
+      "/Users/changchen/working_place/cybermall"
     ],
     "BUILD_CACHE_DIR": ""
   },

@@ -3,9 +3,12 @@ if (!("finalizeConstruction" in ViewPU.prototype)) {
 }
 interface BottomTabBar_Params {
     currentIndex?: number;
+    currentThemeColors?: ThemeColors;
     tabBarData?: TabBarItem[];
 }
 import { BOTTOM_TAB_BAR_HEIGHT, TAB_ICON_SIZE, TAB_FONT_SIZE, LAYOUT_WIDTH_OR_HEIGHT } from "@bundle:com.example.list_harmony/entry/ets/common/CommonConstants";
+import { DEFAULT_THEME } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
+import type { ThemeColors } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
 export interface TabBarItem {
     title: Resource;
     icon: Resource;
@@ -19,6 +22,7 @@ export default class BottomTabBar extends ViewPU {
             this.paramsGenerator_ = paramsLambda;
         }
         this.__currentIndex = new SynchedPropertySimpleTwoWayPU(params.currentIndex, this, "currentIndex");
+        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
         this.tabBarData = [
             {
                 title: { "id": 16777242, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
@@ -57,9 +61,11 @@ export default class BottomTabBar extends ViewPU {
     }
     purgeVariableDependenciesOnElmtId(rmElmtId) {
         this.__currentIndex.purgeDependencyOnElmtId(rmElmtId);
+        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__currentIndex.aboutToBeDeleted();
+        this.__currentThemeColors.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -69,6 +75,13 @@ export default class BottomTabBar extends ViewPU {
     }
     set currentIndex(newValue: number) {
         this.__currentIndex.set(newValue);
+    }
+    private __currentThemeColors: ObservedPropertyAbstractPU<ThemeColors>; //使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
+    get currentThemeColors() {
+        return this.__currentThemeColors.get();
+    }
+    set currentThemeColors(newValue: ThemeColors) {
+        this.__currentThemeColors.set(newValue);
     }
     private tabBarData: TabBarItem[];
     TabBarItemBuilder(item: TabBarItem, parent = null) {
@@ -89,7 +102,7 @@ export default class BottomTabBar extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(item.title);
             Text.fontSize(TAB_FONT_SIZE);
-            Text.fontColor(this.currentIndex === item.index ? '#FF4D4F' : '#666666');
+            Text.fontColor(this.currentIndex === item.index ? this.currentThemeColors.tabSelectedColor : this.currentThemeColors.tabUnselectedColor);
             Text.fontWeight(this.currentIndex === item.index ? FontWeight.Medium : FontWeight.Normal);
         }, Text);
         Text.pop();
@@ -100,7 +113,7 @@ export default class BottomTabBar extends ViewPU {
             Row.create();
             Row.width(LAYOUT_WIDTH_OR_HEIGHT);
             Row.height(BOTTOM_TAB_BAR_HEIGHT);
-            Row.backgroundColor('#FFFFFF');
+            Row.backgroundColor(this.currentThemeColors.cardBackgroundColor);
             Row.justifyContent(FlexAlign.SpaceAround);
             Row.alignItems(VerticalAlign.Center);
             Row.shadow({

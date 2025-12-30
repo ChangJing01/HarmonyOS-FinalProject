@@ -20,7 +20,7 @@ export const EVALUATE_WIDTH: string = '80%';
 export const GOODS_LIST_WIDTH: string = '94%';
 export const LAYOUT_WIDTH_OR_HEIGHT: string = '100%';
 // Navigation and Tab Bar
-export const NAV_BAR_HEIGHT: number = 56;
+export const NAV_BAR_HEIGHT: number = 70;
 export const BOTTOM_TAB_BAR_HEIGHT: number = 56;
 export const TAB_CONTENT_PADDING: number = 16;
 // ============ Font Sizes ============

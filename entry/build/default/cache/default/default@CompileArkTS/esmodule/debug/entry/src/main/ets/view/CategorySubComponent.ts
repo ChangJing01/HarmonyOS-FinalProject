@@ -3,9 +3,12 @@ if (!("finalizeConstruction" in ViewPU.prototype)) {
 }
 interface CategorySub_Params {
     selectedSubCategoryIndex?: number;
+    currentThemeColors?: ThemeColors;
     subCategories?: SubCategoryItem[];
 }
 import { LAYOUT_WIDTH_OR_HEIGHT, NORMAL_FONT_SIZE, SMALL_FONT_SIZE, CATEGORY_LIST_WIDTH, CATEGORY_ITEM_HEIGHT } from "@bundle:com.example.list_harmony/entry/ets/common/CommonConstants";
+import { DEFAULT_THEME } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
+import type { ThemeColors } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
 export interface SubCategoryItem {
     id: number;
     name: Resource;
@@ -17,6 +20,7 @@ export default class CategorySub extends ViewPU {
             this.paramsGenerator_ = paramsLambda;
         }
         this.__selectedSubCategoryIndex = new SynchedPropertySimpleTwoWayPU(params.selectedSubCategoryIndex, this, "selectedSubCategoryIndex");
+        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
         this.__subCategories = new SynchedPropertyObjectOneWayPU(params.subCategories, this, "subCategories");
         this.setInitiallyProvidedValue(params);
         this.finalizeConstruction();
@@ -28,10 +32,12 @@ export default class CategorySub extends ViewPU {
     }
     purgeVariableDependenciesOnElmtId(rmElmtId) {
         this.__selectedSubCategoryIndex.purgeDependencyOnElmtId(rmElmtId);
+        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
         this.__subCategories.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__selectedSubCategoryIndex.aboutToBeDeleted();
+        this.__currentThemeColors.aboutToBeDeleted();
         this.__subCategories.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
@@ -42,6 +48,13 @@ export default class CategorySub extends ViewPU {
     }
     set selectedSubCategoryIndex(newValue: number) {
         this.__selectedSubCategoryIndex.set(newValue);
+    }
+    private __currentThemeColors: ObservedPropertyAbstractPU<ThemeColors>;
+    get currentThemeColors() {
+        return this.__currentThemeColors.get();
+    }
+    set currentThemeColors(newValue: ThemeColors) {
+        this.__currentThemeColors.set(newValue);
     }
     private __subCategories: SynchedPropertySimpleOneWayPU<SubCategoryItem[]>;
     get subCategories() {
@@ -56,7 +69,7 @@ export default class CategorySub extends ViewPU {
             Column.width(CATEGORY_LIST_WIDTH);
             Column.height(CATEGORY_ITEM_HEIGHT);
             Column.justifyContent(FlexAlign.Center);
-            Column.backgroundColor(this.selectedSubCategoryIndex === index ? '#FFF5F5' : '#FFFFFF');
+            Column.backgroundColor(this.selectedSubCategoryIndex === index ? this.currentThemeColors.backgroundColor : this.currentThemeColors.cardBackgroundColor);
             Column.borderRadius(4);
             Column.onClick(() => {
                 this.selectedSubCategoryIndex = index;
@@ -65,7 +78,7 @@ export default class CategorySub extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(item.name);
             Text.fontSize(this.selectedSubCategoryIndex === index ? NORMAL_FONT_SIZE : SMALL_FONT_SIZE);
-            Text.fontColor(this.selectedSubCategoryIndex === index ? '#FF4D4F' : '#333333');
+            Text.fontColor(this.selectedSubCategoryIndex === index ? this.currentThemeColors.accentColor : this.currentThemeColors.primaryTextColor);
             Text.fontWeight(this.selectedSubCategoryIndex === index ? FontWeight.Medium : FontWeight.Normal);
         }, Text);
         Text.pop();
@@ -76,7 +89,7 @@ export default class CategorySub extends ViewPU {
             Scroll.create();
             Scroll.scrollBar(BarState.Off);
             Scroll.width(LAYOUT_WIDTH_OR_HEIGHT);
-            Scroll.backgroundColor('#F5F5F5');
+            Scroll.backgroundColor(this.currentThemeColors.backgroundColor);
         }, Scroll);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Column.create({ space: 8 });

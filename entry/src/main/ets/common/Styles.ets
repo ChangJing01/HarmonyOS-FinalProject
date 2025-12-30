@@ -27,6 +27,7 @@ import {
   MARGIN_BOTTOM,
   LAYOUT_WIDTH_OR_HEIGHT,
 } from './CommonConstants';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 export interface TextStyle {
   fontSize: number;

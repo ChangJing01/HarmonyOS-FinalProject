@@ -2,6 +2,7 @@ if (!("finalizeConstruction" in ViewPU.prototype)) {
     Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
 }
 interface GoodsList_Params {
+    currentThemeColors?: ThemeColors;
     goodsListData?: ListDataSource;
     startTouchOffsetY?: number;
     endTouchOffsetY?: number;
@@ -9,12 +10,16 @@ interface GoodsList_Params {
 import * as commonConst from "@bundle:com.example.list_harmony/entry/ets/common/CommonConstants";
 import type { GoodsListItemType } from '../viewmodel/InitialData';
 import { ListDataSource } from "@bundle:com.example.list_harmony/entry/ets/viewmodel/ListDataSource";
+import { DEFAULT_THEME } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
+import type { ThemeColors } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
+import router from "@ohos:router";
 export default class GoodsList extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
         super(parent, __localStorage, elmtId, extraInfo);
         if (typeof paramsLambda === "function") {
             this.paramsGenerator_ = paramsLambda;
         }
+        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
         this.__goodsListData = new ObservedPropertyObjectPU(new ListDataSource(), this, "goodsListData");
         this.addProvidedVar("goodsListData", this.__goodsListData, false);
         this.startTouchOffsetY = 0;
@@ -36,12 +41,21 @@ export default class GoodsList extends ViewPU {
     updateStateVars(params: GoodsList_Params) {
     }
     purgeVariableDependenciesOnElmtId(rmElmtId) {
+        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
         this.__goodsListData.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
+        this.__currentThemeColors.aboutToBeDeleted();
         this.__goodsListData.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
+    }
+    private __currentThemeColors: ObservedPropertyAbstractPU<ThemeColors>;
+    get currentThemeColors() {
+        return this.__currentThemeColors.get();
+    }
+    set currentThemeColors(newValue: ThemeColors) {
+        this.__currentThemeColors.set(newValue);
     }
     private __goodsListData: ObservedPropertyObjectPU<ListDataSource>;
     get goodsListData() {
@@ -61,6 +75,10 @@ export default class GoodsList extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             List.create({ space: commonConst.LIST_ITEM_SPACE });
             List.width(commonConst.GOODS_LIST_WIDTH);
+            List.divider({
+                strokeWidth: 1,
+                color: this.currentThemeColors.dividerColor, // 使用主题定义的分割线颜色
+            });
         }, List);
         {
             const __lazyForEachItemGenFunction = _item => {
@@ -85,6 +103,18 @@ export default class GoodsList extends ViewPU {
                                     }
                                     break;
                             }
+                        });
+                        ListItem.onClick(() => {
+                            // 使用 router.pushUrl 跳转到详情页
+                            router.pushUrl({
+                                url: 'pages/GoodsDetailPage',
+                                params: {
+                                    goodsId: item.id,
+                                    goodsName: item.goodsName,
+                                    goodsPrice: item.price,
+                                    goodsImg: item.goodsImg
+                                }
+                            });
                         });
                     };
                     const observedDeepRender = () => {
@@ -117,11 +147,12 @@ export default class GoodsList extends ViewPU {
                         this.observeComponentCreation2((elmtId, isInitialRender) => {
                             Text.create(item?.goodsName);
                             Text.fontSize(commonConst.NORMAL_FONT_SIZE);
+                            Text.fontColor(this.currentThemeColors.primaryTextColor);
                         }, Text);
                         Text.pop();
                         this.observeComponentCreation2((elmtId, isInitialRender) => {
                             Text.create(item?.advertisingLanguage);
-                            Text.fontColor({ "id": 16777291, "type": 10001, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+                            Text.fontColor(this.currentThemeColors.primaryTextColor);
                             Text.fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE);
                             Text.margin({ right: commonConst.MARGIN_RIGHT });
                         }, Text);
@@ -134,14 +165,14 @@ export default class GoodsList extends ViewPU {
                         this.observeComponentCreation2((elmtId, isInitialRender) => {
                             Text.create(item?.evaluate);
                             Text.fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE);
-                            Text.fontColor({ "id": 16777289, "type": 10001, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+                            Text.fontColor(this.currentThemeColors.accentColor);
                             Text.width(commonConst.EVALUATE_WIDTH);
                         }, Text);
                         Text.pop();
                         this.observeComponentCreation2((elmtId, isInitialRender) => {
                             Text.create(item?.price);
                             Text.fontSize(commonConst.NORMAL_FONT_SIZE);
-                            Text.fontColor({ "id": 16777290, "type": 10001, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+                            Text.fontColor(this.currentThemeColors.accentColor);
                         }, Text);
                         Text.pop();
                         Row.pop();

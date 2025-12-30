@@ -21,13 +21,15 @@ $r('app.string.home_furnishing')
 ]
 
 export class GoodsListItemType {
+  id:number;
   goodsImg: Resource;
   goodsName: Resource;
   advertisingLanguage: Resource;
   evaluate: Resource;
   price: Resource;
 
-  constructor(goodsImg: Resource, goodsName: Resource, price: Resource) {
+  constructor(id: number, goodsImg: Resource, goodsName: Resource, price: Resource) {
+    this.id = id;
     this.goodsImg = goodsImg;
     this.goodsName = goodsName;
     this.advertisingLanguage = $r('app.string.advertising_language');
@@ -37,8 +39,8 @@ export class GoodsListItemType {
 }
 
 export const goodsInitialList: GoodsListItemType[] = [
-  new GoodsListItemType($r('app.media.goodsImg'), $r('app.string.goodsName'), $r('app.string.price_199')),
-  new GoodsListItemType($r('app.media.goodsImg_2'), $r('app.string.another_goodsName'), $r('app.string.price_199')),
-  new GoodsListItemType($r('app.media.goodsImg_3'), $r('app.string.goodsName'), $r('app.string.price_199')),
-  new GoodsListItemType($r('app.media.goodsImg_4'), $r('app.string.another_goodsName'), $r('app.string.price_199'))
+  new GoodsListItemType(1,$r('app.media.goodsImg'), $r('app.string.goodsName'), $r('app.string.price_199')),
+  new GoodsListItemType(2,$r('app.media.goodsImg_2'), $r('app.string.another_goodsName'), $r('app.string.price_199')),
+  new GoodsListItemType(3,$r('app.media.goodsImg_3'), $r('app.string.goodsName'), $r('app.string.price_199')),
+  new GoodsListItemType(4,$r('app.media.goodsImg_4'), $r('app.string.another_goodsName'), $r('app.string.price_199'))
 ]

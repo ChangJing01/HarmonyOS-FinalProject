@@ -1,6 +1,6 @@
 {
 	"CommonInfo":{
-		"project.ide.version":"6.0.0.848",
+		"project.ide.version":"6.0.0.878",
 		"current.select.product":"default",
 		"current.select.buildMode":"",
 		"crossplatform.projectType":""
@@ -9,7 +9,7 @@
 		"SELECT_BUILD_PRODUCT":"default",
 		"BUNDLE_NAME":"com.example.list_harmony",
 		"BUILD_PATH":{
-			"OUTPUT_PATH":"D:\\Codes\\DevEcoStudio\\List_commodity\\build\\outputs\\default"
+			"OUTPUT_PATH":"/Users/changchen/working_place/cybermall/build/outputs/default"
 		},
 		"SELECT_BUILD_MODE":""
 	}

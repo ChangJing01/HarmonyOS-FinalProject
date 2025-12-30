@@ -19,12 +19,14 @@ export const initTabBarData = [
     { "id": 16777243, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }
 ];
 export class GoodsListItemType {
+    id: number;
     goodsImg: Resource;
     goodsName: Resource;
     advertisingLanguage: Resource;
     evaluate: Resource;
     price: Resource;
-    constructor(goodsImg: Resource, goodsName: Resource, price: Resource) {
+    constructor(id: number, goodsImg: Resource, goodsName: Resource, price: Resource) {
+        this.id = id;
         this.goodsImg = goodsImg;
         this.goodsName = goodsName;
         this.advertisingLanguage = { "id": 16777222, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" };
@@ -33,8 +35,8 @@ export class GoodsListItemType {
     }
 }
 export const goodsInitialList: GoodsListItemType[] = [
-    new GoodsListItemType({ "id": 16777294, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777238, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777255, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }),
-    new GoodsListItemType({ "id": 16777295, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777223, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777255, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }),
-    new GoodsListItemType({ "id": 16777296, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777238, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777255, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }),
-    new GoodsListItemType({ "id": 16777297, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777223, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777255, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" })
+    new GoodsListItemType(1, { "id": 16777294, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777238, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777255, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }),
+    new GoodsListItemType(2, { "id": 16777295, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777223, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777255, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }),
+    new GoodsListItemType(3, { "id": 16777296, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777238, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777255, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }),
+    new GoodsListItemType(4, { "id": 16777297, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777223, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, { "id": 16777255, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" })
 ];

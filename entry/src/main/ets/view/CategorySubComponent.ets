@@ -20,6 +20,7 @@ import {
   CATEGORY_LIST_WIDTH,
   CATEGORY_ITEM_HEIGHT
 } from '../common/CommonConstants';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 export interface SubCategoryItem {
   id: number;
@@ -29,6 +30,7 @@ export interface SubCategoryItem {
 @Component
 export default struct CategorySub {
   @Link selectedSubCategoryIndex: number;
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
   @Prop subCategories: SubCategoryItem[];
 
   @Builder
@@ -36,13 +38,13 @@ export default struct CategorySub {
     Column() {
       Text(item.name)
         .fontSize(this.selectedSubCategoryIndex === index ? NORMAL_FONT_SIZE : SMALL_FONT_SIZE)
-        .fontColor(this.selectedSubCategoryIndex === index ? '#FF4D4F' : '#333333')
+        .fontColor(this.selectedSubCategoryIndex === index ? this.currentThemeColors.accentColor: this.currentThemeColors.primaryTextColor)
         .fontWeight(this.selectedSubCategoryIndex === index ? FontWeight.Medium : FontWeight.Normal)
     }
     .width(CATEGORY_LIST_WIDTH)
     .height(CATEGORY_ITEM_HEIGHT)
     .justifyContent(FlexAlign.Center)
-    .backgroundColor(this.selectedSubCategoryIndex === index ? '#FFF5F5' : '#FFFFFF')
+    .backgroundColor(this.selectedSubCategoryIndex === index ? this.currentThemeColors.backgroundColor : this.currentThemeColors.cardBackgroundColor) // '#FFF5F5' : '#FFFFFF'
     .borderRadius(4)
     .onClick(() => {
       this.selectedSubCategoryIndex = index;
@@ -61,6 +63,6 @@ export default struct CategorySub {
     }
     .scrollBar(BarState.Off)
     .width(LAYOUT_WIDTH_OR_HEIGHT)
-    .backgroundColor('#F5F5F5')
+    .backgroundColor(this.currentThemeColors.backgroundColor)
   }
 }

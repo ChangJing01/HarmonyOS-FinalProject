@@ -7,11 +7,14 @@ interface TabBar_Params {
     tabsIndex?: number;
     refreshStatus?: boolean;
     refreshText?: Resource;
+    currentThemeColors?: ThemeColors;
 }
 import { initTabBarData } from "@bundle:com.example.list_harmony/entry/ets/viewmodel/InitialData";
 import { LAYOUT_WIDTH_OR_HEIGHT, NORMAL_FONT_SIZE, BIGGER_FONT_SIZE, MAX_FONT_SIZE, MAX_OFFSET_Y, REFRESH_TIME, GOODS_EVALUATE_FONT_SIZE, MAX_LINES_TEXT } from "@bundle:com.example.list_harmony/entry/ets/common/CommonConstants";
 import GoodsList from "@bundle:com.example.list_harmony/entry/ets/view/GoodsListComponent";
 import PutDownRefresh from "@bundle:com.example.list_harmony/entry/ets/view/PutDownRefreshLayout";
+import { DEFAULT_THEME } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
+import type { ThemeColors } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
 export default class TabBar extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
         super(parent, __localStorage, elmtId, extraInfo);
@@ -23,6 +26,7 @@ export default class TabBar extends ViewPU {
         this.__tabsIndex = new ObservedPropertySimplePU(0, this, "tabsIndex");
         this.__refreshStatus = new ObservedPropertySimplePU(false, this, "refreshStatus");
         this.__refreshText = new ObservedPropertyObjectPU({ "id": 16777263, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, this, "refreshText");
+        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
         this.setInitiallyProvidedValue(params);
         this.finalizeConstruction();
     }
@@ -49,11 +53,13 @@ export default class TabBar extends ViewPU {
         this.__tabsIndex.purgeDependencyOnElmtId(rmElmtId);
         this.__refreshStatus.purgeDependencyOnElmtId(rmElmtId);
         this.__refreshText.purgeDependencyOnElmtId(rmElmtId);
+        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__tabsIndex.aboutToBeDeleted();
         this.__refreshStatus.aboutToBeDeleted();
         this.__refreshText.aboutToBeDeleted();
+        this.__currentThemeColors.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -80,6 +86,13 @@ export default class TabBar extends ViewPU {
     set refreshText(newValue: Resource) {
         this.__refreshText.set(newValue);
     }
+    private __currentThemeColors: ObservedPropertyAbstractPU<ThemeColors>;
+    get currentThemeColors() {
+        return this.__currentThemeColors.get();
+    }
+    set currentThemeColors(newValue: ThemeColors) {
+        this.__currentThemeColors.set(newValue);
+    }
     firstTabBar(parent = null) {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Column.create();
@@ -90,7 +103,7 @@ export default class TabBar extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create({ "id": 16777271, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
             Text.fontSize(this.tabsIndex === 0 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
-            Text.fontColor(this.tabsIndex === 0 ? Color.Black : { "id": 16777291, "type": 10001, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+            Text.fontColor(this.tabsIndex === 0 ? this.currentThemeColors.primaryTextColor : this.currentThemeColors.secondaryTextColor);
             Text.maxLines(MAX_LINES_TEXT);
             Text.minFontSize(this.tabsIndex === 0 ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE);
             Text.maxFontSize(this.tabsIndex === 0 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
@@ -108,7 +121,7 @@ export default class TabBar extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(content);
             Text.fontSize(this.tabsIndex === index + 1 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
-            Text.fontColor(this.tabsIndex === index + 1 ? Color.Black : { "id": 16777291, "type": 10001, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+            Text.fontColor(this.tabsIndex === index + 1 ? this.currentThemeColors.primaryTextColor : this.currentThemeColors.secondaryTextColor);
             Text.maxLines(MAX_LINES_TEXT);
             Text.minFontSize(this.tabsIndex === index + 1 ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE);
             Text.maxFontSize(this.tabsIndex === index + 1 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
@@ -175,7 +188,7 @@ export default class TabBar extends ViewPU {
                             {
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     if (isInitialRender) {
-                                        let componentCall = new PutDownRefresh(this, { refreshText: this.__refreshText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/view/TabBarsComponent.ets", line: 104, col: 15 });
+                                        let componentCall = new PutDownRefresh(this, { refreshText: this.__refreshText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/view/TabBarsComponent.ets", line: 106, col: 15 });
                                         ViewPU.create(componentCall);
                                         let paramsLambda = () => {
                                             return {
@@ -200,7 +213,7 @@ export default class TabBar extends ViewPU {
                 {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         if (isInitialRender) {
-                            let componentCall = new GoodsList(this, {}, undefined, elmtId, () => { }, { page: "entry/src/main/ets/view/TabBarsComponent.ets", line: 106, col: 13 });
+                            let componentCall = new GoodsList(this, {}, undefined, elmtId, () => { }, { page: "entry/src/main/ets/view/TabBarsComponent.ets", line: 108, col: 13 });
                             ViewPU.create(componentCall);
                             let paramsLambda = () => {
                                 return {};
