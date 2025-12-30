@@ -20,6 +20,7 @@ import {
   GOODS_EVALUATE_FONT_SIZE,
   MAX_LINES_TEXT
 } from '../common/CommonConstants';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 export interface CategoryData {
   id: number;
@@ -36,6 +37,7 @@ export interface SubCategoryData {
 export default struct CategoryTab {
   @Link selectedCategoryIndex: number;
   @Link selectedSubCategoryIndex: number;
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
   private categoryData: CategoryData[] = [
     {
       id: 0,
@@ -89,7 +91,7 @@ export default struct CategoryTab {
     Column() {
       Text(item.name)
         .fontSize(this.selectedCategoryIndex === index ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
-        .fontColor(this.selectedCategoryIndex === index ? Color.Black : $r('app.color.gray'))
+        .fontColor(this.selectedCategoryIndex === index ? this.currentThemeColors.primaryTextColor : this.currentThemeColors.secondaryTextColor)
         .maxLines(MAX_LINES_TEXT)
         .minFontSize(this.selectedCategoryIndex === index ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE)
         .maxFontSize(this.selectedCategoryIndex === index ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
@@ -99,7 +101,7 @@ export default struct CategoryTab {
         Divider()
           .width(40)
           .height(3)
-          .color('#FF4D4F')
+          .color(this.currentThemeColors.accentColor)
           .margin({ top: 4 })
       }
     }
@@ -126,6 +128,6 @@ export default struct CategoryTab {
     .scrollBar(BarState.Off)
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(56)
-    .backgroundColor('#FFFFFF')
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
   }
 }

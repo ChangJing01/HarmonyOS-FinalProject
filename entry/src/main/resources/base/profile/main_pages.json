@@ -1,5 +1,8 @@
 {
   "src": [
-    "pages/ListIndex"
+    "pages/ListIndex",
+    "pages/GoodsDetailPage",
+    "pages/PublishGoodsPage",
+    "pages/ComparisonPage"
   ]
 }

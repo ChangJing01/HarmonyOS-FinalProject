@@ -19,8 +19,19 @@ import {
   BIGGER_FONT_SIZE,
   SMALL_FONT_SIZE
 } from '../common/CommonConstants';
+import promptAction from '@ohos.promptAction';
+import { ThemeType, getThemeColors, ThemeColors, DEFAULT_THEME } from '../common/Colors';
+import router from '@ohos.router';
+import LoginComponent from '../view/LoginComponent';
+import { AccountData } from '../model/AccountData';
+import { common } from '@kit.AbilityKit';
+import { BusinessError } from '@kit.BasicServicesKit';
+import Logger from '../model/Logger';
+
+const TAG: string = '[PersonalPage]';
 
 interface MenuItem {
+  id:number;
   icon: Resource;
   title: Resource;
   showArrow: boolean;
@@ -30,14 +41,26 @@ interface MenuItem {
 export default struct PersonalPage {
   @State userName: string = '用户名';
   @State userAvatar: Resource = $r('app.media.ic_avatar');
+  //使用 @StorageLink 与全局 AppStorage 双向绑定登录状态
+  @StorageLink('isLoggedIn') isLoggedIn: boolean = false;
+  @StorageLink('currentUsername') currentUsername: string = '';
+  //与全局 AppStorage 建立双向同步
+  // 当 themeType 改变时，UI 会自动刷新（如果有依赖它的 UI），且我们修改它会同步回全局
+  @StorageLink('themeType') currentThemeType: ThemeType = ThemeType.LIGHT;
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
 
+  private accountData: AccountData = new AccountData();
+  private context: common.Context = getContext(this) as common.Context;
+
+  //为菜单项添加 id，方便识别 (id: 3 对应主题设置)
   private menuItems: MenuItem[] = [
-    { icon: $r('app.media.ic_order'), title: $r('app.string.my_orders'), showArrow: true },
-    { icon: $r('app.media.ic_history'), title: $r('app.string.browse_history'), showArrow: true },
-    { icon: $r('app.media.ic_theme'), title: $r('app.string.theme_settings'), showArrow: true },
-    { icon: $r('app.media.ic_compare'), title: $r('app.string.goods_compare'), showArrow: true },
-    { icon: $r('app.media.ic_clear'), title: $r('app.string.clear_cache'), showArrow: true },
-    { icon: $r('app.media.ic_about'), title: $r('app.string.about_us'), showArrow: true }
+    { id:1, icon: $r('app.media.ic_order'), title: $r('app.string.my_orders'), showArrow: true },
+    { id:2, icon: $r('app.media.ic_history'), title: $r('app.string.browse_history'), showArrow: true },
+    { id:3, icon: $r('app.media.ic_theme'), title: $r('app.string.theme_settings'), showArrow: true },
+    { id:4, icon: $r('app.media.ic_compare'), title: $r('app.string.goods_compare'), showArrow: true },
+    { id:7, icon: $r('app.media.ic_order'), title: $r('app.string.publish_goods'), showArrow: true },
+    { id:5, icon: $r('app.media.ic_clear'), title: $r('app.string.clear_cache'), showArrow: true },
+    { id:6, icon: $r('app.media.ic_about'), title: $r('app.string.about_us'), showArrow: true }
   ];
 
   @Builder
@@ -54,12 +77,12 @@ export default struct PersonalPage {
       Column({ space: 8 }) {
         Text(this.userName)
           .fontSize(BIGGER_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .fontWeight(FontWeight.Bold)
 
         Text($r('app.string.edit_profile'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#999999')
+          .fontColor(this.currentThemeColors.secondaryTextColor)
           .onClick(() => {
             // 编辑资料逻辑
           })
@@ -73,7 +96,7 @@ export default struct PersonalPage {
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .padding(16)
-    .backgroundColor('#FFFFFF')
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     .borderRadius(8)
   }
 
@@ -83,54 +106,54 @@ export default struct PersonalPage {
       Column({ space: 8 }) {
         Text('0')
           .fontSize(BIGGER_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .fontWeight(FontWeight.Bold)
 
         Text($r('app.string.pending_payment'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#666666')
+          .fontColor(this.currentThemeColors.secondaryTextColor)
       }
       .layoutWeight(1)
 
       Column({ space: 8 }) {
         Text('0')
           .fontSize(BIGGER_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .fontWeight(FontWeight.Bold)
 
         Text($r('app.string.pending_shipment'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#666666')
+          .fontColor(this.currentThemeColors.secondaryTextColor)
       }
       .layoutWeight(1)
 
       Column({ space: 8 }) {
         Text('0')
           .fontSize(BIGGER_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .fontWeight(FontWeight.Bold)
 
         Text($r('app.string.pending_receipt'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#666666')
+          .fontColor(this.currentThemeColors.secondaryTextColor)
       }
       .layoutWeight(1)
 
       Column({ space: 8 }) {
         Text('0')
           .fontSize(BIGGER_FONT_SIZE)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .fontWeight(FontWeight.Bold)
 
         Text($r('app.string.completed'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#666666')
+          .fontColor(this.currentThemeColors.secondaryTextColor)
       }
       .layoutWeight(1)
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .padding(16)
-    .backgroundColor('#FFFFFF')
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     .borderRadius(8)
     .margin({ top: 8 })
   }
@@ -141,10 +164,11 @@ export default struct PersonalPage {
       Image(item.icon)
         .width(24)
         .height(24)
+        .fillColor(this.currentThemeColors.primaryTextColor) //让图标颜色也随主题变
 
       Text(item.title)
         .fontSize(NORMAL_FONT_SIZE)
-        .fontColor('#333333')
+        .fontColor(this.currentThemeColors.primaryTextColor)
         .layoutWeight(1)
 
       if (item.showArrow) {
@@ -156,50 +180,196 @@ export default struct PersonalPage {
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(56)
     .padding({ left: 16, right: 16 })
-    .backgroundColor('#FFFFFF')
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     .onClick(() => {
-      // 菜单项点击逻辑
+      // 菜单项点击逻辑 根据id判断点击逻辑 update1.2
+      if (item.id === 3) {
+        this.showThemeDialog();
+      } else if (item.id === 7) {
+        router.pushUrl({
+          url: 'pages/PublishGoodsPage'
+        });
+      } else {
+        // 其他菜单项逻辑
+        console.info('Clicked menu item:', item.id);
+      }
     })
   }
 
+  //显示主题选择弹窗的方法
+  showThemeDialog() {
+    try {
+      promptAction.showActionMenu({
+        title: '选择应用主题',
+        buttons: [
+          { text: '默认白', color: '#333333' },
+          { text: '深色模式', color: '#000000' },
+          { text: '护眼模式', color: '#FF6B35' }
+        ]
+      }).then(data => {
+        let selectedType: ThemeType;
+        // 根据点击的按钮索引决定切换哪个主题
+        switch (data.index) {
+          case 0:
+            selectedType = ThemeType.LIGHT;
+            break;
+          case 1:
+            selectedType = ThemeType.DARK;
+            break;
+          case 2:
+            selectedType = ThemeType.EYECARE;
+            break;
+          default:
+            return;
+        }
+
+        // 核心逻辑：修改状态变量，AppStorage 会自动同步到全局
+        this.currentThemeType = selectedType;
+        this.currentThemeColors = getThemeColors(selectedType);
+
+        // 可以在这里打印日志验证
+        console.info('Theme changed to:', selectedType);
+      }).catch(() => {
+        Logger.error(TAG, `showActionMenu failed`);
+      });
+    } catch (_) {
+      Logger.error(TAG, `showThemeDialog failed`);
+    }
+  }
+
+  // 检查登录状态
+  async checkLoginStatus() {
+    try {
+      const STORAGE_KEY = 'account_storage';
+      const loginStatus = await this.accountData.getStorageValue(
+        this.context,
+        'isLoggedIn',
+        STORAGE_KEY
+      );
+
+      if (loginStatus === 'true') {
+        const username = await this.accountData.getStorageValue(
+          this.context,
+          'username',
+          STORAGE_KEY
+        );
+        this.currentUsername = username as string;
+        this.userName = username as string;
+        this.isLoggedIn = true;
+        Logger.info(TAG, `User is logged in: ${this.currentUsername}`);
+      } else {
+        this.isLoggedIn = false;
+        this.currentUsername = '';
+        this.userName = '用户名';
+        Logger.info(TAG, 'User is not logged in');
+      }
+    } catch (err) {
+      Logger.error(TAG, `checkLoginStatus failed: ${JSON.stringify(err)}`);
+      this.isLoggedIn = false;
+      this.currentUsername = '';
+    }
+  }
+
+  // 处理登出
+  async handleLogout() {
+    try {
+      promptAction.showDialog({
+        title: '确认登出',
+        message: '您确定要登出吗？',
+        buttons: [
+          { text: '取消', color: '#000000' },
+          { text: '登出', color: '#FF0000' }
+        ]
+      }).then((data) => {
+        if (data.index === 1) {
+          // 用户确认登出
+          const STORAGE_KEY = 'account_storage';
+          this.accountData.putStorageValue(
+            this.context,
+            'isLoggedIn',
+            'false',
+            STORAGE_KEY
+          ).then(() => {
+            this.isLoggedIn = false;
+            this.currentUsername = '';
+            this.userName = '用户名';
+            try {
+              promptAction.showToast({
+                message: '已登出',
+                duration: 2000
+              });
+            } catch (_) {
+              Logger.error(TAG, `showToast failed`);
+            }
+            Logger.info(TAG, 'User logged out');
+          }).catch(() => {
+            Logger.error(TAG, `Logout failed`);
+          });
+        }
+      }).catch(() => {
+        Logger.error(TAG, `showDialog failed`);
+      });
+    } catch (_) {
+      Logger.error(TAG, `handleLogout failed`);
+    }
+  }
+
+  aboutToAppear() {
+    this.checkLoginStatus();
+  }
+
   build() {
-    Scroll() {
-      Column() {
-        // 用户信息区域
-        this.UserInfoSection()
-
-        // 订单统计
-        this.OrderStatistics()
-
-        // 功能菜单列表
+    if (!this.isLoggedIn) {
+      // 显示登录页面
+      LoginComponent({
+        currentThemeColors: this.currentThemeColors,
+        onLoginSuccess: (username: string) => {
+          this.userName = username;
+        }
+      })
+    } else {
+      // 显示个人信息页面
+      Scroll() {
         Column() {
-          ForEach(this.menuItems, (item: MenuItem) => {
-            this.MenuItemBuilder(item)
-            Divider()
-              .strokeWidth(1)
-              .color('#F0F0F0')
-          })
+          // 用户信息区域
+          this.UserInfoSection()
+
+          // 订单统计
+          this.OrderStatistics()
+
+          // 功能菜单列表
+          Column() {
+            ForEach(this.menuItems, (item: MenuItem) => {
+              this.MenuItemBuilder(item)
+              Divider()
+                .strokeWidth(1)
+                .color(this.currentThemeColors.dividerColor)
+            })
+          }
+          .width(LAYOUT_WIDTH_OR_HEIGHT)
+          .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+          .borderRadius(8)
+          .margin({ top: 8 })
+
+          // 退出登录按钮
+          Button('登出')
+            .fontSize(NORMAL_FONT_SIZE)
+            .fontColor(this.currentThemeColors.accentColor)
+            .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+            .width(LAYOUT_WIDTH_OR_HEIGHT)
+            .height(48)
+            .margin({ top: 16, bottom: 16 })
+            .borderRadius(8)
+            .onClick(() => {
+              this.handleLogout();
+            })
         }
         .width(LAYOUT_WIDTH_OR_HEIGHT)
-        .backgroundColor('#FFFFFF')
-        .borderRadius(8)
-        .margin({ top: 8 })
-
-        // 退出登录按钮
-        Button($r('app.string.logout'))
-          .fontSize(NORMAL_FONT_SIZE)
-          .fontColor('#FF4D4F')
-          .backgroundColor('#FFFFFF')
-          .width(LAYOUT_WIDTH_OR_HEIGHT)
-          .height(48)
-          .margin({ top: 16, bottom: 16 })
-          .borderRadius(8)
+        .padding(8)
       }
       .width(LAYOUT_WIDTH_OR_HEIGHT)
-      .padding(8)
+      .height(LAYOUT_WIDTH_OR_HEIGHT)
+      .backgroundColor(this.currentThemeColors.backgroundColor)
     }
-    .width(LAYOUT_WIDTH_OR_HEIGHT)
-    .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .backgroundColor('#F5F5F5')
   }
 }

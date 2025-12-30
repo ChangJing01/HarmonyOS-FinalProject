@@ -26,6 +26,7 @@ import {
 } from '../common/CommonConstants';
 import GoodsList from './GoodsListComponent';
 import PutDownRefresh from './PutDownRefreshLayout';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 @Component
 export default struct TabBar {
@@ -34,36 +35,10 @@ export default struct TabBar {
   @State tabsIndex: number = 0;
   @State refreshStatus: boolean = false;
   @State refreshText: Resource = $r('app.string.refresh_text');
+  @Link layoutMode: 'list' | 'grid';
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
 
-  @Builder
-  firstTabBar() {
-    Column() {
-      Text($r('app.string.selected'))
-        .fontSize(this.tabsIndex === 0 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
-        .fontColor(this.tabsIndex === 0 ? Color.Black : $r('app.color.gray'))
-        .maxLines(MAX_LINES_TEXT)
-        .minFontSize(this.tabsIndex === 0 ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE)
-        .maxFontSize(this.tabsIndex === 0 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
-    }
-    .width(LAYOUT_WIDTH_OR_HEIGHT)
-    .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .justifyContent(FlexAlign.Center)
-  }
-
-  @Builder
-  otherTabBar(content: Resource, index: number) {
-    Column() {
-      Text(content)
-        .fontSize(this.tabsIndex === index + 1 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
-        .fontColor(this.tabsIndex === index + 1 ? Color.Black : $r('app.color.gray'))
-        .maxLines(MAX_LINES_TEXT)
-        .minFontSize(this.tabsIndex === index + 1 ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE)
-        .maxFontSize(this.tabsIndex === index + 1 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
-    }
-    .width(LAYOUT_WIDTH_OR_HEIGHT)
-    .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .justifyContent(FlexAlign.Center)
-  }
+  private tabData: Resource[] = [$r('app.string.selected'), ...initTabBarData];
 
   putDownRefresh(event?: TouchEvent): void {
     if (event === undefined) {
@@ -91,48 +66,103 @@ export default struct TabBar {
     }
   }
 
-  aboutToDisappear() {
-    clearTimeout(this.timer);
+  @Builder
+  TabItem(content: Resource, index: number) {
+    Column() {
+      Text(content)
+        .fontSize(this.tabsIndex === index ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
+        .fontColor(this.tabsIndex === index ? this.currentThemeColors.primaryTextColor : this.currentThemeColors.secondaryTextColor)
+        .maxLines(MAX_LINES_TEXT)
+        .minFontSize(this.tabsIndex === index ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE)
+        .maxFontSize(this.tabsIndex === index ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
+        .fontWeight(this.tabsIndex === index ? FontWeight.Bold : FontWeight.Normal)
+
+      if (this.tabsIndex === index) {
+        Divider()
+          .width(40)
+          .height(3)
+          .color(this.currentThemeColors.accentColor)
+          .margin({ top: 4 })
+      }
+    }
+    .padding({ left: 12, right: 12 })
+    .height(56)
+    .justifyContent(FlexAlign.Center)
+    .onClick(() => {
+      this.tabsIndex = index;
+    })
+  }
+
+  @Builder
+  getContent() {
+    if (this.tabsIndex === 0) {
+      Column() {
+        if (this.refreshStatus) {
+          PutDownRefresh({ refreshText: $refreshText })
+        }
+        GoodsList({
+          layoutMode: this.layoutMode
+        })
+        Text($r('app.string.to_bottom')).fontSize(NORMAL_FONT_SIZE).fontColor($r('app.color.gray'))
+      }
+    } else {
+      Column() {
+        Text(initTabBarData[this.tabsIndex - 1]).fontSize(MAX_FONT_SIZE)
+      }
+      .justifyContent(FlexAlign.Center)
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+      .height(LAYOUT_WIDTH_OR_HEIGHT)
+    }
   }
 
   build() {
-    Tabs() {
-      TabContent() {
+    Column() {
+      // 顶部导航栏：tabs 和 布局切换按钮
+      Row() {
+        // Tabs 部分
         Scroll() {
-          Column() {
-            if (this.refreshStatus) {
-              PutDownRefresh({ refreshText: $refreshText })
-            }
-            GoodsList()
-            Text($r('app.string.to_bottom')).fontSize(NORMAL_FONT_SIZE).fontColor($r('app.color.gray'))
+          Row({ space: 12 }) {
+            ForEach(this.tabData, (item: Resource, index?: number) => {
+              this.TabItem(item, index !== undefined ? index : 0)
+            })
           }
           .width(LAYOUT_WIDTH_OR_HEIGHT)
+          .padding({ left: 8, right: 8 })
         }
+        .scrollable(ScrollDirection.Horizontal)
         .scrollBar(BarState.Off)
-        .edgeEffect(EdgeEffect.Spring)
-        .width(LAYOUT_WIDTH_OR_HEIGHT)
-        .height(LAYOUT_WIDTH_OR_HEIGHT)
-        .onTouch((event?: TouchEvent) => {
-          this.putDownRefresh(event);
-        })
-      }
-      .tabBar(this.firstTabBar)
+        .layoutWeight(1)
 
-      ForEach(initTabBarData, (item: Resource, index?: number) => {
-        TabContent() {
-          Column() {
-            Text(item).fontSize(MAX_FONT_SIZE)
-          }
-          .justifyContent(FlexAlign.Center)
-          .width(LAYOUT_WIDTH_OR_HEIGHT)
-          .height(LAYOUT_WIDTH_OR_HEIGHT)
-        }
-        .tabBar(this.otherTabBar(item, index !== undefined ? index : 0))
+        // 布局切换按钮
+        Text(this.layoutMode === 'list' ? '⊞' : '☰')
+          .fontSize(16)
+          .fontColor(this.currentThemeColors.secondaryTextColor)
+          .width(40)
+          .height(56)
+          .textAlign(TextAlign.Center)
+          .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+          .onClick(() => {
+            this.layoutMode = this.layoutMode === 'list' ? 'grid' : 'list';
+          })
+      }
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+      .height(56)
+      .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+
+      // 内容区域
+      Scroll() {
+        this.getContent()
+      }
+      .scrollable(ScrollDirection.Vertical)
+      .scrollBar(BarState.Off)
+      .edgeEffect(EdgeEffect.Spring)
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+      .layoutWeight(1)
+      .onTouch((event?: TouchEvent) => {
+        this.putDownRefresh(event);
       })
     }
-    .onChange((index: number) => {
-      this.tabsIndex = index;
-    })
-    .vertical(false)
+    .width(LAYOUT_WIDTH_OR_HEIGHT)
+    .height(LAYOUT_WIDTH_OR_HEIGHT)
   }
 }
