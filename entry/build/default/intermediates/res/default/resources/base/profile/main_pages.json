@@ -1,7 +1,0 @@
-{
-  "src": [
-    "pages/ListIndex",
-    "pages/GoodsDetailPage",
-    "pages/PublishGoodsPage"
-  ]
-}
