@@ -18,9 +18,11 @@ import { GoodsListItemType } from '../viewmodel/InitialData';
 import { ListDataSource } from '../viewmodel/ListDataSource';
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 import router from '@ohos.router'; // 引入路由模块
+import promptAction from '@ohos.promptAction';
 
 @Component
 export default struct GoodsList {
+  @StorageLink('compareList') compareList: GoodsListItemType[] = [];
   @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
   @Provide goodsListData: ListDataSource = ListDataSource.getInstance();
   @Prop layoutMode: 'list' | 'grid' = 'list'; // 添加布局模式属性
