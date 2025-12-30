@@ -129,7 +129,7 @@ export default struct ShoppingCartPage {
         .fontColor(this.currentThemeColors.primaryTextColor)
 
       if (this.cartItems.length > 0) {
-        Text('一键清空')
+        Text('全部清空')
           .fontSize(SMALL_FONT_SIZE)
           .fontColor('#FF4D4F') // 使用红色提示风险
           .onClick(() => this.clearCart())
