@@ -1,0 +1,448 @@
+if (!("finalizeConstruction" in ViewPU.prototype)) {
+    Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
+}
+interface ShoppingCartPage_Params {
+    cartItems?: CartItem[];
+    isAllSelected?: boolean;
+    totalPrice?: number;
+}
+import { LAYOUT_WIDTH_OR_HEIGHT, NORMAL_FONT_SIZE, BIGGER_FONT_SIZE, SMALL_FONT_SIZE, BUTTON_HEIGHT, BUTTON_BORDER_RADIUS } from "@bundle:com.example.list_harmony/entry/ets/common/CommonConstants";
+interface CartItem {
+    id: number;
+    name: Resource;
+    price: string;
+    quantity: number;
+    image: Resource;
+    selected: boolean;
+}
+export default class ShoppingCartPage extends ViewPU {
+    constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
+        super(parent, __localStorage, elmtId, extraInfo);
+        if (typeof paramsLambda === "function") {
+            this.paramsGenerator_ = paramsLambda;
+        }
+        this.__cartItems = new ObservedPropertyObjectPU([
+            {
+                id: 1,
+                name: { "id": 16777250, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                price: '¥199',
+                quantity: 1,
+                image: { "id": 16777229, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                selected: false
+            },
+            {
+                id: 2,
+                name: { "id": 16777235, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                price: '¥265',
+                quantity: 2,
+                image: { "id": 16777301, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                selected: false
+            }
+        ], this, "cartItems");
+        this.__isAllSelected = new ObservedPropertySimplePU(false, this, "isAllSelected");
+        this.__totalPrice = new ObservedPropertySimplePU(0, this, "totalPrice");
+        this.setInitiallyProvidedValue(params);
+        this.finalizeConstruction();
+    }
+    setInitiallyProvidedValue(params: ShoppingCartPage_Params) {
+        if (params.cartItems !== undefined) {
+            this.cartItems = params.cartItems;
+        }
+        if (params.isAllSelected !== undefined) {
+            this.isAllSelected = params.isAllSelected;
+        }
+        if (params.totalPrice !== undefined) {
+            this.totalPrice = params.totalPrice;
+        }
+    }
+    updateStateVars(params: ShoppingCartPage_Params) {
+    }
+    purgeVariableDependenciesOnElmtId(rmElmtId) {
+        this.__cartItems.purgeDependencyOnElmtId(rmElmtId);
+        this.__isAllSelected.purgeDependencyOnElmtId(rmElmtId);
+        this.__totalPrice.purgeDependencyOnElmtId(rmElmtId);
+    }
+    aboutToBeDeleted() {
+        this.__cartItems.aboutToBeDeleted();
+        this.__isAllSelected.aboutToBeDeleted();
+        this.__totalPrice.aboutToBeDeleted();
+        SubscriberManager.Get().delete(this.id__());
+        this.aboutToBeDeletedInternal();
+    }
+    private __cartItems: ObservedPropertyObjectPU<CartItem[]>;
+    get cartItems() {
+        return this.__cartItems.get();
+    }
+    set cartItems(newValue: CartItem[]) {
+        this.__cartItems.set(newValue);
+    }
+    private __isAllSelected: ObservedPropertySimplePU<boolean>;
+    get isAllSelected() {
+        return this.__isAllSelected.get();
+    }
+    set isAllSelected(newValue: boolean) {
+        this.__isAllSelected.set(newValue);
+    }
+    private __totalPrice: ObservedPropertySimplePU<number>;
+    get totalPrice() {
+        return this.__totalPrice.get();
+    }
+    set totalPrice(newValue: number) {
+        this.__totalPrice.set(newValue);
+    }
+    calculateTotalPrice() {
+        this.totalPrice = 0;
+        this.cartItems.forEach(item => {
+            if (item.selected) {
+                const price = parseFloat(item.price.replace('¥', ''));
+                this.totalPrice += price * item.quantity;
+            }
+        });
+    }
+    toggleSelectAll() {
+        this.isAllSelected = !this.isAllSelected;
+        this.cartItems.forEach(item => {
+            item.selected = this.isAllSelected;
+        });
+        this.calculateTotalPrice();
+    }
+    toggleItemSelect(index: number) {
+        this.cartItems[index].selected = !this.cartItems[index].selected;
+        this.isAllSelected = this.cartItems.every(item => item.selected);
+        this.calculateTotalPrice();
+    }
+    updateQuantity(index: number, delta: number) {
+        const newQuantity = this.cartItems[index].quantity + delta;
+        if (newQuantity >= 1 && newQuantity <= 99) {
+            this.cartItems[index].quantity = newQuantity;
+            this.calculateTotalPrice();
+        }
+    }
+    deleteSelectedItems() {
+        this.cartItems = this.cartItems.filter(item => !item.selected);
+        this.isAllSelected = false;
+        this.calculateTotalPrice();
+    }
+    CartItemBuilder(item: CartItem, index: number, parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Row.create({ space: 12 });
+            Row.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(97:5)", "entry");
+            Row.width(LAYOUT_WIDTH_OR_HEIGHT);
+            Row.padding(12);
+            Row.backgroundColor('#FFFFFF');
+            Row.borderRadius(8);
+            Row.alignItems(VerticalAlign.Top);
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // 选择框
+            Checkbox.create();
+            Checkbox.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(99:7)", "entry");
+            // 选择框
+            Checkbox.select(item.selected);
+            // 选择框
+            Checkbox.selectedColor('#FF4D4F');
+            // 选择框
+            Checkbox.onChange((value: boolean) => {
+                this.toggleItemSelect(index);
+            });
+        }, Checkbox);
+        // 选择框
+        Checkbox.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // 商品图片
+            Image.create(item.image);
+            Image.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(107:7)", "entry");
+            // 商品图片
+            Image.width(80);
+            // 商品图片
+            Image.height(80);
+            // 商品图片
+            Image.borderRadius(8);
+            // 商品图片
+            Image.objectFit(ImageFit.Cover);
+        }, Image);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // 商品信息
+            Column.create({ space: 8 });
+            Column.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(114:7)", "entry");
+            // 商品信息
+            Column.alignItems(HorizontalAlign.Start);
+            // 商品信息
+            Column.layoutWeight(1);
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create(item.name);
+            Text.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(115:9)", "entry");
+            Text.fontSize(NORMAL_FONT_SIZE);
+            Text.fontColor('#333333');
+            Text.maxLines(2);
+            Text.textOverflow({ overflow: TextOverflow.Ellipsis });
+        }, Text);
+        Text.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create(item.price);
+            Text.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(121:9)", "entry");
+            Text.fontSize(BIGGER_FONT_SIZE);
+            Text.fontColor('#FF4D4F');
+            Text.fontWeight(FontWeight.Bold);
+        }, Text);
+        Text.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // 数量选择器
+            Row.create({ space: 8 });
+            Row.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(127:9)", "entry");
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Button.createWithLabel('-');
+            Button.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(128:11)", "entry");
+            Button.width(28);
+            Button.height(28);
+            Button.fontSize(NORMAL_FONT_SIZE);
+            Button.backgroundColor(item.quantity <= 1 ? '#F5F5F5' : '#FF4D4F');
+            Button.fontColor(item.quantity <= 1 ? '#CCCCCC' : '#FFFFFF');
+            Button.enabled(item.quantity > 1);
+            Button.onClick(() => {
+                this.updateQuantity(index, -1);
+            });
+        }, Button);
+        Button.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create(item.quantity.toString());
+            Text.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(139:11)", "entry");
+            Text.fontSize(NORMAL_FONT_SIZE);
+            Text.fontColor('#333333');
+            Text.width(32);
+            Text.textAlign(TextAlign.Center);
+        }, Text);
+        Text.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Button.createWithLabel('+');
+            Button.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(145:11)", "entry");
+            Button.width(28);
+            Button.height(28);
+            Button.fontSize(NORMAL_FONT_SIZE);
+            Button.backgroundColor('#FF4D4F');
+            Button.fontColor('#FFFFFF');
+            Button.onClick(() => {
+                this.updateQuantity(index, 1);
+            });
+        }, Button);
+        Button.pop();
+        // 数量选择器
+        Row.pop();
+        // 商品信息
+        Column.pop();
+        Row.pop();
+    }
+    EmptyCartBuilder(parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create({ space: 16 });
+            Column.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(168:5)", "entry");
+            Column.width(LAYOUT_WIDTH_OR_HEIGHT);
+            Column.height(LAYOUT_WIDTH_OR_HEIGHT);
+            Column.justifyContent(FlexAlign.Center);
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // Image($r('app.media.ic_empty_cart'))
+            //   .width(120)
+            //   .height(120)
+            // 空购物车图标
+            Circle.create();
+            Circle.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(173:7)", "entry");
+            // Image($r('app.media.ic_empty_cart'))
+            //   .width(120)
+            //   .height(120)
+            // 空购物车图标
+            Circle.width(120);
+            // Image($r('app.media.ic_empty_cart'))
+            //   .width(120)
+            //   .height(120)
+            // 空购物车图标
+            Circle.height(120);
+            // Image($r('app.media.ic_empty_cart'))
+            //   .width(120)
+            //   .height(120)
+            // 空购物车图标
+            Circle.fill('#E0E0E0');
+        }, Circle);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create({ "id": 16777245, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+            Text.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(178:7)", "entry");
+            Text.fontSize(NORMAL_FONT_SIZE);
+            Text.fontColor('#999999');
+        }, Text);
+        Text.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Button.createWithLabel({ "id": 16777249, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+            Button.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(182:7)", "entry");
+            Button.fontSize(NORMAL_FONT_SIZE);
+            Button.fontColor('#FFFFFF');
+            Button.backgroundColor('#FF4D4F');
+            Button.height(BUTTON_HEIGHT);
+            Button.borderRadius(BUTTON_BORDER_RADIUS);
+            Button.width(200);
+        }, Button);
+        Button.pop();
+        Column.pop();
+    }
+    BottomBar(parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Row.create({ space: 12 });
+            Row.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(197:5)", "entry");
+            Row.width(LAYOUT_WIDTH_OR_HEIGHT);
+            Row.height(72);
+            Row.padding({ left: 16, right: 16, top: 12, bottom: 12 });
+            Row.backgroundColor('#FFFFFF');
+            Row.shadow({
+                radius: 8,
+                color: '#00000015',
+                offsetY: -2
+            });
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // 全选
+            Row.create({ space: 8 });
+            Row.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(199:7)", "entry");
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Checkbox.create();
+            Checkbox.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(200:9)", "entry");
+            Checkbox.select(this.isAllSelected);
+            Checkbox.selectedColor('#FF4D4F');
+            Checkbox.onChange(() => {
+                this.toggleSelectAll();
+            });
+        }, Checkbox);
+        Checkbox.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create({ "id": 16777282, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+            Text.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(207:9)", "entry");
+            Text.fontSize(SMALL_FONT_SIZE);
+            Text.fontColor('#333333');
+        }, Text);
+        Text.pop();
+        // 全选
+        Row.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // 总价
+            Column.create({ space: 4 });
+            Column.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(213:7)", "entry");
+            // 总价
+            Column.layoutWeight(1);
+            // 总价
+            Column.alignItems(HorizontalAlign.End);
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Row.create({ space: 4 });
+            Row.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(214:9)", "entry");
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create({ "id": 16777299, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+            Text.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(215:11)", "entry");
+            Text.fontSize(SMALL_FONT_SIZE);
+            Text.fontColor('#666666');
+        }, Text);
+        Text.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create('¥' + this.totalPrice.toFixed(2));
+            Text.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(219:11)", "entry");
+            Text.fontSize(BIGGER_FONT_SIZE);
+            Text.fontColor('#FF4D4F');
+            Text.fontWeight(FontWeight.Bold);
+        }, Text);
+        Text.pop();
+        Row.pop();
+        // 总价
+        Column.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // 结算按钮
+            Button.createWithLabel({ "id": 16777239, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+            Button.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(229:7)", "entry");
+            // 结算按钮
+            Button.fontSize(NORMAL_FONT_SIZE);
+            // 结算按钮
+            Button.fontColor('#FFFFFF');
+            // 结算按钮
+            Button.backgroundColor('#FF4D4F');
+            // 结算按钮
+            Button.height(BUTTON_HEIGHT);
+            // 结算按钮
+            Button.borderRadius(BUTTON_BORDER_RADIUS);
+            // 结算按钮
+            Button.width(120);
+        }, Button);
+        // 结算按钮
+        Button.pop();
+        Row.pop();
+    }
+    initialRender() {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create();
+            Column.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(249:5)", "entry");
+            Column.width(LAYOUT_WIDTH_OR_HEIGHT);
+            Column.height(LAYOUT_WIDTH_OR_HEIGHT);
+            Column.backgroundColor('#F5F5F5');
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            If.create();
+            if (this.cartItems.length === 0) {
+                this.ifElseBranchUpdateFunction(0, () => {
+                    this.EmptyCartBuilder.bind(this)();
+                });
+            }
+            else {
+                this.ifElseBranchUpdateFunction(1, () => {
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        // 购物车列表
+                        List.create({ space: 8 });
+                        List.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(254:9)", "entry");
+                        // 购物车列表
+                        List.layoutWeight(1);
+                        // 购物车列表
+                        List.padding(8);
+                        // 购物车列表
+                        List.backgroundColor('#F5F5F5');
+                    }, List);
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        ForEach.create();
+                        const forEachItemGenFunction = (_item, index?: number) => {
+                            const item = _item;
+                            {
+                                const itemCreation = (elmtId, isInitialRender) => {
+                                    ViewStackProcessor.StartGetAccessRecordingFor(elmtId);
+                                    ListItem.create(deepRenderFunction, true);
+                                    if (!isInitialRender) {
+                                        ListItem.pop();
+                                    }
+                                    ViewStackProcessor.StopGetAccessRecording();
+                                };
+                                const itemCreation2 = (elmtId, isInitialRender) => {
+                                    ListItem.create(deepRenderFunction, true);
+                                    ListItem.debugLine("entry/src/main/ets/pages/ShoppingCartPage.ets(256:13)", "entry");
+                                };
+                                const deepRenderFunction = (elmtId, isInitialRender) => {
+                                    itemCreation(elmtId, isInitialRender);
+                                    this.CartItemBuilder.bind(this)(item, index !== undefined ? index : 0);
+                                    ListItem.pop();
+                                };
+                                this.observeComponentCreation2(itemCreation2, ListItem);
+                                ListItem.pop();
+                            }
+                        };
+                        this.forEachUpdateFunction(elmtId, this.cartItems, forEachItemGenFunction, undefined, true, false);
+                    }, ForEach);
+                    ForEach.pop();
+                    // 购物车列表
+                    List.pop();
+                    // 底部操作栏
+                    this.BottomBar.bind(this)();
+                });
+            }
+        }, If);
+        If.pop();
+        Column.pop();
+    }
+    rerender() {
+        this.updateDirtyElements();
+    }
+}
