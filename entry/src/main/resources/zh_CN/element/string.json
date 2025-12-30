@@ -253,6 +253,10 @@
       "value": "商品对比"
     },
     {
+      "name": "publish_goods",
+      "value": "发布商品"
+    },
+    {
       "name": "clear_cache",
       "value": "清除缓存"
     },

@@ -28,6 +28,7 @@ import {
 @Component
 struct ListIndex {
   @State currentTabIndex: number = 0;
+  @State layoutMode: 'list' | 'grid' = 'list'; // 添加布局模式状态
   @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;//使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
 
 
@@ -65,11 +66,9 @@ struct ListIndex {
   PageContent() {
     if (this.currentTabIndex === 0) {
       // 首页内容
-      Column() {
-        TabBar()
-      }
-      .width(LAYOUT_WIDTH_OR_HEIGHT)
-      .height(LAYOUT_WIDTH_OR_HEIGHT)
+      TabBar({
+        layoutMode: $layoutMode
+      })
     } else if (this.currentTabIndex === 1) {
       // 分类页面
       CategoryPage()

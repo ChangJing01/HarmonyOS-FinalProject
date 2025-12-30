@@ -23,12 +23,12 @@ $r('app.string.home_furnishing')
 export class GoodsListItemType {
   id:number;
   goodsImg: Resource;
-  goodsName: Resource;
-  advertisingLanguage: Resource;
-  evaluate: Resource;
-  price: Resource;
+  goodsName: string | Resource;
+  advertisingLanguage: string | Resource;
+  evaluate: string | Resource;
+  price: string | Resource;
 
-  constructor(id: number, goodsImg: Resource, goodsName: Resource, price: Resource) {
+  constructor(id: number, goodsImg: Resource, goodsName: string | Resource, price: string | Resource) {
     this.id = id;
     this.goodsImg = goodsImg;
     this.goodsName = goodsName;
