@@ -43,7 +43,7 @@ export default struct PersonalPage {
     { id:1, icon: $r('app.media.ic_order'), title: $r('app.string.my_orders'), showArrow: true },
     { id:2, icon: $r('app.media.ic_history'), title: $r('app.string.browse_history'), showArrow: true },
     { id:3, icon: $r('app.media.ic_theme'), title: $r('app.string.theme_settings'), showArrow: true },
-    { id:4, icon: $r('app.media.ic_compare'), title: $r('app.string.goods_compare'), showArrow: true },
+    //{ id:4, icon: $r('app.media.ic_compare'), title: $r('app.string.goods_compare'), showArrow: true },（可选）替换为“浏览历史”
     { id:5, icon: $r('app.media.ic_clear'), title: $r('app.string.clear_cache'), showArrow: true },
     { id:6, icon: $r('app.media.ic_about'), title: $r('app.string.about_us'), showArrow: true }
   ];
