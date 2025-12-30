@@ -107,15 +107,28 @@ export default struct GoodsList {
                 .width(commonConst.GOODS_IMAGE_WIDTH)
                 .height(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
 
-                Column() {
-                  Text(item?.goodsName)
-                    .fontSize(commonConst.NORMAL_FONT_SIZE)
-                    .fontColor(this.currentThemeColors.primaryTextColor)
+  build() {
+    if (this.layoutMode === 'list') {
+      // 平铺布局（原有布局）
+      Stack({ alignContent: Alignment.BottomEnd }) {
+        Row() {
+          List({ space: commonConst.LIST_ITEM_SPACE }) {
+            LazyForEach(this.goodsListData, (item: GoodsListItemType) => {
+              ListItem() {
+                Row() {
+                  Column() {
+                    Image(item?.goodsImg)
+                      .width(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
+                      .height(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
+                      .draggable(false)
+                  }
+                  .width(commonConst.GOODS_IMAGE_WIDTH)
+                  .height(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
 
-                  Text(item?.advertisingLanguage)
-                    .fontColor(this.currentThemeColors.primaryTextColor)
-                    .fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE)
-                    .margin({ right: commonConst.MARGIN_RIGHT })
+                  Column() {
+                    Text(item?.goodsName)
+                      .fontSize(commonConst.NORMAL_FONT_SIZE)
+                      .fontColor(this.currentThemeColors.primaryTextColor)
 
                   Row() {
                     Text(item?.evaluate)
@@ -127,10 +140,9 @@ export default struct GoodsList {
                   .justifyContent(FlexAlign.SpaceAround)
                   .width(commonConst.GOODS_LIST_WIDTH)
                 }
-                .padding(commonConst.GOODS_LIST_PADDING)
-                .width(commonConst.GOODS_FONT_WIDTH)
-                .height(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
                 .justifyContent(FlexAlign.SpaceBetween)
+                .height(commonConst.GOODS_LIST_HEIGHT)
+                .width(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
               }
               .justifyContent(FlexAlign.SpaceBetween)
               .height(commonConst.GOODS_LIST_HEIGHT)
@@ -165,7 +177,9 @@ export default struct GoodsList {
                 }
               });
             })
-          })
+          }
+          .width(commonConst.GOODS_LIST_WIDTH)
+          .divider({ strokeWidth: 1, color: this.currentThemeColors.dividerColor })
         }
         .width(commonConst.GOODS_LIST_WIDTH)
         .divider({
