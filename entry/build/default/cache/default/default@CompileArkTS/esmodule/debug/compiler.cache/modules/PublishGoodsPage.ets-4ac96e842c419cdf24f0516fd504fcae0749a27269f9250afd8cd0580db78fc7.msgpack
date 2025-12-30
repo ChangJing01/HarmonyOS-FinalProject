@@ -1,533 +1,0 @@
-Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚ1Ïif (!("finalizeConstruction" in ViewPU.prototype)) {
-    Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
-}
-/*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
- * Licensed under the Apache License,Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-import { LAYOUT_WIDTH_OR_HEIGHT, NORMAL_FONT_SIZE, BIGGER_FONT_SIZE } from '../common/CommonConstants';
-import { GoodsListItemType } from '../viewmodel/InitialData';
-import { ListDataSource } from '../viewmodel/ListDataSource';
-import { DEFAULT_THEME } from '../common/Colors';
-import router from '@ohos.router';
-export default class PublishGoodsPage extends ViewPU {
-    constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
-        super(parent, __localStorage, elmtId, extraInfo);
-        if (typeof paramsLambda === "function") {
-            this.paramsGenerator_ = paramsLambda;
-        }
-        this.__goodsName = new ObservedPropertySimplePU('', this, "goodsName");
-        this.__goodsDescription = new ObservedPropertySimplePU('', this, "goodsDescription");
-        this.__goodsPrice = new ObservedPropertySimplePU('', this, "goodsPrice");
-        this.__goodsImage = new ObservedPropertyObjectPU({ "id": 16777294, "type": 20000, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, this, "goodsImage");
-        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
-        this.dataSource = ListDataSource.getInstance();
-        this.setInitiallyProvidedValue(params);
-        this.finalizeConstruction();
-    }
-    setInitiallyProvidedValue(params) {
-        if (params.goodsName !== undefined) {
-            this.goodsName = params.goodsName;
-        }
-        if (params.goodsDescription !== undefined) {
-            this.goodsDescription = params.goodsDescription;
-        }
-        if (params.goodsPrice !== undefined) {
-            this.goodsPrice = params.goodsPrice;
-        }
-        if (params.goodsImage !== undefined) {
-            this.goodsImage = params.goodsImage;
-        }
-        if (params.dataSource !== undefined) {
-            this.dataSource = params.dataSource;
-        }
-    }
-    updateStateVars(params) {
-    }
-    purgeVariableDependenciesOnElmtId(rmElmtId) {
-        this.__goodsName.purgeDependencyOnElmtId(rmElmtId);
-        this.__goodsDescription.purgeDependencyOnElmtId(rmElmtId);
-        this.__goodsPrice.purgeDependencyOnElmtId(rmElmtId);
-        this.__goodsImage.purgeDependencyOnElmtId(rmElmtId);
-        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
-    }
-    aboutToBeDeleted() {
-        this.__goodsName.aboutToBeDeleted();
-        this.__goodsDescription.aboutToBeDeleted();
-        this.__goodsPrice.aboutToBeDeleted();
-        this.__goodsImage.aboutToBeDeleted();
-        this.__currentThemeColors.aboutToBeDeleted();
-        SubscriberManager.Get().delete(this.id__());
-        this.aboutToBeDeletedInternal();
-    }
-    get goodsName() {
-        return this.__goodsName.get();
-    }
-    set goodsName(newValue) {
-        this.__goodsName.set(newValue);
-    }
-    get goodsDescription() {
-        return this.__goodsDescription.get();
-    }
-    set goodsDescription(newValue) {
-        this.__goodsDescription.set(newValue);
-    }
-    get goodsPrice() {
-        return this.__goodsPrice.get();
-    }
-    set goodsPrice(newValue) {
-        this.__goodsPrice.set(newValue);
-    }
-    get goodsImage() {
-        return this.__goodsImage.get();
-    }
-    set goodsImage(newValue) {
-        this.__goodsImage.set(newValue);
-    }
-    get currentThemeColors() {
-        return this.__currentThemeColors.get();
-    }
-    set currentThemeColors(newValue) {
-        this.__currentThemeColors.set(newValue);
-    }
-    initialRender() {
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Scroll.create();
-            Scroll.width(LAYOUT_WIDTH_OR_HEIGHT);
-            Scroll.height(LAYOUT_WIDTH_OR_HEIGHT);
-            Scroll.backgroundColor(this.currentThemeColors.backgroundColor);
-        }, Scroll);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Column.create({ space: 16 });
-            Column.width(LAYOUT_WIDTH_OR_HEIGHT);
-            Column.padding(16);
-        }, Column);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            // æ ‡é¢˜
-            Text.create({ "id": 16777318, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
-            // æ ‡é¢˜
-            Text.fontSize(BIGGER_FONT_SIZE);
-            // æ ‡é¢˜
-            Text.fontColor(this.currentThemeColors.primaryTextColor);
-            // æ ‡é¢˜
-            Text.fontWeight(FontWeight.Bold);
-            // æ ‡é¢˜
-            Text.margin({ top: 16 });
-        }, Text);
-        // æ ‡é¢˜
-        Text.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            // å•†å“åç§°
-            Column.create({ space: 8 });
-        }, Column);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Text.create('å•†å“åç§°');
-            Text.fontSize(NORMAL_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.primaryTextColor);
-        }, Text);
-        Text.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            TextInput.create({ placeholder: 'è¯·è¾“å…¥å•†å“åç§°', text: this.goodsName });
-            TextInput.width(LAYOUT_WIDTH_OR_HEIGHT);
-            TextInput.height(48);
-            TextInput.backgroundColor(this.currentThemeColors.cardBackgroundColor);
-            TextInput.borderRadius(8);
-            TextInput.padding(8);
-            TextInput.onChange((value) => {
-                this.goodsName = value;
-            });
-        }, TextInput);
-        // å•†å“åç§°
-        Column.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            // å•†å“æè¿°
-            Column.create({ space: 8 });
-        }, Column);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Text.create('å•†å“æè¿°');
-            Text.fontSize(NORMAL_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.primaryTextColor);
-        }, Text);
-        Text.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            TextInput.create({ placeholder: 'è¯·è¾“å…¥å•†å“æè¿°', text: this.goodsDescription });
-            TextInput.width(LAYOUT_WIDTH_OR_HEIGHT);
-            TextInput.height(80);
-            TextInput.backgroundColor(this.currentThemeColors.cardBackgroundColor);
-            TextInput.borderRadius(8);
-            TextInput.padding(8);
-            TextInput.onChange((value) => {
-                this.goodsDescription = value;
-            });
-        }, TextInput);
-        // å•†å“æè¿°
-        Column.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            // å•†å“ä»·æ ¼
-            Column.create({ space: 8 });
-        }, Column);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Text.create('å•†å“ä»·æ ¼');
-            Text.fontSize(NORMAL_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.primaryTextColor);
-        }, Text);
-        Text.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            TextInput.create({ placeholder: 'è¯·è¾“å…¥å•†å“ä»·æ ¼', text: this.goodsPrice });
-            TextInput.width(LAYOUT_WIDTH_OR_HEIGHT);
-            TextInput.height(48);
-            TextInput.backgroundColor(this.currentThemeColors.cardBackgroundColor);
-            TextInput.borderRadius(8);
-            TextInput.padding(8);
-            TextInput.type(InputType.Number);
-            TextInput.onChange((value) => {
-                this.goodsPrice = value;
-            });
-        }, TextInput);
-        // å•†å“ä»·æ ¼
-        Column.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            // å•†å“å›¾ç‰‡ï¼ˆå¯é€‰ï¼‰
-            Column.create({ space: 8 });
-        }, Column);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Text.create('å•†å“å›¾ç‰‡ (å¯é€‰)');
-            Text.fontSize(NORMAL_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.primaryTextColor);
-        }, Text);
-        Text.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Row.create({ space: 16 });
-        }, Row);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Image.create(this.goodsImage);
-            Image.width(100);
-            Image.height(100);
-            Image.borderRadius(8);
-        }, Image);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Button.createWithLabel('é€‰æ‹©å›¾ç‰‡');
-            Button.fontSize(NORMAL_FONT_SIZE);
-            Button.backgroundColor(this.currentThemeColors.accentColor);
-            Button.fontColor(Color.White);
-            Button.borderRadius(8);
-            Button.onClick(() => {
-                // é€‰æ‹©å›¾ç‰‡é€»è¾‘ï¼ˆæš‚æ—¶ä½¿ç”¨é»˜è®¤å›¾ç‰‡ï¼‰
-                // è¿™é‡Œå¯ä»¥é›†æˆå›¾ç‰‡é€‰æ‹©å™¨
-            });
-        }, Button);
-        Button.pop();
-        Row.pop();
-        // å•†å“å›¾ç‰‡ï¼ˆå¯é€‰ï¼‰
-        Column.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            // å‘å¸ƒæŒ‰é’®
-            Button.createWithLabel('å‘å¸ƒå•†å“');
-            // å‘å¸ƒæŒ‰é’®
-            Button.fontSize(NORMAL_FONT_SIZE);
-            // å‘å¸ƒæŒ‰é’®
-            Button.backgroundColor(this.currentThemeColors.accentColor);
-            // å‘å¸ƒæŒ‰é’®
-            Button.fontColor(Color.White);
-            // å‘å¸ƒæŒ‰é’®
-            Button.width(LAYOUT_WIDTH_OR_HEIGHT);
-            // å‘å¸ƒæŒ‰é’®
-            Button.height(48);
-            // å‘å¸ƒæŒ‰é’®
-            Button.borderRadius(8);
-            // å‘å¸ƒæŒ‰é’®
-            Button.margin({ top: 32 });
-            // å‘å¸ƒæŒ‰é’®
-            Button.onClick(() => {
-                this.publishGoods();
-            });
-        }, Button);
-        // å‘å¸ƒæŒ‰é’®
-        Button.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            // è¿”å›æŒ‰é’®
-            Button.createWithLabel('è¿”å›');
-            // è¿”å›æŒ‰é’®
-            Button.fontSize(NORMAL_FONT_SIZE);
-            // è¿”å›æŒ‰é’®
-            Button.backgroundColor(this.currentThemeColors.cardBackgroundColor);
-            // è¿”å›æŒ‰é’®
-            Button.fontColor(this.currentThemeColors.primaryTextColor);
-            // è¿”å›æŒ‰é’®
-            Button.width(LAYOUT_WIDTH_OR_HEIGHT);
-            // è¿”å›æŒ‰é’®
-            Button.height(48);
-            // è¿”å›æŒ‰é’®
-            Button.borderRadius(8);
-            // è¿”å›æŒ‰é’®
-            Button.onClick(() => {
-                router.back();
-            });
-        }, Button);
-        // è¿”å›æŒ‰é’®
-        Button.pop();
-        Column.pop();
-        Scroll.pop();
-    }
-    publishGoods() {
-        if (this.goodsName.trim() === '' || this.goodsPrice.trim() === '') {
-            // æ˜¾ç¤ºé”™è¯¯æç¤º
-            return;
-        }
-        const newItem = new GoodsListItemType(Date.now(), this.goodsImage, this.goodsName, this.goodsPrice);
-        newItem.advertisingLanguage = this.goodsDescription || 'æš‚æ— æè¿°';
-        newItem.evaluate = 'æ–°å‘å¸ƒ';
-        this.dataSource.addNewItem(newItem);
-        // è¿”å›ä¸Šä¸€é¡µ
-        router.back();
-    }
-    rerender() {
-        this.updateDirtyElements();
-    }
-    static getEntryName() {
-        return "PublishGoodsPage";
-    }
-}
-registerNamedRoute(() => new PublishGoodsPage(undefined, {}), "", { bundleName: "com.example.list_harmony", moduleName: "entry", pagePath: "pages/PublishGoodsPage", pageFullPath: "entry/src/main/ets/pages/PublishGoodsPage", integratedHsp: "false", moduleType: "followWithHap" });
-//# sourceMappingURL=PublishGoodsPage.js.mapÂ•ÙSE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\CommonConstants.etsÙRE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\viewmodel\InitialData.etsÙUE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\viewmodel\ListDataSource.etsÙJE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\Colors.etsÙ^ hvigor_ignore_D:_DevEcoStudio_DevEco Studio_sdk_default_openharmony_ets_api_@ohos.router.d.tsÙSE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\pages\PublishGoodsPage.etsÔrB›ªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙ+E:\VsCode\MIPP\HarmonyOS-FinalProject\entryÙ%E:\VsCode\MIPP\HarmonyOS-FinalProject¥entry¥1.0.0Ô  Ù+E:\VsCode\MIPP\HarmonyOS-FinalProject\entryÔrCÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationºgetTypeAtLocationForLinterÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFileÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚ§/*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
- * Licensed under the Apache License,Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import {
-  LAYOUT_WIDTH_OR_HEIGHT,
-  NORMAL_FONT_SIZE,
-  BIGGER_FONT_SIZE
-} from '../common/CommonConstants';
-import { GoodsListItemType } from '../viewmodel/InitialData';
-import { ListDataSource } from '../viewmodel/ListDataSource';
-import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
-import router from '@ohos.router';
-@Entry
-@Component
-export default struct PublishGoodsPage {
-  @State goodsName: string = '';
-  @State goodsDescription: string = '';
-  @State goodsPrice: string = '';
-  @State goodsImage: Resource = $r('app.media.goodsImg'); // é»˜è®¤å›¾ç‰‡
-  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
-
-  private dataSource: ListDataSource = ListDataSource.getInstance();
-
-  build() {
-    Scroll() {
-      Column({ space: 16 }) {
-        // æ ‡é¢˜
-        Text($r('app.string.publish_goods'))
-          .fontSize(BIGGER_FONT_SIZE)
-          .fontColor(this.currentThemeColors.primaryTextColor)
-          .fontWeight(FontWeight.Bold)
-          .margin({ top: 16 })
-
-        // å•†å“åç§°
-        Column({ space: 8 }) {
-          Text('å•†å“åç§°')
-            .fontSize(NORMAL_FONT_SIZE)
-            .fontColor(this.currentThemeColors.primaryTextColor)
-          TextInput({ placeholder: 'è¯·è¾“å…¥å•†å“åç§°', text: this.goodsName })
-            .width(LAYOUT_WIDTH_OR_HEIGHT)
-            .height(48)
-            .backgroundColor(this.currentThemeColors.cardBackgroundColor)
-            .borderRadius(8)
-            .padding(8)
-            .onChange((value: string) => {
-              this.goodsName = value;
-            })
-        }
-
-        // å•†å“æè¿°
-        Column({ space: 8 }) {
-          Text('å•†å“æè¿°')
-            .fontSize(NORMAL_FONT_SIZE)
-            .fontColor(this.currentThemeColors.primaryTextColor)
-          TextInput({ placeholder: 'è¯·è¾“å…¥å•†å“æè¿°', text: this.goodsDescription })
-            .width(LAYOUT_WIDTH_OR_HEIGHT)
-            .height(80)
-            .backgroundColor(this.currentThemeColors.cardBackgroundColor)
-            .borderRadius(8)
-            .padding(8)
-            .onChange((value: string) => {
-              this.goodsDescription = value;
-            })
-        }
-
-        // å•†å“ä»·æ ¼
-        Column({ space: 8 }) {
-          Text('å•†å“ä»·æ ¼')
-            .fontSize(NORMAL_FONT_SIZE)
-            .fontColor(this.currentThemeColors.primaryTextColor)
-          TextInput({ placeholder: 'è¯·è¾“å…¥å•†å“ä»·æ ¼', text: this.goodsPrice })
-            .width(LAYOUT_WIDTH_OR_HEIGHT)
-            .height(48)
-            .backgroundColor(this.currentThemeColors.cardBackgroundColor)
-            .borderRadius(8)
-            .padding(8)
-            .type(InputType.Number)
-            .onChange((value: string) => {
-              this.goodsPrice = value;
-            })
-        }
-
-        // å•†å“å›¾ç‰‡ï¼ˆå¯é€‰ï¼‰
-        Column({ space: 8 }) {
-          Text('å•†å“å›¾ç‰‡ (å¯é€‰)')
-            .fontSize(NORMAL_FONT_SIZE)
-            .fontColor(this.currentThemeColors.primaryTextColor)
-          Row({ space: 16 }) {
-            Image(this.goodsImage)
-              .width(100)
-              .height(100)
-              .borderRadius(8)
-            Button('é€‰æ‹©å›¾ç‰‡')
-              .fontSize(NORMAL_FONT_SIZE)
-              .backgroundColor(this.currentThemeColors.accentColor)
-              .fontColor(Color.White)
-              .borderRadius(8)
-              .onClick(() => {
-                // é€‰æ‹©å›¾ç‰‡é€»è¾‘ï¼ˆæš‚æ—¶ä½¿ç”¨é»˜è®¤å›¾ç‰‡ï¼‰
-                // è¿™é‡Œå¯ä»¥é›†æˆå›¾ç‰‡é€‰æ‹©å™¨
-              })
-          }
-        }
-
-        // å‘å¸ƒæŒ‰é’®
-        Button('å‘å¸ƒå•†å“')
-          .fontSize(NORMAL_FONT_SIZE)
-          .backgroundColor(this.currentThemeColors.accentColor)
-          .fontColor(Color.White)
-          .width(LAYOUT_WIDTH_OR_HEIGHT)
-          .height(48)
-          .borderRadius(8)
-          .margin({ top: 32 })
-          .onClick(() => {
-            this.publishGoods();
-          })
-
-        // è¿”å›æŒ‰é’®
-        Button('è¿”å›')
-          .fontSize(NORMAL_FONT_SIZE)
-          .backgroundColor(this.currentThemeColors.cardBackgroundColor)
-          .fontColor(this.currentThemeColors.primaryTextColor)
-          .width(LAYOUT_WIDTH_OR_HEIGHT)
-          .height(48)
-          .borderRadius(8)
-          .onClick(() => {
-            router.back();
-          })
-      }
-      .width(LAYOUT_WIDTH_OR_HEIGHT)
-      .padding(16)
-    }
-    .width(LAYOUT_WIDTH_OR_HEIGHT)
-    .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .backgroundColor(this.currentThemeColors.backgroundColor)
-  }
-
-  private publishGoods(): void {
-    if (this.goodsName.trim() === '' || this.goodsPrice.trim() === '') {
-      // æ˜¾ç¤ºé”™è¯¯æç¤º
-      return;
-    }
-
-    const newItem = new GoodsListItemType(
-      Date.now(),
-      this.goodsImage,
-      this.goodsName,
-      this.goodsPrice
-    );
-    newItem.advertisingLanguage = this.goodsDescription || 'æš‚æ— æè¿°';
-    newItem.evaluate = 'æ–°å‘å¸ƒ';
-
-    this.dataSource.addNewItem(newItem);
-
-    // è¿”å›ä¸Šä¸€é¡µ
-    router.back();
-  }
-}ÀÔrD•¬@ohos.router°../common/Colors¹../common/CommonConstants»../viewmodel/ListDataSource¸../viewmodel/InitialDataÔrE—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÃÙ^ hvigor_ignore_D:_DevEcoStudio_DevEco Studio_sdk_default_openharmony_ets_api_@ohos.router.d.tsÔrF‘¯hostModulesInfo”ÔrG’²hostDependencyName®hostModuleName¬@ohos.router¥entryG¬@ohos.router¥entryG¬@ohos.router¥entryG¬@ohos.router¥entryÃªoh-resolveÂEAÂÙJE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\Colors.etsAÃªoh-resolveÂEAÂÙSE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\CommonConstants.etsAÃªoh-resolveÂEAÂÙUE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\viewmodel\ListDataSource.etsAÃªoh-resolveÂEAÂÙRE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\viewmodel\InitialData.etsAÃªoh-resolveÂ“ÔrH–§version¤fileªsourceRoot§sources¥names¨mappings³PublishGoodsPage.js ‘´PublishGoodsPage.etsÜ%‘”    ‘” œ”   ” ”	 ” ”! ”1 ”3 ”ÌC ”ÌE ”ÌK ”Ìf "”Ìg #˜”   ” ”	 	” ” ”" "”< <”= =˜”   ” ”	 	” ” ” ”< <”= =˜”   ” ”	 ” #” %” +”0 =”1 >–”   ” ” ” ”! !”" "–”   ” ” ” ” ”% &‘”  ’”8 ”: ’”? $”ÌA &’”9 ”;  ””; ”ÌH ”ÌJ Ì@”ÌW ÌM•” !'”( !5”) !6”4 !ÌA”6 !ÌC‘” "’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” ” 0’” ” 0‘” #’” $” $
-–” $” $
-” Ì” Ì
-” Ì”/ Ì!–” $” $
-” Ì‘” Ì‘” Ì‘”0 Ì‘"š” $” $
-” Ì’”" Ì’”# Ì’”' Ì’”( Ì’”: Ì’,”; Ì’-”ÌJ Ì’<˜” %” %” %” %”! %”# %”% %”' %–” %” %” Ì” Ì” Ì”/ Ì#–” %” %” Ì” Ì” Ì” Ì’” &” &’” '” '’” &” &–” '” '” (” (” (”* ($’” &” &š” '” '” )” )” )” )”  )”2 ),”3 )-”ÌC )=’” &” &˜” '” '” *” *” *”& * ”' *!”+ *%’” &” &š” '” '” +” +” +” +” +” +”! +”# +’” &” &’” '” '’” -” -˜” .” .” .” .”! .”# .”$ .”& .”” /
-” /” /” /–” /
-” /” 0” 0” 0”* 0&š” /
-” /” 1” 1” 1” 1”  1”2 1.”3 1/”ÌC 1?’” /
-” /” 2
-” 2” 2” 2”* 2!”, 2#”5 2,”7 2.”; 22”= 24”ÌA 28”ÌB 29”ÌK 2ÌB”ÌM 2ÌD–” 2
-” 2” 3” 3” 3”2 3)–” 2
-” 2” 4” 4” 4” 4š” 2
-” 2” 5”% 5”& 5”* 5!”+ 5"”= 54”> 55”ÌQ 5ÌH–” 2
-” 2” 6”" 6”# 6”$ 6–” 2
-” 2” 7” 7” 7” 7™” 2
-” 2” 8” 8” 8”  8”% 8$”' 8&”) 8(—” 9” 9” 9” 9”! 9”& 9$”' 9%’” :” :’” -” -’” .” .’” =” =˜” >” >” >” >”! >”# >”$ >”& >”” ?
-” ?” ?” ?–” ?
-” ?” Ì@” Ì@” Ì@”* Ì@&š” ?
-” ?” ÌA” ÌA” ÌA” ÌA”  ÌA”2 ÌA.”3 ÌA/”ÌC ÌA?’” ?
-” ?” ÌB
-” ÌB” ÌB” ÌB”* ÌB!”, ÌB#”5 ÌB,”7 ÌB.”; ÌB2”= ÌB4”ÌA ÌB8”ÌB ÌB9”ÌR ÌBÌI”ÌT ÌBÌK–” ÌB
-” ÌB” ÌC” ÌC” ÌC”2 ÌC)–” ÌB
-” ÌB” ÌD” ÌD” ÌD” ÌDš” ÌB
-” ÌB” ÌE”% ÌE”& ÌE”* ÌE!”+ ÌE"”= ÌE4”> ÌE5”ÌQ ÌEÌH–” ÌB
-” ÌB” ÌF”" ÌF”# ÌF”$ ÌF–” ÌB
-” ÌB” ÌG” ÌG” ÌG” ÌG™” ÌB
-” ÌB” ÌH” ÌH” ÌH”  ÌH”% ÌH$”' ÌH&”) ÌH(—” ÌI” ÌI” ÌI”% ÌI#”( ÌI&”- ÌI+”. ÌI,’” ÌJ” ÌJ’” =” =’” >” >’” ÌM” ÌM˜” ÌN” ÌN” ÌN” ÌN”! ÌN”# ÌN”$ ÌN”& ÌN”” ÌO
-” ÌO” ÌO” ÌO–” ÌO
-” ÌO” ÌP” ÌP” ÌP”* ÌP&š” ÌO
-” ÌO” ÌQ” ÌQ” ÌQ” ÌQ”  ÌQ”2 ÌQ.”3 ÌQ/”ÌC ÌQ?’” ÌO
-” ÌO” ÌR
-” ÌR” ÌR” ÌR”* ÌR!”, ÌR#”5 ÌR,”7 ÌR.”; ÌR2”= ÌR4”ÌA ÌR8”ÌB ÌR9”ÌL ÌRÌC”ÌN ÌRÌE–” ÌR
-” ÌR” ÌS” ÌS” ÌS”2 ÌS)–” ÌR
-” ÌR” ÌT” ÌT” ÌT” ÌTš” ÌR
-” ÌR” ÌU”% ÌU”& ÌU”* ÌU!”+ ÌU"”= ÌU4”> ÌU5”ÌQ ÌUÌH–” ÌR
-” ÌR” ÌV”" ÌV”# ÌV”$ ÌV–” ÌR
-” ÌR” ÌW” ÌW” ÌW” ÌW˜” ÌR
-” ÌR” ÌX” ÌX” ÌX”$ ÌX”% ÌX”+ ÌX"™” ÌR
-” ÌR” ÌY” ÌY” ÌY”  ÌY”% ÌY$”' ÌY&”) ÌY(—” ÌZ” ÌZ” ÌZ” ÌZ”" ÌZ ”' ÌZ%”( ÌZ&’” Ì[” Ì[’” ÌM” ÌM’” ÌN” ÌN’” Ì^” Ì^˜” Ì_” Ì_” Ì_” Ì_”! Ì_”# Ì_”$ Ì_”& Ì_”” Ì`
-” Ì`” Ì`”# Ì`–” Ì`
-” Ì`” Ìa” Ìa” Ìa”* Ìa&š” Ì`
-” Ì`” Ìb” Ìb” Ìb” Ìb”  Ìb”2 Ìb.”3 Ìb/”ÌC Ìb?’” Ì`
-” Ì`˜” Ìc
-” Ìc” Ìc” Ìc” Ìc”  Ìc”" Ìc”$ Ìc–” Ìd” Ìd” Ìd” Ìd” Ìd”( Ìd!–” Ìd” Ìd” Ìe” Ìe” Ìe” Ìe–” Ìd” Ìd” Ìf” Ìf” Ìf” Ìf–” Ìd” Ìd” Ìg” Ìg” Ìg”  Ìg”” Ìh” Ìh”# Ìh”) Ìh–” Ìh” Ìh” Ìi” Ìi” Ìi”, Ìi(š” Ìh” Ìh” Ìj”" Ìj”# Ìj”' Ìj#”( Ìj$”: Ìj6”; Ìj7”ÌF ÌjÌB˜” Ìh” Ìh” Ìk” Ìk” Ìk”" Ìk”# Ìk”( Ìk$–” Ìh” Ìh” Ìl” Ìl”  Ìl”! Ìl—” Ìh” Ìh” Ìm” Ìm” Ìm” Ìm”  Ìm’” Ìn”# Ìn#’” Ìo” Ìo’” Ìp” Ìp’” Ìh” Ìh’” Ìc
-” Ìc’” Ì^” Ì^’” Ì_” Ì_’” Ìt” Ìt”” Ìu” Ìu”# Ìu”) Ìu’” Ìt” Ìt–” Ìu” Ìu” Ìv” Ìv” Ìv”, Ìv$’” Ìt” Ìtš” Ìu” Ìu” Ìw”" Ìw”# Ìw”' Ìw”( Ìw ”: Ìw2”; Ìw3”ÌF Ìw>’” Ìt” Ìt˜” Ìu” Ìu” Ìx” Ìx” Ìx”" Ìx”# Ìx”( Ìx ’” Ìt” Ìt–” Ìu” Ìu” Ìy” Ìy” Ìy”/ Ìy'’” Ìt” Ìt–” Ìu” Ìu” Ìz” Ìz” Ìz” Ìz’” Ìt” Ìt–” Ìu” Ìu” Ì{” Ì{”  Ì{”! Ì{’” Ìt” Ìtš” Ìu” Ìu” Ì|” Ì|” Ì|” Ì|” Ì|”! Ì|”# Ì|”% Ì|’” Ìt” Ìt—” Ìu” Ìu” Ì}” Ì}” Ì}” Ì}”  Ì}–” Ì~” Ì~” Ì~”! Ì~”# Ì~”$ Ì~ ’” Ì
-” Ì’” Ìt” Ìt’” Ìu” Ìu’” Ì” Ì”” Ì‚” Ì‚”# Ì‚”' Ì‚’” Ì” Ì–” Ì‚” Ì‚” Ìƒ” Ìƒ” Ìƒ”, Ìƒ$’” Ì” Ìš” Ì‚” Ì‚” Ì„”" Ì„”# Ì„”' Ì„”( Ì„ ”: Ì„2”; Ì„3”ÌN Ì„ÌF’” Ì” Ìš” Ì‚” Ì‚” Ì…” Ì…” Ì…”! Ì…”" Ì…”4 Ì…,”5 Ì…-”ÌE Ì…=’” Ì” Ì–” Ì‚” Ì‚” Ì†” Ì†” Ì†”/ Ì†'’” Ì” Ì–” Ì‚” Ì‚” Ì‡” Ì‡” Ì‡” Ì‡’” Ì” Ì–” Ì‚” Ì‚” Ìˆ” Ìˆ”  Ìˆ”! Ìˆ’” Ì” Ì—” Ì‚” Ì‚” Ì‰” Ì‰” Ì‰” Ì‰”  Ì‰–” ÌŠ” ÌŠ” ÌŠ” ÌŠ” ÌŠ” ÌŠ’” Ì‹
-” Ì‹’” Ì” Ì’” Ì‚” Ì‚’” %” %’” $” $
-‘” Ì“’” Ì•
-” Ì•Ü ” Ì–” Ì–” Ì–” Ì–” Ì–” Ì–” Ì–”! Ì–”& Ì–"”( Ì–$”, Ì–(”0 Ì–,”1 Ì–-”; Ì–7”< Ì–8”Ì@ Ì–<”ÌB Ì–>”ÌG Ì–ÌC”ÌI Ì–ÌE”ÌK Ì–ÌG’” Ì—” Ì—’” Ì˜” Ì˜‘”	 Ì™Ü ” Ì›” Ì›
-” Ì›” Ì›” Ì›”- Ì›)”. Ìœ”2 Ìœ
-”3 Ìœ”6 Ìœ”8 Ìœ”: Ì”> Ì
-”? Ì”ÌI Ì”ÌK Ì”ÌO Ì
-”ÌP Ì”ÌY Ì”Ì[ ÌŸ”Ì_ ÌŸ
-”Ì` ÌŸ”Ìj ÌŸ”Ìk Ì ”Ìl Ì ›” Ì¡” Ì¡” Ì¡”# Ì¡”& Ì¡"”* Ì¡&”+ Ì¡'”; Ì¡7”? Ì¡;”ÌE Ì¡ÌA”ÌF Ì¡ÌB—” Ì¢” Ì¢” Ì¢” Ì¢” Ì¢”  Ì¢”! Ì¢š” Ì¤” Ì¤” Ì¤	” Ì¤” Ì¤”" Ì¤”# Ì¤”* Ì¤&”+ Ì¤'”, Ì¤(’” Ì¦” Ì¦–” Ì§” Ì§
-” Ì§” Ì§” Ì§” Ì§’” Ì¨” Ì¨ÔrI–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜ.‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
- ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”    ‘”  ! ‘”  " ‘”  # ‘”  $ ‘”  % ‘”  & ‘”  ' ‘”  ( ‘”  ) ‘”  * ‘”  + ‘”  , ‘”  - ‘”  . ‘”  / ‘”  0 ‘”  1 ‘”  2 ‘”  3 ‘”  4 ‘”  5 ‘”  6 ‘”  7 ‘”  8 ‘”  9 ‘”  : ‘”  ; ‘”  < ‘”  = ‘”  > ‘”  ? ‘”  Ì@ ‘”  ÌA ‘”  ÌB ‘”  ÌC ‘”  ÌD ‘”  ÌE ‘”  ÌF ‘”  ÌG ‘”  ÌH ‘”  ÌI ‘”  ÌJ ‘”  ÌK ‘”  ÌL ‘”  ÌM ‘”  ÌN ‘”  ÌO ‘”  ÌP ‘”  ÌQ ‘”  ÌR ‘”  ÌS ‘”  ÌT ‘”  ÌU ‘”  ÌV ‘”  ÌW ‘”  ÌX ‘”  ÌY ‘”  ÌZ ‘”  Ì[ ‘”  Ì\ ‘”  Ì] ‘”  Ì^ ‘”  Ì_ ‘”  Ì` ‘”  Ìa ‘”  Ìb ‘”  Ìc ‘”  Ìd ‘”  Ìe ‘”  Ìf ‘”  Ìg ‘”  Ìh ‘”  Ìi ‘”  Ìj ‘”  Ìk ‘”  Ìl ‘”  Ìm ‘”  Ìn ‘”  Ìo ‘”  Ìp ‘”  Ìq ‘”  Ìr ‘”  Ìs ‘”  Ìt ‘”  Ìu ‘”  Ìv ‘”  Ìw ‘”  Ìx ‘”  Ìy ‘”  Ìz ‘”  Ì{ ‘”  Ì| ‘”  Ì} ‘”  Ì~ ‘”  Ì ‘”  Ì€ ‘”  Ì ‘”  Ì‚ ‘”  Ìƒ ‘”  Ì„ ‘”  Ì… ‘”  Ì† ‘”  Ì‡ ‘”  Ìˆ ‘”  Ì‰ ‘”  ÌŠ ‘”  Ì‹ ‘”  ÌŒ ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì‘ ‘”  Ì’ ‘”  Ì“ ‘”  Ì” ‘”  Ì• ‘”  Ì– ‘”  Ì— ‘”  Ì˜ ‘”  Ì™ ‘”  Ìš ‘”  Ì› ‘”  Ìœ ‘”  Ì ‘”  Ì ‘”  ÌŸ ‘”  Ì  ‘”  Ì¡ ‘”  Ì¢ ‘”  Ì£ ‘”  Ì¤ ‘”  Ì¥ ‘”  Ì¦ ‘”  Ì§ ‘”  Ì¨ ‘”  Ì© ‘”  Ìª ‘”  Ì« ‘”  Ì¬ ‘”  Ì­ ‘”  Ì® ‘”  Ì¯ ‘”  Ì° ‘”  Ì± ‘”  Ì² ‘”  Ì³ ‘”  Ì´ ‘”  Ìµ ‘”  Ì¶ ‘”  Ì· ‘”  Ì¸ ‘”  Ì¹ ‘”  Ìº ‘”  Ì» ‘”  Ì¼ ‘”  Ì½ ‘”  Ì¾ ‘”  Ì¿ ‘”  ÌÀ ‘”  ÌÁ ‘”  ÌÂ ‘”  ÌÃ ‘”  ÌÄ ‘”  ÌÅ ‘”  ÌÆ ‘”  ÌÇ ‘”  ÌÈ ‘”  ÌÉ ‘”  ÌÊ ‘”  ÌË ‘”  ÌÌ ‘”  ÌÍ ‘”  ÌÎ ‘”  ÌÏ ‘”  ÌĞ ‘”  ÌÑ ‘”  ÌÒ ‘”  ÌÓ ‘”  ÌÔ ‘”  ÌÕ ‘”  ÌÖ ‘”  Ì× ‘”  ÌØ ‘”  ÌÙ ‘”  ÌÚ ‘”  ÌÛ ‘”  ÌÜ ‘”  Ìİ ‘”  ÌŞ ‘”  Ìß ‘”  Ìà ‘”  Ìá ‘”  Ìâ ‘”  Ìã ‘”  Ìä ‘”  Ìå ‘”  Ìæ ‘”  Ìç ‘”  Ìè ‘”  Ìé ‘”  Ìê ‘”  Ìë ‘”  Ìì ‘”  Ìí ‘”  Ìî ‘”  Ìï ‘”  Ìğ ‘”  Ìñ ‘”  Ìò ‘”  Ìó ‘”  Ìô ‘”  Ìõ ‘”  Ìö ‘”  Ì÷ ‘”  Ìø ‘”  Ìù ‘”  Ìú ‘”  Ìû ‘”  Ìü ‘”  Ìı ‘”  Ìş ‘”  Ìÿ ‘”  Í  ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í	 ‘”  Í
- ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í  ‘”  Í! ‘”  Í" ‘”  Í# ‘”  Í$ ‘”  Í% ‘”  Í& ‘”  Í' ‘”  Í( ‘”  Í) ‘”  Í* ‘”  Í+ ‘”  Í, ‘”  Í- ÔrJ’§missing¦pluginÃ¦genAbcÂÔ  ÔrK”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache•ÔrL•¤type¥start£endªspecifiers¦source±ImportDeclarationÍéÍP“ÔrM•¤type¥start£end¨imported¥local¯ImportSpecifierÍòÍÔrN”¤type¥start£end¤nameªIdentifierÍòÍ¶LAYOUT_WIDTH_OR_HEIGHTNªIdentifierÍòÍ¶LAYOUT_WIDTH_OR_HEIGHTM¯ImportSpecifierÍ
-ÍNªIdentifierÍ
-Í°NORMAL_FONT_SIZENªIdentifierÍ
-Í°NORMAL_FONT_SIZEM¯ImportSpecifierÍÍ,NªIdentifierÍÍ,°BIGGER_FONT_SIZENªIdentifierÍÍ,°BIGGER_FONT_SIZEÔrO•¤type¥start£end¥value£raw§LiteralÍ4ÍO¹../common/CommonConstants»'../common/CommonConstants'L±ImportDeclarationÍRÍ‘M¯ImportSpecifierÍ[ÍlNªIdentifierÍ[Íl±GoodsListItemTypeNªIdentifierÍ[Íl±GoodsListItemTypeO§LiteralÍtÍ¸../viewmodel/InitialDataº'../viewmodel/InitialData'L±ImportDeclarationÍ‘ÍÎ‘M¯ImportSpecifierÍšÍ¨NªIdentifierÍšÍ¨®ListDataSourceNªIdentifierÍšÍ¨®ListDataSourceO§LiteralÍ°ÍÍ»../viewmodel/ListDataSource½'../viewmodel/ListDataSource'L±ImportDeclarationÍĞÍ‘M¯ImportSpecifierÍÙÍæNªIdentifierÍÙÍæ­DEFAULT_THEMENªIdentifierÍÙÍæ­DEFAULT_THEMEO§LiteralÍîÍ °../common/Colors²'../common/Colors'L±ImportDeclarationÍÍ%‘ÔrP”¤type¥start£end¥local¶ImportDefaultSpecifierÍ
-ÍNªIdentifierÍ
-Í¦routerO§LiteralÍÍ$¬@ohos.router®'@ohos.router'

@@ -1,570 +1,0 @@
-Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚDLif (!("finalizeConstruction" in ViewPU.prototype)) {
-    Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
-}
-/*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
- * Licensed under the Apache License,Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-import * as commonConst from '../common/CommonConstants';
-import { ListDataSource } from '../viewmodel/ListDataSource';
-import { DEFAULT_THEME } from '../common/Colors';
-import router from '@ohos.router'; // å¼•å…¥è·¯ç”±æ¨¡å—
-export default class GoodsList extends ViewPU {
-    constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
-        super(parent, __localStorage, elmtId, extraInfo);
-        if (typeof paramsLambda === "function") {
-            this.paramsGenerator_ = paramsLambda;
-        }
-        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
-        this.__goodsListData = new ObservedPropertyObjectPU(ListDataSource.getInstance(), this, "goodsListData");
-        this.addProvidedVar("goodsListData", this.__goodsListData, false);
-        this.__layoutMode = new SynchedPropertySimpleOneWayPU(params.layoutMode, this, "layoutMode");
-        this.startTouchOffsetY = 0;
-        this.endTouchOffsetY = 0;
-        this.setInitiallyProvidedValue(params);
-        this.finalizeConstruction();
-    }
-    setInitiallyProvidedValue(params) {
-        if (params.goodsListData !== undefined) {
-            this.goodsListData = params.goodsListData;
-        }
-        if (params.layoutMode === undefined) {
-            this.__layoutMode.set('list');
-        }
-        if (params.startTouchOffsetY !== undefined) {
-            this.startTouchOffsetY = params.startTouchOffsetY;
-        }
-        if (params.endTouchOffsetY !== undefined) {
-            this.endTouchOffsetY = params.endTouchOffsetY;
-        }
-    }
-    updateStateVars(params) {
-        this.__layoutMode.reset(params.layoutMode);
-    }
-    purgeVariableDependenciesOnElmtId(rmElmtId) {
-        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
-        this.__goodsListData.purgeDependencyOnElmtId(rmElmtId);
-        this.__layoutMode.purgeDependencyOnElmtId(rmElmtId);
-    }
-    aboutToBeDeleted() {
-        this.__currentThemeColors.aboutToBeDeleted();
-        this.__goodsListData.aboutToBeDeleted();
-        this.__layoutMode.aboutToBeDeleted();
-        SubscriberManager.Get().delete(this.id__());
-        this.aboutToBeDeletedInternal();
-    }
-    get currentThemeColors() {
-        return this.__currentThemeColors.get();
-    }
-    set currentThemeColors(newValue) {
-        this.__currentThemeColors.set(newValue);
-    }
-    get goodsListData() {
-        return this.__goodsListData.get();
-    }
-    set goodsListData(newValue) {
-        this.__goodsListData.set(newValue);
-    }
-    get layoutMode() {
-        return this.__layoutMode.get();
-    }
-    set layoutMode(newValue) {
-        this.__layoutMode.set(newValue);
-    }
-    groupItems(data) {
-        let rows = [];
-        for (let i = 0; i < data.totalCount(); i += 2) {
-            let row = [];
-            let item1 = data.getData(i);
-            if (item1)
-                row.push(item1);
-            if (i + 1 < data.totalCount()) {
-                let item2 = data.getData(i + 1);
-                if (item2)
-                    row.push(item2);
-            }
-            if (row.length > 0)
-                rows.push(row);
-        }
-        return rows;
-    }
-    GoodsItem(item, parent = null) {
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Column.create();
-            Column.padding(8);
-            Column.backgroundColor(this.currentThemeColors.cardBackgroundColor);
-            Column.borderRadius(8);
-            Column.width('48%');
-            Column.onClick(() => {
-                router.pushUrl({
-                    url: 'pages/GoodsDetailPage',
-                    params: {
-                        goodsId: item.id,
-                        goodsName: item.goodsName,
-                        goodsPrice: item.price,
-                        goodsImg: item.goodsImg
-                    }
-                });
-            });
-        }, Column);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Image.create(item?.goodsImg);
-            Image.width(140);
-            Image.height(140);
-            Image.draggable(false);
-        }, Image);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Text.create(item?.goodsName);
-            Text.fontSize(commonConst.NORMAL_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.primaryTextColor);
-            Text.margin({ top: 8 });
-        }, Text);
-        Text.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Text.create(item?.advertisingLanguage);
-            Text.fontColor(this.currentThemeColors.primaryTextColor);
-            Text.fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE);
-            Text.margin({ top: 4 });
-        }, Text);
-        Text.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Row.create();
-            Row.justifyContent(FlexAlign.SpaceBetween);
-            Row.margin({ top: 4 });
-        }, Row);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Text.create(item?.evaluate);
-            Text.fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.accentColor);
-        }, Text);
-        Text.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Text.create(item?.price);
-            Text.fontSize(commonConst.NORMAL_FONT_SIZE);
-            Text.fontColor(this.currentThemeColors.accentColor);
-        }, Text);
-        Text.pop();
-        Row.pop();
-        Column.pop();
-    }
-    initialRender() {
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            If.create();
-            if (this.layoutMode === 'list') {
-                this.ifElseBranchUpdateFunction(0, () => {
-                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        // å¹³é“ºå¸ƒå±€ï¼ˆåŸæœ‰å¸ƒå±€ï¼‰
-                        Row.create();
-                        // å¹³é“ºå¸ƒå±€ï¼ˆåŸæœ‰å¸ƒå±€ï¼‰
-                        Row.justifyContent(FlexAlign.Center);
-                        // å¹³é“ºå¸ƒå±€ï¼ˆåŸæœ‰å¸ƒå±€ï¼‰
-                        Row.width(commonConst.LAYOUT_WIDTH_OR_HEIGHT);
-                    }, Row);
-                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        List.create({ space: commonConst.LIST_ITEM_SPACE });
-                        List.width(commonConst.GOODS_LIST_WIDTH);
-                        List.divider({
-                            strokeWidth: 1,
-                            color: this.currentThemeColors.dividerColor,
-                        });
-                    }, List);
-                    {
-                        const __lazyForEachItemGenFunction = _item => {
-                            const item = _item;
-                            {
-                                const itemCreation2 = (elmtId, isInitialRender) => {
-                                    ListItem.create(() => { }, false);
-                                    ListItem.onTouch((event) => {
-                                        if (event === undefined) {
-                                            return;
-                                        }
-                                        switch (event.type) {
-                                            case TouchType.Down:
-                                                this.startTouchOffsetY = event.touches[0].y;
-                                                break;
-                                            case TouchType.Up:
-                                                this.startTouchOffsetY = event.touches[0].y;
-                                                break;
-                                            case TouchType.Move:
-                                                if (this.startTouchOffsetY - this.endTouchOffsetY > 0) {
-                                                    this.goodsListData.pushData();
-                                                }
-                                                break;
-                                        }
-                                    });
-                                    ListItem.onClick(() => {
-                                        router.pushUrl({
-                                            url: 'pages/GoodsDetailPage',
-                                            params: {
-                                                goodsId: item.id,
-                                                goodsName: item.goodsName,
-                                                goodsPrice: item.price,
-                                                goodsImg: item.goodsImg
-                                            }
-                                        });
-                                    });
-                                };
-                                const observedDeepRender = () => {
-                                    this.observeComponentCreation2(itemCreation2, ListItem);
-                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                        Row.create();
-                                        Row.justifyContent(FlexAlign.SpaceBetween);
-                                        Row.height(commonConst.GOODS_LIST_HEIGHT);
-                                        Row.width(commonConst.LAYOUT_WIDTH_OR_HEIGHT);
-                                    }, Row);
-                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                        Column.create();
-                                        Column.width(commonConst.GOODS_IMAGE_WIDTH);
-                                        Column.height(commonConst.LAYOUT_WIDTH_OR_HEIGHT);
-                                    }, Column);
-                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                        Image.create(item?.goodsImg);
-                                        Image.width(commonConst.LAYOUT_WIDTH_OR_HEIGHT);
-                                        Image.height(commonConst.LAYOUT_WIDTH_OR_HEIGHT);
-                                        Image.draggable(false);
-                                    }, Image);
-                                    Column.pop();
-                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                        Column.create();
-                                        Column.padding(commonConst.GOODS_LIST_PADDING);
-                                        Column.width(commonConst.GOODS_FONT_WIDTH);
-                                        Column.height(commonConst.LAYOUT_WIDTH_OR_HEIGHT);
-                                        Column.justifyContent(FlexAlign.SpaceBetween);
-                                    }, Column);
-                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                        Text.create(item?.goodsName);
-                                        Text.fontSize(commonConst.NORMAL_FONT_SIZE);
-                                        Text.fontColor(this.currentThemeColors.primaryTextColor);
-                                    }, Text);
-                                    Text.pop();
-                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                        Text.create(item?.advertisingLanguage);
-                                        Text.fontColor(this.currentThemeColors.primaryTextColor);
-                                        Text.fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE);
-                                        Text.margin({ right: commonConst.MARGIN_RIGHT });
-                                    }, Text);
-                                    Text.pop();
-                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                        Row.create();
-                                        Row.justifyContent(FlexAlign.SpaceAround);
-                                        Row.width(commonConst.GOODS_LIST_WIDTH);
-                                    }, Row);
-                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                        Text.create(item?.evaluate);
-                                        Text.fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE);
-                                        Text.fontColor(this.currentThemeColors.accentColor);
-                                        Text.width(commonConst.EVALUATE_WIDTH);
-                                    }, Text);
-                                    Text.pop();
-                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                        Text.create(item?.price);
-                                        Text.fontSize(commonConst.NORMAL_FONT_SIZE);
-                                        Text.fontColor(this.currentThemeColors.accentColor);
-                                    }, Text);
-                                    Text.pop();
-                                    Row.pop();
-                                    Column.pop();
-                                    Row.pop();
-                                    ListItem.pop();
-                                };
-                                observedDeepRender();
-                            }
-                        };
-                        LazyForEach.create("1", this, this.goodsListData, __lazyForEachItemGenFunction);
-                        LazyForEach.pop();
-                    }
-                    List.pop();
-                    // å¹³é“ºå¸ƒå±€ï¼ˆåŸæœ‰å¸ƒå±€ï¼‰
-                    Row.pop();
-                });
-            }
-            else {
-                this.ifElseBranchUpdateFunction(1, () => {
-                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        // 2åˆ—ç½‘æ ¼å¸ƒå±€
-                        Column.create();
-                        // 2åˆ—ç½‘æ ¼å¸ƒå±€
-                        Column.width(commonConst.LAYOUT_WIDTH_OR_HEIGHT);
-                    }, Column);
-                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        ForEach.create();
-                        const forEachItemGenFunction = (_item, index) => {
-                            const row = _item;
-                            this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                Row.create({ space: 8 });
-                                Row.padding({ left: 8, right: 8 });
-                            }, Row);
-                            this.GoodsItem.bind(this)(row[0]);
-                            this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                If.create();
-                                if (row.length > 1) {
-                                    this.ifElseBranchUpdateFunction(0, () => {
-                                        this.GoodsItem.bind(this)(row[1]);
-                                    });
-                                }
-                                else {
-                                    this.ifElseBranchUpdateFunction(1, () => {
-                                        this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                            Blank.create();
-                                        }, Blank);
-                                        Blank.pop();
-                                    });
-                                }
-                            }, If);
-                            If.pop();
-                            Row.pop();
-                        };
-                        this.forEachUpdateFunction(elmtId, this.groupItems(ObservedObject.GetRawObject(this.goodsListData)), forEachItemGenFunction, undefined, true, false);
-                    }, ForEach);
-                    ForEach.pop();
-                    // 2åˆ—ç½‘æ ¼å¸ƒå±€
-                    Column.pop();
-                });
-            }
-        }, If);
-        If.pop();
-    }
-    rerender() {
-        this.updateDirtyElements();
-    }
-}
-//# sourceMappingURL=GoodsListComponent.js.mapÂ”ÙSE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\CommonConstants.etsÙUE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\viewmodel\ListDataSource.etsÙJE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\Colors.etsÙ^ hvigor_ignore_D:_DevEcoStudio_DevEco Studio_sdk_default_openharmony_ets_api_@ohos.router.d.tsÙTE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\GoodsListComponent.etsÔrBœªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo¯hostModulesInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙ+E:\VsCode\MIPP\HarmonyOS-FinalProject\entryÙ%E:\VsCode\MIPP\HarmonyOS-FinalProject¥entry¥1.0.0Ô  ’ÔrC’²hostDependencyName®hostModuleName´./GoodsListComponent¥entryCº../view/GoodsListComponent¥entryÙ+E:\VsCode\MIPP\HarmonyOS-FinalProject\entryÔrDÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationºgetTypeAtLocationForLinterÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFileÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚÓ/*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
- * Licensed under the Apache License,Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import * as commonConst from '../common/CommonConstants';
-import { GoodsListItemType } from '../viewmodel/InitialData';
-import { ListDataSource } from '../viewmodel/ListDataSource';
-import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
-import router from '@ohos.router'; // å¼•å…¥è·¯ç”±æ¨¡å—
-
-@Component
-export default struct GoodsList {
-  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
-  @Provide goodsListData: ListDataSource = ListDataSource.getInstance();
-  @Prop layoutMode: 'list' | 'grid' = 'list'; // æ·»åŠ å¸ƒå±€æ¨¡å¼å±æ€§
-  private startTouchOffsetY: number = 0;
-  private endTouchOffsetY: number = 0;
-
-  private groupItems(data: ListDataSource): GoodsListItemType[][] {
-    let rows: GoodsListItemType[][] = [];
-    for (let i = 0; i < data.totalCount(); i += 2) {
-      let row: GoodsListItemType[] = [];
-      let item1 = data.getData(i);
-      if (item1) row.push(item1);
-      if (i + 1 < data.totalCount()) {
-        let item2 = data.getData(i + 1);
-        if (item2) row.push(item2);
-      }
-      if (row.length > 0) rows.push(row);
-    }
-    return rows;
-  }
-
-  @Builder
-  GoodsItem(item: GoodsListItemType) {
-    Column() {
-      Image(item?.goodsImg)
-        .width(140) // ç½‘æ ¼å¸ƒå±€ä¸­å›¾ç‰‡å®½åº¦è°ƒæ•´ä¸º140
-        .height(140) // é«˜åº¦ä¹Ÿè°ƒæ•´ä¸º140
-        .draggable(false)
-
-      Text(item?.goodsName)
-        .fontSize(commonConst.NORMAL_FONT_SIZE)
-        .fontColor(this.currentThemeColors.primaryTextColor)
-        .margin({ top: 8 })
-
-      Text(item?.advertisingLanguage)
-        .fontColor(this.currentThemeColors.primaryTextColor)
-        .fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE)
-        .margin({ top: 4 })
-
-      Row() {
-        Text(item?.evaluate)
-          .fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE)
-          .fontColor(this.currentThemeColors.accentColor)
-        Text(item?.price)
-          .fontSize(commonConst.NORMAL_FONT_SIZE)
-          .fontColor(this.currentThemeColors.accentColor)
-      }
-      .justifyContent(FlexAlign.SpaceBetween)
-      .margin({ top: 4 })
-    }
-    .padding(8)
-    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
-    .borderRadius(8)
-    .width('48%') // è®¾ç½®å®½åº¦ä¸º48%ä»¥é€‚åº”ä¸¤åˆ—å¸ƒå±€
-    .onClick(() => {
-      router.pushUrl({
-        url: 'pages/GoodsDetailPage',
-        params: {
-          goodsId: item.id,
-          goodsName: item.goodsName,
-          goodsPrice: item.price,
-          goodsImg: item.goodsImg
-        }
-      });
-    })
-  }
-
-  build() {
-    if (this.layoutMode === 'list') {
-      // å¹³é“ºå¸ƒå±€ï¼ˆåŸæœ‰å¸ƒå±€ï¼‰
-      Row() {
-        List({ space: commonConst.LIST_ITEM_SPACE }) {
-          LazyForEach(this.goodsListData, (item: GoodsListItemType) => {
-            ListItem() {
-              Row() {
-                Column() {
-                  Image(item?.goodsImg)
-                    .width(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
-                    .height(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
-                    .draggable(false)
-                }
-                .width(commonConst.GOODS_IMAGE_WIDTH)
-                .height(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
-
-                Column() {
-                  Text(item?.goodsName)
-                    .fontSize(commonConst.NORMAL_FONT_SIZE)
-                    .fontColor(this.currentThemeColors.primaryTextColor)
-
-                  Text(item?.advertisingLanguage)
-                    .fontColor(this.currentThemeColors.primaryTextColor)
-                    .fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE)
-                    .margin({ right: commonConst.MARGIN_RIGHT })
-
-                  Row() {
-                    Text(item?.evaluate)
-                      .fontSize(commonConst.GOODS_EVALUATE_FONT_SIZE)
-                      .fontColor(this.currentThemeColors.accentColor)
-                      .width(commonConst.EVALUATE_WIDTH)
-                    Text(item?.price).fontSize(commonConst.NORMAL_FONT_SIZE).fontColor(this.currentThemeColors.accentColor)
-                  }
-                  .justifyContent(FlexAlign.SpaceAround)
-                  .width(commonConst.GOODS_LIST_WIDTH)
-                }
-                .padding(commonConst.GOODS_LIST_PADDING)
-                .width(commonConst.GOODS_FONT_WIDTH)
-                .height(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
-                .justifyContent(FlexAlign.SpaceBetween)
-              }
-              .justifyContent(FlexAlign.SpaceBetween)
-              .height(commonConst.GOODS_LIST_HEIGHT)
-              .width(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
-            }
-            .onTouch((event?: TouchEvent) => {
-              if (event === undefined) {
-                return;
-              }
-              switch (event.type) {
-                case TouchType.Down:
-                  this.startTouchOffsetY = event.touches[0].y;
-                  break;
-                case TouchType.Up:
-                  this.startTouchOffsetY = event.touches[0].y;
-                  break;
-                case TouchType.Move:
-                  if (this.startTouchOffsetY - this.endTouchOffsetY > 0) {
-                    this.goodsListData.pushData();
-                  }
-                  break;
-              }
-            })
-            .onClick(() => {
-              router.pushUrl({
-                url: 'pages/GoodsDetailPage',
-                params: {
-                  goodsId: item.id,
-                  goodsName: item.goodsName,
-                  goodsPrice: item.price,
-                  goodsImg: item.goodsImg
-                }
-              });
-            })
-          })
-        }
-        .width(commonConst.GOODS_LIST_WIDTH)
-        .divider({
-          strokeWidth: 1,
-          color: this.currentThemeColors.dividerColor,
-        })
-      }
-      .justifyContent(FlexAlign.Center)
-      .width(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
-    } else {
-      // 2åˆ—ç½‘æ ¼å¸ƒå±€
-      Column() {
-        ForEach(this.groupItems(this.goodsListData), (row: GoodsListItemType[], index: number) => {
-          Row({ space: 8 }) {
-            this.GoodsItem(row[0])
-            if (row.length > 1) {
-              this.GoodsItem(row[1])
-            } else {
-              Blank()
-            }
-          }
-          .padding({ left: 8, right: 8 })
-        })
-      }
-      .width(commonConst.LAYOUT_WIDTH_OR_HEIGHT)
-    }
-  }
-}ÀÔrE”¬@ohos.router»../viewmodel/ListDataSource°../common/Colors¹../common/CommonConstantsÔrF—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÃÙ^ hvigor_ignore_D:_DevEcoStudio_DevEco Studio_sdk_default_openharmony_ets_api_@ohos.router.d.tsAÃªoh-resolveÂFAÂÙUE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\viewmodel\ListDataSource.etsAÃªoh-resolveÂFAÂÙJE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\Colors.etsAÃªoh-resolveÂFAÂÙSE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\CommonConstants.etsAÃªoh-resolveÂ“ÔrG–§version¤fileªsourceRoot§sources¥names¨mappingsµGoodsListComponent.js ‘¶GoodsListComponent.etsÜP‘”    ‘” —”   ” ” ” ” ”8 8”9 9˜”   ” ”	 	” ” ” ”< <”= =˜”   ” ”	 ” #” %” +”0 =”1 >˜”   ” ” ” ”! !”" "”# #”, ,–”   ” ” ” ” ” ‘”  ””; ”ÌH ”ÌJ Ì@”ÌW ÌM•”< +”ÌJ 9”ÌK :”ÌV ÌE”ÌX ÌG’”! &”" '’” $”  %‘” "’”" &”( ,’”' ”1 ’” ” 0’” ” 0’” ” ’” ” ’” ” ’” ” ”” 
-” ” ” )–” ” ” ” &” (” )Ü ” ” 	” ” ” ” ” ” ” ”  ”! ”+ '”- )”/ +”0 ,”4 0”5 1”7 3–”  ”  
-”  ”  %”  '”  (›” !” !
-” !” !” !” !”$ !”% !”& ! ”' !!”( !"“” "” "
-” "˜” "” "” "” "” "” "” " ”  "!›” #” #
-” #” #” #” #” #” #”' #!”) ##”+ #%” $” $” $” $”  $”! $”( $ ”) $!”* $"”- $%”. $&”/ $'”0 $(“” %” %” %˜” %” %” %” %” %”" %!”# %"”$ %#‘” &—” '” '
-” '” '” '” '” '˜” '” '” '” '#” '$” ''” '(” ')‘”	 (”” )” )” )” )’” *” *”” -” -” -” -#’” .” .
-–” .” .
-” ÌI” ÌI” ÌI” ÌIš” .” .
-” ÌJ”" ÌJ”# ÌJ”' ÌJ”( ÌJ”: ÌJ,”; ÌJ-”ÌN ÌJÌ@–” .” .
-” ÌK” ÌK”  ÌK”! ÌK–” .” .
-” ÌL” ÌL
-” ÌL” ÌL—” .” .
-” ÌM” ÌM” ÌM” ÌM”  ÌM•” ÌN” ÌN” ÌN” ÌN” ÌN”” ÌO” ÌO” ÌO”0 ÌO$“” ÌP” ÌP” ÌP–” ÌQ
-” ÌQ”! ÌQ”% ÌQ”& ÌQ”( ÌQ–” ÌR
-”! ÌR”# ÌR”' ÌR”( ÌR”1 ÌR#–” ÌS
-”" ÌS”$ ÌS”( ÌS”) ÌS”. ÌS –” ÌT
-”  ÌT”" ÌT”& ÌT”' ÌT”/ ÌT!‘” ÌU	“” ÌV” ÌV” ÌV	’” ÌW” ÌW–” /” /” /” /” /”' /–” /” /” 0	” 0” 0” 0–” /” /” 1	” 1” 1” 1–” /” /” 2	” 2” 2”! 2–” 4” 4
-” 4” 4” 4”' 4˜” 4” 4
-” 5	” 5” 5”% 5”& 5”6 5.š” 4” 4
-” 6	” 6” 6” 6”  6”2 6*”3 6+”ÌC 6;š” 4” 4
-” 7	” 7” 7” 7” 7” 7”  7”" 7’” 4” 4
-–” 9” 9
-” 9” 9” 9”1 9$š” 9” 9
-” :	” :” :” :”  :”2 :*”3 :+”ÌC :;˜” 9” 9
-” ;	” ;” ;”% ;”& ;”> ;6š” 9” 9
-” <	” <” <” <” <” <”  <”" <’” 9” 9
-’” >” >	˜” >” >	” ÌF” ÌF” ÌF”( ÌF”) ÌF ”5 ÌF,š” >” >	” ÌG” ÌG” ÌG” ÌG” ÌG” ÌG” ÌG”! ÌG–” ?” ?” ?” ?” ?”& ?˜” ?” ?” Ì@” Ì@” Ì@”% Ì@”& Ì@ ”> Ì@8š” ?” ?” ÌA” ÌA” ÌA” ÌA”  ÌA”2 ÌA,”3 ÌA-”> ÌA8’” ?” ?–” ÌB” ÌB” ÌB” ÌB” ÌB”# ÌB˜” ÌB” ÌB” ÌC” ÌC” ÌC”% ÌC”& ÌC ”6 ÌC0š” ÌB” ÌB” ÌD” ÌD” ÌD” ÌD”  ÌD”2 ÌD,”3 ÌD-”> ÌD8’” ÌB” ÌB’” >” >	’” .” .
-‘” ÌX‘” ÌZ˜” Ì[” Ì[” Ì[” Ì[” Ì[”$ Ì[”* Ì["”, Ì[$’” Ì\”% Ì\’” Ì]” Ì]	’” Ì\”% Ì\˜” Ì]” Ì]	” Ì­”* Ì­”+ Ì­”4 Ì­”5 Ì­ ”; Ì­&’” Ì\”% Ì\˜” Ì]” Ì]	” Ì®”! Ì®”" Ì®”- Ì®”. Ì®”ÌD Ì®/š” Ì^” Ì^”$ Ì^”& Ì^”+ Ì^”- Ì^”8 Ì^!”9 Ì^"”ÌH Ì^1”ÌJ Ì^3˜” Ì^” Ì^” Ì§	”" Ì§”# Ì§”. Ì§”/ Ì§”? Ì§+•” Ì^” Ì^” Ì¨	”$ Ì¨”% Ì¨”” Ì©
-”' Ì©”) Ì©”* Ì©˜” Ìª
-”! Ìª”# Ìª”' Ìª”( Ìª”: Ìª(”; Ìª)”ÌG Ìª5‘” Ì«	™”$ Ì`”, Ì`”- Ìˆ”4 Ìˆ”5 Ìˆ”6 Ìˆ”; Ìˆ(”= Ìˆ*”? Ìˆ,–”( Ì‰”, Ì‰”1 Ì‰”6 Ì‰”? Ì‰%”ÌA Ì‰'’”, ÌŠ”3 ÌŠ‘”) Ì‹–”( ÌŒ”0 ÌŒ”5 ÌŒ”6 ÌŒ”: ÌŒ ”< ÌŒ"•”, Ì”1 Ì”: Ì”; Ì”? Ì#”0 Ì”4 Ì”5 Ì”ÌF Ì(”ÌI Ì+”ÌN Ì0”ÌO Ì1”ÌV Ì8”ÌW Ì9”ÌX Ì:”ÌY Ì;”ÌZ Ì<”Ì[ Ì=”Ì\ Ì>’”0 Ì”6 Ì•”, Ì”1 Ì”: Ì”; Ì”= Ì!”0 Ì‘”4 Ì‘”5 Ì‘”ÌF Ì‘(”ÌI Ì‘+”ÌN Ì‘0”ÌO Ì‘1”ÌV Ì‘8”ÌW Ì‘9”ÌX Ì‘:”ÌY Ì‘;”ÌZ Ì‘<”Ì[ Ì‘=”Ì\ Ì‘>’”0 Ì’”6 Ì’•”, Ì“”1 Ì“”: Ì“”; Ì“”? Ì“#œ”0 Ì””4 Ì””8 Ì””9 Ì””ÌJ Ì”,”ÌM Ì”/”ÌQ Ì”3”ÌR Ì”4”Ìa Ì”ÌC”Ìd Ì”ÌF”Ìe Ì”ÌG”Ìg Ì”ÌI˜”4 Ì•”8 Ì•”9 Ì•”ÌF Ì•&”ÌG Ì•'”ÌO Ì•/”ÌQ Ì•1”ÌR Ì•2‘”1 Ì–’”0 Ì—”6 Ì—‘”) Ì˜’”$ Ì™”% Ì™—”$ Ì`”, Ì`”- Ìš”4 Ìš”5 Ìš”8 Ìš”: Ìš•”( Ì›”. Ì›”/ Ì›”6 Ì›”7 Ì›””, Ìœ”/ Ìœ”1 Ìœ”ÌH Ìœ,“”, Ì”2 Ì”4 Ì–”0 Ì”7 Ì”9 Ì”= Ì”> Ì ”Ì@ Ì"–”0 ÌŸ”9 ÌŸ”; ÌŸ”? ÌŸ!”Ì@ ÌŸ"”ÌI ÌŸ+–”0 Ì ”: Ì ”< Ì ”Ì@ Ì "”ÌA Ì #”ÌF Ì (–”0 Ì¡”8 Ì¡”: Ì¡”> Ì¡ ”? Ì¡!”ÌG Ì¡)‘”- Ì¢“”) Ì£”* Ì£”+ Ì£’”$ Ì¤”% Ì¤’”( Ìa”+ Ìa˜”( Ìa”+ Ìa”, Ì„”: Ì„”; Ì„”ÌD Ì„'”ÌE Ì„(”ÌQ Ì„4˜”( Ìa”+ Ìa”, Ì…”2 Ì…”3 Ì…”> Ì…!”? Ì…"”ÌP Ì…3˜”( Ìa”+ Ìa”, Ì†”1 Ì†”2 Ì†”= Ì† ”> Ì†!”ÌT Ì†7’”( Ìb”. Ìb˜”( Ìb”. Ìb”/ Ìh”4 Ìh”5 Ìh”Ì@ Ìh"”ÌA Ìh#”ÌR Ìh4˜”( Ìb”. Ìb”/ Ìi”5 Ìi”6 Ìi”ÌA Ìi#”ÌB Ìi$”ÌX Ìi:–”( Ìc”- Ìc”5 Ìc”9 Ìc”; Ìc”ÌC Ìc&˜”( Ìc”- Ìc”. Ìd”3 Ìd”4 Ìd”? Ìd&”Ì@ Ìd'”ÌV Ìd=˜”( Ìc”- Ìc”. Ìe”4 Ìe”5 Ìe”Ì@ Ìe'”ÌA Ìe(”ÌW Ìe>–”( Ìc”- Ìc”. Ìf”7 Ìf”8 Ìf”= Ìf$’”$ Ìb”* Ìb’”( Ìk”. Ìk˜”( Ìk”. Ìk”/ Ì”6 Ì”7 Ì”ÌB Ì$”ÌC Ì%”ÌU Ì7˜”( Ìk”. Ìk”/ Ì€”4 Ì€”5 Ì€”Ì@ Ì€"”ÌA Ì€#”ÌQ Ì€3˜”( Ìk”. Ìk”/ Ì”5 Ì”6 Ì”ÌA Ì#”ÌB Ì$”ÌX Ì:˜”( Ìk”. Ìk”/ Ì‚”= Ì‚”> Ì‚ ”ÌG Ì‚)”ÌH Ì‚*”ÌT Ì‚6–”( Ìl”, Ìl”4 Ìl”8 Ìl”: Ìl”ÌC Ìl&˜”( Ìl”, Ìl”- Ìm”5 Ìm”6 Ìm”ÌA Ìm)”ÌB Ìm*”ÌR Ìm:š”( Ìl”, Ìl”- Ìn”6 Ìn”7 Ìn”; Ìn#”< Ìn$”ÌN Ìn6”ÌO Ìn7”Ì_ ÌnÌG’”$ Ìl”( Ìl–”( Ìp”, Ìp”4 Ìp”8 Ìp”: Ìp”ÌM Ìp0š”( Ìp”, Ìp”- Ìq”6 Ìq”7 Ìq”; Ìq#”< Ìq$”ÌN Ìq6”ÌO Ìq7”Ì_ ÌqÌG˜”( Ìp”, Ìp”- Ìr”5 Ìr”6 Ìr”ÌA Ìr)”ÌB Ìr*”ÌZ ÌrÌBœ”( Ìp”, Ìp”- Ìs”3 Ìs”4 Ìs”6 Ìs”; Ìs#”= Ìs%”ÌH Ìs0”ÌI Ìs1”ÌU Ìs=”ÌW Ìs?’”$ Ìp”( Ìp’”( Ìu”+ Ìu˜”( Ìu”+ Ìu”, Ì|”: Ì|!”; Ì|"”ÌD Ì|+”ÌE Ì|,”ÌP Ì|7˜”( Ìu”+ Ìu”, Ì}”1 Ì}”2 Ì}”= Ì}$”> Ì}%”ÌN Ì}5–”( Ìv”, Ìv”4 Ìv”8 Ìv”: Ìv”ÌB Ìv'˜”( Ìv”, Ìv”- Ìw”5 Ìw”6 Ìw ”ÌA Ìw+”ÌB Ìw,”ÌZ ÌwÌDš”( Ìv”, Ìv”- Ìx”6 Ìx ”7 Ìx!”; Ìx%”< Ìx&”ÌN Ìx8”ÌO Ìx9”ÌZ ÌxÌD˜”( Ìv”, Ìv”- Ìy”2 Ìy”3 Ìy”> Ìy(”? Ìy)”ÌM Ìy7’”$ Ìv”( Ìv–”( Ìz”, Ìz”4 Ìz”8 Ìz”: Ìz”? Ìz$˜”( Ìz”, Ìz”- Ìz&”5 Ìz.”6 Ìz/”ÌA Ìz:”ÌB Ìz;”ÌR ÌzÌKš”( Ìz”, Ìz”- ÌzÌM”6 ÌzÌV”7 ÌzÌW”; ÌzÌ[”< ÌzÌ\”ÌN ÌzÌn”ÌO ÌzÌo”ÌZ ÌzÌz’”$ Ìz”( Ìz’”$ Ìu”' Ìu’”$ Ìk”* Ìk’”$ Ìa”' Ìa’”$ Ì`”, Ì`””6 Ì_”: Ì_”; Ì_”ÌH Ì_(’” Ì_
-”# Ì_’” Ì^” Ì^’” Ì\”! Ì\’” Ì]” Ì]	‘” Ì¯‘” Ì¯’” Ì°”! Ì°’” Ì±” Ì±’” Ì°”! Ì°˜” Ì±” Ì±” Ì¾”$ Ì¾”% Ì¾”0 Ì¾”1 Ì¾”ÌG Ì¾/’” Ì²” Ì²’”? Ì²ÌP”ÌD Ì²Ì]˜”  Ì³
-”# Ì³”+ Ì³”- Ì³”2 Ì³”4 Ì³”5 Ì³”7 Ì³”  Ì³
-”# Ì³”$ Ì»”+ Ì»”, Ì»”. Ì»”2 Ì»”4 Ì»”5 Ì»”7 Ì»”< Ì»#”> Ì»%”? Ì»&”ÌA Ì»(š” Ì´”  Ì´”! Ì´”* Ì´”6 Ì´”9 Ì´”: Ì´”; Ì´ ”< Ì´!”= Ì´"˜”  Ìµ”$ Ìµ”' Ìµ”( Ìµ”. Ìµ”1 Ìµ”2 Ìµ”4 Ìµ š”( Ì¶”, Ì¶”- Ì¶”6 Ì¶”ÌB Ì¶”ÌE Ì¶ ”ÌF Ì¶!”ÌG Ì¶"”ÌH Ì¶#”ÌI Ì¶$‘”! Ì·‘”% Ì·’”, Ì¸”1 Ì¸’”( Ì¸”- Ì¸‘”! Ì¹’” Ì³
-” Ì³™”; Ì²”? Ì²”Ì@ Ì²”ÌJ Ì²”Ìg Ì² ”Ìk Ì²$”Ìl Ì²%”Ìy Ì²2”Ì{ Ì²3’” Ì²” Ì²’” Ì°” Ì°’” Ì±” Ì±‘” Ì¿‘” ÌÀÔrH–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜU‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
- ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”    ‘”  ! ‘”  " ‘”  # ‘”  $ ‘”  % ‘”  & ‘”  ' ‘”  ( ‘”  ) ‘”  * ‘”  + ‘”  , ‘”  - ‘”  . ‘”  / ‘”  0 ‘”  1 ‘”  2 ‘”  3 ‘”  4 ‘”  5 ‘”  6 ‘”  7 ‘”  8 ‘”  9 ‘”  : ‘”  ; ‘”  < ‘”  = ‘”  > ‘”  ? ‘”  Ì@ ‘”  ÌA ‘”  ÌB ‘”  ÌC ‘”  ÌD ‘”  ÌE ‘”  ÌF ‘”  ÌG ‘”  ÌH ‘”  ÌI ‘”  ÌJ ‘”  ÌK ‘”  ÌL ‘”  ÌM ‘”  ÌN ‘”  ÌO ‘”  ÌP ‘”  ÌQ ‘”  ÌR ‘”  ÌS ‘”  ÌT ‘”  ÌU ‘”  ÌV ‘”  ÌW ‘”  ÌX ‘”  ÌY ‘”  ÌZ ‘”  Ì[ ‘”  Ì\ ‘”  Ì] ‘”  Ì^ ‘”  Ì_ ‘”  Ì` ‘”  Ìa ‘”  Ìb ‘”  Ìc ‘”  Ìd ‘”  Ìe ‘”  Ìf ‘”  Ìg ‘”  Ìh ‘”  Ìi ‘”  Ìj ‘”  Ìk ‘”  Ìl ‘”  Ìm ‘”  Ìn ‘”  Ìo ‘”  Ìp ‘”  Ìq ‘”  Ìr ‘”  Ìs ‘”  Ìt ‘”  Ìu ‘”  Ìv ‘”  Ìw ‘”  Ìx ‘”  Ìy ‘”  Ìz ‘”  Ì{ ‘”  Ì| ‘”  Ì} ‘”  Ì~ ‘”  Ì ‘”  Ì€ ‘”  Ì ‘”  Ì‚ ‘”  Ìƒ ‘”  Ì„ ‘”  Ì… ‘”  Ì† ‘”  Ì‡ ‘”  Ìˆ ‘”  Ì‰ ‘”  ÌŠ ‘”  Ì‹ ‘”  ÌŒ ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì‘ ‘”  Ì’ ‘”  Ì“ ‘”  Ì” ‘”  Ì• ‘”  Ì– ‘”  Ì— ‘”  Ì˜ ‘”  Ì™ ‘”  Ìš ‘”  Ì› ‘”  Ìœ ‘”  Ì ‘”  Ì ‘”  ÌŸ ‘”  Ì  ‘”  Ì¡ ‘”  Ì¢ ‘”  Ì£ ‘”  Ì¤ ‘”  Ì¥ ‘”  Ì¦ ‘”  Ì§ ‘”  Ì¨ ‘”  Ì© ‘”  Ìª ‘”  Ì« ‘”  Ì¬ ‘”  Ì­ ‘”  Ì® ‘”  Ì¯ ‘”  Ì° ‘”  Ì± ‘”  Ì² ‘”  Ì³ ‘”  Ì´ ‘”  Ìµ ‘”  Ì¶ ‘”  Ì· ‘”  Ì¸ ‘”  Ì¹ ‘”  Ìº ‘”  Ì» ‘”  Ì¼ ‘”  Ì½ ‘”  Ì¾ ‘”  Ì¿ ‘”  ÌÀ ‘”  ÌÁ ‘”  ÌÂ ‘”  ÌÃ ‘”  ÌÄ ‘”  ÌÅ ‘”  ÌÆ ‘”  ÌÇ ‘”  ÌÈ ‘”  ÌÉ ‘”  ÌÊ ‘”  ÌË ‘”  ÌÌ ‘”  ÌÍ ‘”  ÌÎ ‘”  ÌÏ ‘”  ÌĞ ‘”  ÌÑ ‘”  ÌÒ ‘”  ÌÓ ‘”  ÌÔ ‘”  ÌÕ ‘”  ÌÖ ‘”  Ì× ‘”  ÌØ ‘”  ÌÙ ‘”  ÌÚ ‘”  ÌÛ ‘”  ÌÜ ‘”  Ìİ ‘”  ÌŞ ‘”  Ìß ‘”  Ìà ‘”  Ìá ‘”  Ìâ ‘”  Ìã ‘”  Ìä ‘”  Ìå ‘”  Ìæ ‘”  Ìç ‘”  Ìè ‘”  Ìé ‘”  Ìê ‘”  Ìë ‘”  Ìì ‘”  Ìí ‘”  Ìî ‘”  Ìï ‘”  Ìğ ‘”  Ìñ ‘”  Ìò ‘”  Ìó ‘”  Ìô ‘”  Ìõ ‘”  Ìö ‘”  Ì÷ ‘”  Ìø ‘”  Ìù ‘”  Ìú ‘”  Ìû ‘”  Ìü ‘”  Ìı ‘”  Ìş ‘”  Ìÿ ‘”  Í  ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í	 ‘”  Í
- ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í  ‘”  Í! ‘”  Í" ‘”  Í# ‘”  Í$ ‘”  Í% ‘”  Í& ‘”  Í' ‘”  Í( ‘”  Í) ‘”  Í* ‘”  Í+ ‘”  Í, ‘”  Í- ‘”  Í. ‘”  Í/ ‘”  Í0 ‘”  Í1 ‘”  Í2 ‘”  Í3 ‘”  Í4 ‘”  Í5 ‘”  Í6 ‘”  Í7 ‘”  Í8 ‘”  Í9 ‘”  Í: ‘”  Í; ‘”  Í< ‘”  Í= ‘”  Í> ‘”  Í? ‘”  Í@ ‘”  ÍA ‘”  ÍB ‘”  ÍC ‘”  ÍD ‘”  ÍE ‘”  ÍF ‘”  ÍG ‘”  ÍH ‘”  ÍI ‘”  ÍJ ‘”  ÍK ‘”  ÍL ‘”  ÍM ‘”  ÍN ‘”  ÍO ‘”  ÍP ‘”  ÍQ ‘”  ÍR ‘”  ÍS ‘”  ÍT ÔrI’§missing¦pluginÃ¦genAbcÂÔ  ÔrJ”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache”ÔrK•¤type¥start£endªspecifiers¦source±ImportDeclarationÍéÍ"‘ÔrL”¤type¥start£end¥local¸ImportNamespaceSpecifierÍğÍ ÔrM”¤type¥start£end¤nameªIdentifierÍõÍ «commonConstÔrN•¤type¥start£end¥value£raw§LiteralÍÍ!¹../common/CommonConstants»'../common/CommonConstants'K±ImportDeclarationÍ$Ía‘ÔrO•¤type¥start£end¨imported¥local¯ImportSpecifierÍ-Í;MªIdentifierÍ-Í;®ListDataSourceMªIdentifierÍ-Í;®ListDataSourceN§LiteralÍCÍ`»../viewmodel/ListDataSource½'../viewmodel/ListDataSource'K±ImportDeclarationÍcÍ”‘O¯ImportSpecifierÍlÍyMªIdentifierÍlÍy­DEFAULT_THEMEMªIdentifierÍlÍy­DEFAULT_THEMEN§LiteralÍÍ“°../common/Colors²'../common/Colors'K±ImportDeclarationÍ–Í¸‘L¶ImportDefaultSpecifierÍÍ£MªIdentifierÍÍ£¦routerN§LiteralÍ©Í·¬@ohos.router®'@ohos.router'
