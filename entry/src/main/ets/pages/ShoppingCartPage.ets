@@ -22,6 +22,8 @@ import {
   BUTTON_BORDER_RADIUS
 } from '../common/CommonConstants';
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
+import router from '@ohos.router';
+import { BusinessError } from '@ohos.base';
 
 interface CartItem {
   id: number;
@@ -54,222 +56,229 @@ export default struct ShoppingCartPage {
   ];
   @State isAllSelected: boolean = false;
   @State totalPrice: number = 0;
-  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;//使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
 
-  calculateTotalPrice() {
-    this.totalPrice = 0;
+  // 1. 核心计算方法：计算总价并检查全选状态
+  updateDataState() {
+    let total = 0;
+    let selectedCount = 0;
+
     this.cartItems.forEach(item => {
       if (item.selected) {
         const price = parseFloat(item.price.replace('¥', ''));
-        this.totalPrice += price * item.quantity;
+        total += price * item.quantity;
+        selectedCount++;
       }
     });
+
+    this.totalPrice = total;
+    // 只有列表不为空且选中数量等于列表长度时，才是全选
+    this.isAllSelected = (this.cartItems.length > 0 && selectedCount === this.cartItems.length);
   }
 
-  toggleSelectAll() {
-    this.isAllSelected = !this.isAllSelected;
-    this.cartItems.forEach(item => {
-      item.selected = this.isAllSelected;
+  // 获取当前选中数量
+  getSelectedCount(): number {
+    return this.cartItems.filter(item => item.selected).length;
+  }
+
+  // 切换全选
+  toggleSelectAll(checked: boolean) {
+    this.isAllSelected = checked;
+    this.cartItems = this.cartItems.map(item => {
+      item.selected = checked;
+      return item;
     });
-    this.calculateTotalPrice();
+    this.updateDataState();
   }
 
-  toggleItemSelect(index: number) {
-    this.cartItems[index].selected = !this.cartItems[index].selected;
-    this.isAllSelected = this.cartItems.every(item => item.selected);
-    this.calculateTotalPrice();
+  // 切换单选
+  toggleItemSelect(index: number, checked: boolean) {
+    this.cartItems[index].selected = checked;
+    this.cartItems = [...this.cartItems]; // 强制ArkUI刷新视图
+    this.updateDataState();
   }
 
+  // 修改数量
   updateQuantity(index: number, delta: number) {
     const newQuantity = this.cartItems[index].quantity + delta;
     if (newQuantity >= 1 && newQuantity <= 99) {
       this.cartItems[index].quantity = newQuantity;
-      this.calculateTotalPrice();
+      this.cartItems = [...this.cartItems];
+      this.updateDataState();
     }
   }
 
+  // 删除选中项
   deleteSelectedItems() {
     this.cartItems = this.cartItems.filter(item => !item.selected);
-    this.isAllSelected = false;
-    this.calculateTotalPrice();
+    this.updateDataState();
+  }
+
+  // 一键清空购物车
+  clearCart() {
+    this.cartItems = [];
+    this.updateDataState();
+  }
+
+  @Builder
+  PageHeader() {
+    Row() {
+      Text('购物车')
+        .fontSize(BIGGER_FONT_SIZE)
+        .fontWeight(FontWeight.Bold)
+        .fontColor(this.currentThemeColors.primaryTextColor)
+
+      if (this.cartItems.length > 0) {
+        Text('全部清空')
+          .fontSize(SMALL_FONT_SIZE)
+          .fontColor('#FF4D4F') // 使用红色提示风险
+          .onClick(() => this.clearCart())
+      }
+    }
+    .width(LAYOUT_WIDTH_OR_HEIGHT)
+    .justifyContent(FlexAlign.SpaceBetween)
+    .padding({ left: 16, right: 16, top: 12, bottom: 12 })
   }
 
   @Builder
   CartItemBuilder(item: CartItem, index: number) {
     Row({ space: 12 }) {
-      // 选择框
       Checkbox()
         .select(item.selected)
         .selectedColor(this.currentThemeColors.accentColor)
         .onChange((value: boolean) => {
-          this.toggleItemSelect(index);
+          this.toggleItemSelect(index, value);
         })
 
-      // 商品图片
       Image(item.image)
-        .width(80)
-        .height(80)
+        .width(80).height(80)
         .borderRadius(8)
         .objectFit(ImageFit.Cover)
 
-      // 商品信息
       Column({ space: 8 }) {
         Text(item.name)
           .fontSize(NORMAL_FONT_SIZE)
           .fontColor(this.currentThemeColors.primaryTextColor)
-          .maxLines(2)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
+          .maxLines(1)
 
         Text(item.price)
-          .fontSize(BIGGER_FONT_SIZE)
+          .fontSize(NORMAL_FONT_SIZE)
           .fontColor(this.currentThemeColors.accentColor)
           .fontWeight(FontWeight.Bold)
 
-        // 数量选择器
-        Row({ space: 8 }) {
-          Button('-')
-            .width(28)
-            .height(28)
-            .fontSize(NORMAL_FONT_SIZE)
-            .backgroundColor(item.quantity <= 1 ? this.currentThemeColors.tabUnselectedColor : this.currentThemeColors.accentColor)
-            .fontColor(item.quantity <= 1 ? this.currentThemeColors.secondaryTextColor : this.currentThemeColors.accentColor)
-            .enabled(item.quantity > 1)
-            .onClick(() => {
-              this.updateQuantity(index, -1);
-            })
+        Row() {
+          Blank()
+          Row({ space: 8 }) {
+            Button('-')
+              .width(28).height(28)
+              .backgroundColor(item.quantity <= 1 ? '#F5F5F5' : this.currentThemeColors.accentColor)
+              .fontColor(item.quantity <= 1 ? '#CCCCCC' : '#FFFFFF')
+              .onClick(() => this.updateQuantity(index, -1))
+              .enabled(item.quantity > 1)
 
-          Text(item.quantity.toString())
-            .fontSize(NORMAL_FONT_SIZE)
-            .fontColor(this.currentThemeColors.primaryTextColor)
-            .width(32)
-            .textAlign(TextAlign.Center)
+            Text(item.quantity.toString()).fontSize(NORMAL_FONT_SIZE).width(30).textAlign(TextAlign.Center)
 
-          Button('+')
-            .width(28)
-            .height(28)
-            .fontSize(NORMAL_FONT_SIZE)
-            .backgroundColor(this.currentThemeColors.accentColor)
-            .fontColor(this.currentThemeColors.primaryTextColor)
-            .onClick(() => {
-              this.updateQuantity(index, 1);
-            })
-        }
-      }
-      .alignItems(HorizontalAlign.Start)
-      .layoutWeight(1)
+            Button('+')
+              .width(28).height(28)
+              .backgroundColor(this.currentThemeColors.accentColor)
+              .fontColor('#FFFFFF')
+              .onClick(() => this.updateQuantity(index, 1))
+          }
+        }.width('100%')
+      }.alignItems(HorizontalAlign.Start).layoutWeight(1)
     }
-    .width(LAYOUT_WIDTH_OR_HEIGHT)
-    .padding(12)
-    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
-    .borderRadius(8)
-    .alignItems(VerticalAlign.Top)
+    .width('100%').padding(12).backgroundColor('#FFFFFF').borderRadius(12)
   }
 
   @Builder
   EmptyCartBuilder() {
-    Column({ space: 16 }) {
-      // Image($r('app.media.ic_empty_cart'))
-      //   .width(120)
-      //   .height(120)
-      // 空购物车图标
-      Circle()
-        .width(120)
-        .height(120)
-        .fill('#E0E0E0')
-
-      Text($r('app.string.empty_cart'))
-        .fontSize(NORMAL_FONT_SIZE)
-        .fontColor('#999999')
-
-      Button($r('app.string.go_shopping'))
-        .fontSize(NORMAL_FONT_SIZE)
-        .fontColor('#FFFFFF')
-        .backgroundColor(this.currentThemeColors.accentColor)
-        .height(BUTTON_HEIGHT)
-        .borderRadius(BUTTON_BORDER_RADIUS)
-        .width(200)
-    }
-    .width(LAYOUT_WIDTH_OR_HEIGHT)
-    .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .justifyContent(FlexAlign.Center)
+    Column({ space: 20 }) {
+      Circle().width(100).height(100).fill('#F0F0F0')
+      Text('购物车为空，去逛逛吧').fontSize(NORMAL_FONT_SIZE).fontColor('#999999')
+      Button('去首页')
+        .width(150).height(BUTTON_HEIGHT).backgroundColor(this.currentThemeColors.accentColor)
+        .onClick(() => {
+          router.replaceUrl({ url: 'pages/ListIndex' })
+            .catch((err: BusinessError) => console.error(`跳转失败:${err.code}`))
+        })
+    }.width('100%').height('100%').justifyContent(FlexAlign.Center)
   }
 
   @Builder
   BottomBar() {
-    Row({ space: 12 }) {
-      // 全选
-      Row({ space: 8 }) {
+    Row() {
+      // 左侧：全选控制
+      Row({ space: 4 }) {
         Checkbox()
           .select(this.isAllSelected)
           .selectedColor(this.currentThemeColors.accentColor)
-          .onChange(() => {
-            this.toggleSelectAll();
-          })
-
-        Text($r('app.string.select_all'))
-          .fontSize(SMALL_FONT_SIZE)
-          .fontColor(this.currentThemeColors.primaryTextColor)
+          .onChange((value: boolean) => this.toggleSelectAll(value))
+        Text('全选').fontSize(SMALL_FONT_SIZE)
       }
 
-      // 总价
-      Column({ space: 4 }) {
-        Row({ space: 4 }) {
-          Text($r('app.string.total'))
+      Blank()
+
+      // 右侧：功能区
+      Row({ space: 12 }) {
+        // 如果有商品选中，显示删除按钮，但不隐藏总价
+        if (this.getSelectedCount() > 0) {
+          Text('删除选中')
             .fontSize(SMALL_FONT_SIZE)
-            .fontColor(this.currentThemeColors.secondaryTextColor)
-
-          Text('¥' + this.totalPrice.toFixed(2))
-            .fontSize(BIGGER_FONT_SIZE)
-            .fontColor(this.currentThemeColors.accentColor)
-            .fontWeight(FontWeight.Bold)
+            .fontColor('#FF4D4F')
+            .fontWeight(FontWeight.Medium)
+            .onClick(() => this.deleteSelectedItems())
         }
-      }
-      .layoutWeight(1)
-      .alignItems(HorizontalAlign.End)
 
-      // 结算按钮
-      Button($r('app.string.checkout'))
-        .fontSize(NORMAL_FONT_SIZE)
-        .fontColor('#FFFFFF')
-        .backgroundColor(this.currentThemeColors.accentColor)
-        .height(BUTTON_HEIGHT)
-        .borderRadius(BUTTON_BORDER_RADIUS)
-        .width(120)
+        // 始终保留合计和结算部分
+        Column() {
+          Row() {
+            Text('合计:').fontSize(SMALL_FONT_SIZE)
+            Text('¥' + this.totalPrice.toFixed(2))
+              .fontSize(NORMAL_FONT_SIZE)
+              .fontColor(this.currentThemeColors.accentColor)
+              .fontWeight(FontWeight.Bold)
+          }
+        }.alignItems(HorizontalAlign.End)
+
+        Button('结算')
+          .backgroundColor(this.getSelectedCount() > 0 ? this.currentThemeColors.accentColor : '#CCCCCC')
+          .height(40)
+          .width(80)
+          .borderRadius(20)
+          .fontSize(SMALL_FONT_SIZE)
+          .enabled(this.getSelectedCount() > 0)
+      }
     }
-    .width(LAYOUT_WIDTH_OR_HEIGHT)
+    .width('100%')
+    .padding({ left: 16, right: 16 })
     .height(72)
-    .padding({ left: 16, right: 16, top: 12, bottom: 12 })
-    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
-    .shadow({
-      radius: 8,
-      color: '#00000015', //'#00000015'
-      offsetY: -2
-    })
+    .backgroundColor('#FFFFFF')
+    .shadow({ radius: 10, color: '#10000000', offsetY: -2 })
   }
 
   build() {
     Column() {
+      this.PageHeader()
+
       if (this.cartItems.length === 0) {
         this.EmptyCartBuilder()
       } else {
-        // 购物车列表
-        List({ space: 8 }) {
-          ForEach(this.cartItems, (item: CartItem, index?: number) => {
+        List({ space: 10 }) {
+          ForEach(this.cartItems, (item: CartItem, index: number) => {
             ListItem() {
-              this.CartItemBuilder(item, index !== undefined ? index : 0)
+              this.CartItemBuilder(item, index)
             }
-          })
+          }, (item: CartItem) => item.id.toString() + item.selected + item.quantity)
+          // Key中包含selected和quantity，确保状态改变时，Checkbox和数量文字能精准刷新
         }
         .layoutWeight(1)
-        .padding(8)
-        .backgroundColor(this.currentThemeColors.backgroundColor)
+        .padding(10)
 
-        // 底部操作栏
         this.BottomBar()
       }
     }
-    .width(LAYOUT_WIDTH_OR_HEIGHT)
-    .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .backgroundColor(this.currentThemeColors.backgroundColor)
+    .width('100%')
+    .height('100%')
+    .backgroundColor('#F5F5F5')
   }
 }

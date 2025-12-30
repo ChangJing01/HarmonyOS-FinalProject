@@ -59,6 +59,8 @@ struct ListIndex {
         return $r('app.string.shopping_cart');
       case 4:
         return $r('app.string.personal');
+      case 4:
+        return $r('app.string.search');
       default:
         return $r('app.string.shopping_mall');
     }
@@ -85,6 +87,9 @@ struct ListIndex {
     }  else if (this.currentTabIndex === 4) {
       // 个人中心页面
       PersonalPage()
+    } else if (this.currentTabIndex === 4) {
+      // 搜索页面
+      SearchPage()
     }
   }
 
