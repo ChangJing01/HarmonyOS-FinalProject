@@ -47,16 +47,22 @@ export default struct BottomTabBar {
       index: 1
     },
     {
+      title: $r('app.string.search'),
+      icon: $r('app.media.ic_search'),
+      selectedIcon: $r('app.media.ic_search'),
+      index: 2
+    },
+    {
       title: $r('app.string.shopping_cart'),
       icon: $r('app.media.ic_cart_normal'),
       selectedIcon: $r('app.media.ic_cart_selected'),
-      index: 2
+      index: 3
     },
     {
       title: $r('app.string.personal'),
       icon: $r('app.media.ic_personal_normal'),
       selectedIcon: $r('app.media.ic_personal_selected'),
-      index: 3
+      index: 4
     }
   ];
 
