@@ -1,10 +1,10 @@
 {
   "modulePathMap": {
-    "entry": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry"
+    "entry": "E:\\VsCode\\MIPP\\HarmonyOS-FinalProject\\entry"
   },
   "compileMode": "esmodule",
-  "projectRootPath": "D:\\Codes\\DevEcoStudio\\List_commodity",
-  "nodeModulesPath": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates\\loader_out\\default\\node_modules",
+  "projectRootPath": "E:\\VsCode\\MIPP\\HarmonyOS-FinalProject",
+  "nodeModulesPath": "E:\\VsCode\\MIPP\\HarmonyOS-FinalProject\\entry\\build\\default\\intermediates\\loader_out\\default\\node_modules",
   "byteCodeHarInfo": {},
   "declarationEntry": [],
   "moduleName": "entry",
@@ -17,9 +17,9 @@
   "routerMap": [],
   "hspResourcesMap": {},
   "updateVersionInfo": {},
-  "anBuildOutPut": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates\\loader_out\\default\\an\\arm64-v8a",
+  "anBuildOutPut": "E:\\VsCode\\MIPP\\HarmonyOS-FinalProject\\entry\\build\\default\\intermediates\\loader_out\\default\\an\\arm64-v8a",
   "anBuildMode": "type",
   "patchConfig": {
-    "changedFileList": "D:\\Codes\\DevEcoStudio\\List_commodity\\entry\\build\\default\\intermediates\\patch\\default\\changedFileList.json"
+    "changedFileList": "E:\\VsCode\\MIPP\\HarmonyOS-FinalProject\\entry\\build\\default\\intermediates\\patch\\default\\changedFileList.json"
   }
 }

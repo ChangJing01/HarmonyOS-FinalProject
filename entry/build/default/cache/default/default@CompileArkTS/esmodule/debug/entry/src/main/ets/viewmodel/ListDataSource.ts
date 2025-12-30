@@ -60,7 +60,17 @@ class BasicDataSource implements IDataSource {
     }
 }
 export class ListDataSource extends BasicDataSource {
+    private static instance: ListDataSource | null = null;
     private listData = createListRange();
+    public static getInstance(): ListDataSource {
+        if (!ListDataSource.instance) {
+            ListDataSource.instance = new ListDataSource();
+        }
+        return ListDataSource.instance;
+    }
+    private constructor() {
+        super();
+    }
     public totalCount(): number {
         return this.listData.length;
     }
@@ -72,5 +82,9 @@ export class ListDataSource extends BasicDataSource {
             this.listData = this.listData.concat(goodsInitialList);
             this.notifyDataAdd(this.listData.length - 1);
         }
+    }
+    public addNewItem(item: GoodsListItemType): void {
+        this.listData.push(item);
+        this.notifyDataAdd(this.listData.length - 1);
     }
 }

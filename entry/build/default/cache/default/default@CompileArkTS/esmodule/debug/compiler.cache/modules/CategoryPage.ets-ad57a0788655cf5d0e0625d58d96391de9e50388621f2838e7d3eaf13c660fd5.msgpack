@@ -1,0 +1,452 @@
+Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚ66if (!("finalizeConstruction" in ViewPU.prototype)) {
+    Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
+}
+/*
+ * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Licensed under the Apache License,Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import CategoryTab from '../view/CategoryTabComponent';
+import CategorySub from '../view/CategorySubComponent';
+import GoodsList from '../view/GoodsListComponent';
+import { LAYOUT_WIDTH_OR_HEIGHT } from '../common/CommonConstants';
+import { DEFAULT_THEME } from '../common/Colors';
+export default class CategoryPage extends ViewPU {
+    constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
+        super(parent, __localStorage, elmtId, extraInfo);
+        if (typeof paramsLambda === "function") {
+            this.paramsGenerator_ = paramsLambda;
+        }
+        this.__selectedCategoryIndex = new ObservedPropertySimplePU(0, this, "selectedCategoryIndex");
+        this.__selectedSubCategoryIndex = new ObservedPropertySimplePU(0, this, "selectedSubCategoryIndex");
+        this.__showSubCategory = new ObservedPropertySimplePU(true, this, "showSubCategory");
+        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
+        this.categoryData = [
+            {
+                id: 0,
+                name: { "id": 16777271, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                subCategories: [
+                    { id: 0, name: { "id": 16777274, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 1, name: { "id": 16777280, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 2, name: { "id": 16777283, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } }
+                ]
+            },
+            {
+                id: 1,
+                name: { "id": 16777247, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                subCategories: [
+                    { id: 0, name: { "id": 16777274, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 1, name: { "id": 16777275, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 2, name: { "id": 16777281, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } }
+                ]
+            },
+            {
+                id: 2,
+                name: { "id": 16777230, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                subCategories: [
+                    { id: 0, name: { "id": 16777274, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 1, name: { "id": 16777282, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 2, name: { "id": 16777284, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } }
+                ]
+            },
+            {
+                id: 3,
+                name: { "id": 16777288, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                subCategories: [
+                    { id: 0, name: { "id": 16777274, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 1, name: { "id": 16777276, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 2, name: { "id": 16777278, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } }
+                ]
+            },
+            {
+                id: 4,
+                name: { "id": 16777243, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" },
+                subCategories: [
+                    { id: 0, name: { "id": 16777274, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 1, name: { "id": 16777279, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } },
+                    { id: 2, name: { "id": 16777277, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" } }
+                ]
+            }
+        ];
+        this.setInitiallyProvidedValue(params);
+        this.finalizeConstruction();
+    }
+    setInitiallyProvidedValue(params) {
+        if (params.selectedCategoryIndex !== undefined) {
+            this.selectedCategoryIndex = params.selectedCategoryIndex;
+        }
+        if (params.selectedSubCategoryIndex !== undefined) {
+            this.selectedSubCategoryIndex = params.selectedSubCategoryIndex;
+        }
+        if (params.showSubCategory !== undefined) {
+            this.showSubCategory = params.showSubCategory;
+        }
+        if (params.categoryData !== undefined) {
+            this.categoryData = params.categoryData;
+        }
+    }
+    updateStateVars(params) {
+    }
+    purgeVariableDependenciesOnElmtId(rmElmtId) {
+        this.__selectedCategoryIndex.purgeDependencyOnElmtId(rmElmtId);
+        this.__selectedSubCategoryIndex.purgeDependencyOnElmtId(rmElmtId);
+        this.__showSubCategory.purgeDependencyOnElmtId(rmElmtId);
+        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
+    }
+    aboutToBeDeleted() {
+        this.__selectedCategoryIndex.aboutToBeDeleted();
+        this.__selectedSubCategoryIndex.aboutToBeDeleted();
+        this.__showSubCategory.aboutToBeDeleted();
+        this.__currentThemeColors.aboutToBeDeleted();
+        SubscriberManager.Get().delete(this.id__());
+        this.aboutToBeDeletedInternal();
+    }
+    get selectedCategoryIndex() {
+        return this.__selectedCategoryIndex.get();
+    }
+    set selectedCategoryIndex(newValue) {
+        this.__selectedCategoryIndex.set(newValue);
+    }
+    get selectedSubCategoryIndex() {
+        return this.__selectedSubCategoryIndex.get();
+    }
+    set selectedSubCategoryIndex(newValue) {
+        this.__selectedSubCategoryIndex.set(newValue);
+    }
+    get showSubCategory() {
+        return this.__showSubCategory.get();
+    }
+    set showSubCategory(newValue) {
+        this.__showSubCategory.set(newValue);
+    }
+    get currentThemeColors() {
+        return this.__currentThemeColors.get();
+    }
+    set currentThemeColors(newValue) {
+        this.__currentThemeColors.set(newValue);
+    }
+    getSubCategoriesForCurrentTab() {
+        return this.categoryData[this.selectedCategoryIndex].subCategories;
+    }
+    getCurrentSubCategoryName() {
+        const subCategories = this.getSubCategoriesForCurrentTab();
+        return subCategories[this.selectedSubCategoryIndex].name;
+    }
+    initialRender() {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create();
+            Column.width(LAYOUT_WIDTH_OR_HEIGHT);
+            Column.height(LAYOUT_WIDTH_OR_HEIGHT);
+            Column.backgroundColor(this.currentThemeColors.backgroundColor);
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // ä¸€çº§åˆ†ç±» Tabï¼ˆæ¨ªå‘ï¼‰
+            Row.create();
+            // ä¸€çº§åˆ†ç±» Tabï¼ˆæ¨ªå‘ï¼‰
+            Row.width(LAYOUT_WIDTH_OR_HEIGHT);
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            __Common__.create();
+            __Common__.layoutWeight(1);
+        }, __Common__);
+        {
+            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                if (isInitialRender) {
+                    let componentCall = new CategoryTab(this, {
+                        selectedCategoryIndex: this.__selectedCategoryIndex,
+                        selectedSubCategoryIndex: this.__selectedSubCategoryIndex
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 92, col: 9 });
+                    ViewPU.create(componentCall);
+                    let paramsLambda = () => {
+                        return {
+                            selectedCategoryIndex: this.selectedCategoryIndex,
+                            selectedSubCategoryIndex: this.selectedSubCategoryIndex
+                        };
+                    };
+                    componentCall.paramsGenerator_ = paramsLambda;
+                }
+                else {
+                    this.updateStateVarsOfChildByElmtId(elmtId, {});
+                }
+            }, { name: "CategoryTab" });
+        }
+        __Common__.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.create(this.showSubCategory ? 'â—€' : 'â–¶');
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.fontSize(16);
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.fontColor(this.currentThemeColors.secondaryTextColor);
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.width(40);
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.height(56);
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.textAlign(TextAlign.Center);
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.backgroundColor(this.currentThemeColors.cardBackgroundColor);
+            // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+            Text.onClick(() => {
+                this.showSubCategory = !this.showSubCategory;
+            });
+        }, Text);
+        // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+        Text.pop();
+        // ä¸€çº§åˆ†ç±» Tabï¼ˆæ¨ªå‘ï¼‰
+        Row.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // äºŒçº§åˆ†ç±»å’Œå•†å“åˆ—è¡¨ï¼ˆå·¦å³åˆ†æ ï¼‰
+            Row.create();
+            // äºŒçº§åˆ†ç±»å’Œå•†å“åˆ—è¡¨ï¼ˆå·¦å³åˆ†æ ï¼‰
+            Row.width(LAYOUT_WIDTH_OR_HEIGHT);
+            // äºŒçº§åˆ†ç±»å’Œå•†å“åˆ—è¡¨ï¼ˆå·¦å³åˆ†æ ï¼‰
+            Row.layoutWeight(1);
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            __Common__.create();
+            __Common__.width(this.showSubCategory ? '25%' : '0%');
+            __Common__.visibility(this.showSubCategory ? Visibility.Visible : Visibility.Hidden);
+        }, __Common__);
+        {
+            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                if (isInitialRender) {
+                    let componentCall = new 
+                    // å·¦ä¾§ï¼šäºŒçº§å­åˆ†ç±»ï¼ˆå¯éšè—ï¼‰
+                    CategorySub(this, {
+                        selectedSubCategoryIndex: this.__selectedSubCategoryIndex,
+                        subCategories: this.getSubCategoriesForCurrentTab()
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 115, col: 9 });
+                    ViewPU.create(componentCall);
+                    let paramsLambda = () => {
+                        return {
+                            selectedSubCategoryIndex: this.selectedSubCategoryIndex,
+                            subCategories: this.getSubCategoriesForCurrentTab()
+                        };
+                    };
+                    componentCall.paramsGenerator_ = paramsLambda;
+                }
+                else {
+                    this.updateStateVarsOfChildByElmtId(elmtId, {
+                        subCategories: this.getSubCategoriesForCurrentTab()
+                    });
+                }
+            }, { name: "CategorySub" });
+        }
+        __Common__.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            __Common__.create();
+            __Common__.layoutWeight(1);
+        }, __Common__);
+        {
+            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                if (isInitialRender) {
+                    let componentCall = new 
+                    // å³ä¾§ï¼šå•†å“åˆ—è¡¨
+                    GoodsList(this, {}, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 123, col: 9 });
+                    ViewPU.create(componentCall);
+                    let paramsLambda = () => {
+                        return {};
+                    };
+                    componentCall.paramsGenerator_ = paramsLambda;
+                }
+                else {
+                    this.updateStateVarsOfChildByElmtId(elmtId, {});
+                }
+            }, { name: "GoodsList" });
+        }
+        __Common__.pop();
+        // äºŒçº§åˆ†ç±»å’Œå•†å“åˆ—è¡¨ï¼ˆå·¦å³åˆ†æ ï¼‰
+        Row.pop();
+        Column.pop();
+    }
+    rerender() {
+        this.updateDirtyElements();
+    }
+}
+//# sourceMappingURL=CategoryPage.js.mapÂ•ÙVE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\CategoryTabComponent.etsÙVE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\CategorySubComponent.etsÙTE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\GoodsListComponent.etsÙSE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\CommonConstants.etsÙJE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\Colors.etsÙOE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\pages\CategoryPage.etsÔrBœªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo¯hostModulesInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙ+E:\VsCode\MIPP\HarmonyOS-FinalProject\entryÙ%E:\VsCode\MIPP\HarmonyOS-FinalProject¥entry¥1.0.0Ô  ‘ÔrC’²hostDependencyName®hostModuleName®./CategoryPage¥entryÙ+E:\VsCode\MIPP\HarmonyOS-FinalProject\entryÔrDÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationºgetTypeAtLocationForLinterÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFileÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚ4/*
+ * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Licensed under the Apache License,Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import CategoryTab, { CategoryData, SubCategoryData } from '../view/CategoryTabComponent';
+import CategorySub from '../view/CategorySubComponent';
+import GoodsList from '../view/GoodsListComponent';
+import {
+  LAYOUT_WIDTH_OR_HEIGHT
+} from '../common/CommonConstants';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
+
+@Component
+export default struct CategoryPage {
+  @State selectedCategoryIndex: number = 0;
+  @State selectedSubCategoryIndex: number = 0;
+  @State showSubCategory: boolean = true;
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
+
+  private categoryData: CategoryData[] = [
+    {
+      id: 0,
+      name: $r('app.string.selected'),
+      subCategories: [
+        { id: 0, name: $r('app.string.sub_all') },
+        { id: 1, name: $r('app.string.sub_hot') },
+        { id: 2, name: $r('app.string.sub_new') }
+      ]
+    },
+    {
+      id: 1,
+      name: $r('app.string.mobile_phone'),
+      subCategories: [
+        { id: 0, name: $r('app.string.sub_all') },
+        { id: 1, name: $r('app.string.sub_android') },
+        { id: 2, name: $r('app.string.sub_ios') }
+      ]
+    },
+    {
+      id: 2,
+      name: $r('app.string.clothes'),
+      subCategories: [
+        { id: 0, name: $r('app.string.sub_all') },
+        { id: 1, name: $r('app.string.sub_mens') },
+        { id: 2, name: $r('app.string.sub_womens') }
+      ]
+    },
+    {
+      id: 3,
+      name: $r('app.string.wear'),
+      subCategories: [
+        { id: 0, name: $r('app.string.sub_all') },
+        { id: 1, name: $r('app.string.sub_casual') },
+        { id: 2, name: $r('app.string.sub_formal') }
+      ]
+    },
+    {
+      id: 4,
+      name: $r('app.string.home_furnishing'),
+      subCategories: [
+        { id: 0, name: $r('app.string.sub_all') },
+        { id: 1, name: $r('app.string.sub_furniture') },
+        { id: 2, name: $r('app.string.sub_decor') }
+      ]
+    }
+  ];
+
+  getSubCategoriesForCurrentTab(): SubCategoryData[] {
+    return this.categoryData[this.selectedCategoryIndex].subCategories;
+  }
+
+  getCurrentSubCategoryName(): Resource {
+    const subCategories = this.getSubCategoriesForCurrentTab();
+    return subCategories[this.selectedSubCategoryIndex].name;
+  }
+
+  build() {
+    Column() {
+      // ä¸€çº§åˆ†ç±» Tabï¼ˆæ¨ªå‘ï¼‰
+      Row() {
+        CategoryTab({
+          selectedCategoryIndex: $selectedCategoryIndex,
+          selectedSubCategoryIndex: $selectedSubCategoryIndex
+        })
+          .layoutWeight(1)
+
+        // åˆ‡æ¢å·¦ä¾§æ æ˜¾ç¤º/éšè—æŒ‰é’®
+        Text(this.showSubCategory ? 'â—€' : 'â–¶')
+          .fontSize(16)
+          .fontColor(this.currentThemeColors.secondaryTextColor)
+          .width(40)
+          .height(56)
+          .textAlign(TextAlign.Center)
+          .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+          .onClick(() => {
+            this.showSubCategory = !this.showSubCategory;
+          })
+      }
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+
+      // äºŒçº§åˆ†ç±»å’Œå•†å“åˆ—è¡¨ï¼ˆå·¦å³åˆ†æ ï¼‰
+      Row() {
+        // å·¦ä¾§ï¼šäºŒçº§å­åˆ†ç±»ï¼ˆå¯éšè—ï¼‰
+        CategorySub({
+          selectedSubCategoryIndex: $selectedSubCategoryIndex,
+          subCategories: this.getSubCategoriesForCurrentTab()
+        })
+          .width(this.showSubCategory ? '25%' : '0%')
+          .visibility(this.showSubCategory ? Visibility.Visible : Visibility.Hidden)
+
+        // å³ä¾§ï¼šå•†å“åˆ—è¡¨
+        GoodsList()
+          .layoutWeight(1)
+      }
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+      .layoutWeight(1)
+    }
+    .width(LAYOUT_WIDTH_OR_HEIGHT)
+    .height(LAYOUT_WIDTH_OR_HEIGHT)
+    .backgroundColor(this.currentThemeColors.backgroundColor)
+  }
+}ÀÔrE•º../view/GoodsListComponent¹../common/CommonConstants¼../view/CategorySubComponent¼../view/CategoryTabComponent°../common/ColorsÔrF—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÂÙTE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\GoodsListComponent.etsAÃªoh-resolveÂFAÂÙSE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\CommonConstants.etsAÃªoh-resolveÂFAÂÙVE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\CategorySubComponent.etsAÃªoh-resolveÂFAÂÙVE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\CategoryTabComponent.etsAÃªoh-resolveÂFAÂÙJE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\Colors.etsAÃªoh-resolveÂ“ÔrG–§version¤fileªsourceRoot§sources¥names¨mappings¯CategoryPage.js ‘°CategoryPage.etsÜ‘”    ‘” –”   ” ” 5” ;”6 ÌY”7 ÌZ–”   ” ” ” ”6 6”7 7–”   ” ” ” ”2 2”3 3˜”   ” ”	 ” ”! ”' ”ÌB "”ÌC #˜”   ” ”	 ” #” %” +”0 =”1 >–”   ” ” ” ” ”! "‘”  ’”ÌD )”ÌE *’”ÌG ,”ÌH -’”> $”ÌB (””; ”ÌH ”ÌJ Ì@”ÌW ÌM‘” )‘” ””  ”  ”  
+”  “” !” !
+”Ì„ !%“” "” "” "™” #” #
+” #” #” #” #”! #”Ì‘ #/”Ì“ #1™” $” $
+” $” $” $” $”! $”Ì‘ $/”Ì“ $1™” %” %
+” %” %” %” %”! %”Ì‘ %/”Ì“ %1‘” &‘” '‘” (”” )” )” )
+” )“” *” *
+”Ì„ *)“” +” +” +™” ,” ,
+” ,” ,” ,” ,”! ,”Ì‘ ,/”Ì“ ,1™” -” -
+” -” -” -” -”! -”Ì‘ -3”Ì“ -5™” .” .
+” .” .” .” .”! .”Ì‘ ./”Ì“ .1‘” /‘” 0‘” 1”” 2” 2” 2
+” 2“” 3” 3
+”Ì„ 3$“” 4” 4” 4™” 5” 5
+” 5” 5” 5” 5”! 5”Ì‘ 5/”Ì“ 51™” 6” 6
+” 6” 6” 6” 6”! 6”Ì‘ 60”Ì“ 62™” 7” 7
+” 7” 7” 7” 7”! 7”Ì‘ 72”Ì“ 74‘” 8‘” 9‘” :”” ;” ;” ;
+” ;“” <” <
+”Ì„ <!“” =” =” =™” >” >
+” >” >” >” >”! >”Ì‘ >/”Ì“ >1™” ?” ?
+” ?” ?” ?” ?”! ?”Ì‘ ?2”Ì“ ?4™” Ì@” Ì@
+” Ì@” Ì@” Ì@” Ì@”! Ì@”Ì‘ Ì@2”Ì“ Ì@4‘” ÌA‘” ÌB‘” ÌC”” ÌD” ÌD” ÌD
+” ÌD“” ÌE” ÌE
+”Ì„ ÌE,“” ÌF” ÌF” ÌF™” ÌG” ÌG
+” ÌG” ÌG” ÌG” ÌG”! ÌG”Ì‘ ÌG/”Ì“ ÌG1™” ÌH” ÌH
+” ÌH” ÌH” ÌH” ÌH”! ÌH”Ì‘ ÌH5”Ì“ ÌH7™” ÌI” ÌI
+” ÌI” ÌI” ÌI” ÌI”! ÌI”Ì‘ ÌI1”Ì“ ÌI3‘” ÌJ‘” ÌK‘”	 ÌL‘” >’” 	” ’” 	” ’” 	”  !’” 	”  !’” 	” ’” 	” ’” ” 0’” ” 0’” ÌN”! ÌN” ÌO” ÌO” ÌO” ÌO”  ÌO”! ÌO”% ÌO!”& ÌO"”; ÌO7”< ÌO8”= ÌO9”ÌJ ÌOÌF”ÌK ÌOÌG’” ÌP” ÌP’” ÌR” ÌR™” ÌS” ÌS
+” ÌS” ÌS”" ÌS”# ÌS”Ì@ ÌS<”ÌB ÌS>”ÌC ÌS?›” ÌT” ÌT” ÌT” ÌT”! ÌT”" ÌT”: ÌT6”; ÌT7”< ÌT8”Ì@ ÌT<”ÌA ÌT=’” ÌU” ÌU‘” ÌW’” ÌX” ÌX
+–” ÌX” ÌX
+” Ì€” Ì€
+” Ì€”/ Ì€!–” ÌX” ÌX
+” Ì” Ì” Ì”0 Ì"š” ÌX” ÌX
+” Ì‚”" Ì‚”# Ì‚”' Ì‚”( Ì‚”: Ì‚,”; Ì‚-”ÌJ Ì‚<’” ÌY” ÌY’” ÌZ” ÌZ	’” ÌY” ÌY–” ÌZ” ÌZ	” Ìm” Ìm” Ìm”, Ìm#”” Ì_”# Ì_”$ Ì_”% Ì_“”, Ì[”7 Ì[”> Ì[“” Ì\
+”- Ì\”ÌK Ì\7“” Ì]
+”0 Ì]"”ÌQ Ì]=‘” Ì^	’” Ì\
+”1 Ì\’” Ì]
+”4 Ì]"’” Ìa” Ìaž” Ìb” Ìb” Ìb” Ìb” Ìb”, Ìb!”- Ìb"”. Ìb#”/ Ìb$”2 Ìb'”3 Ìb(”4 Ìb)”5 Ìb*”8 Ìb-’” Ìa” Ìa–” Ìb” Ìb” Ìc” Ìc” Ìc” Ìc’” Ìa” Ìaš” Ìb” Ìb” Ìd” Ìd” Ìd” Ìd”  Ìd”2 Ìd,”3 Ìd-”ÌE Ìd?’” Ìa” Ìa–” Ìb” Ìb” Ìe” Ìe” Ìe” Ìe’” Ìa” Ìa–” Ìb” Ìb” Ìf” Ìf” Ìf” Ìf’” Ìa” Ìa˜” Ìb” Ìb” Ìg” Ìg” Ìg”$ Ìg”% Ìg”+ Ìg%’” Ìa” Ìaš” Ìb” Ìb” Ìh”  Ìh”! Ìh”% Ìh”& Ìh ”8 Ìh2”9 Ìh3”ÌL ÌhÌF’” Ìa” Ìa—” Ìb” Ìb” Ìi” Ìi” Ìi” Ìi” Ìiš” Ìj” Ìj” Ìj”$ Ìj ”' Ìj#”( Ìj$”, Ìj(”- Ìj)”< Ìj8”= Ìj9’” Ìk
+” Ìk’” Ìa” Ìa’” Ìb” Ìb’” ÌY” ÌY’” ÌZ” ÌZ	’” Ìo” Ìo’” Ìp” Ìp	’” Ìo” Ìo–” Ìp” Ìp	” Ì}” Ì}” Ì}”, Ì}#’” Ìo” Ìo–” Ìp” Ìp	” Ì~” Ì~” Ì~” Ì~ž” Ìv” Ìv” Ìv”! Ìv”" Ìv”1 Ìv%”2 Ìv&”3 Ìv'”4 Ìv(”9 Ìv-”: Ìv.”; Ìv/”< Ìv0”Ì@ Ìv4Ü ” Ìw”! Ìw”" Ìw”& Ìw”' Ìw”6 Ìw*”7 Ìw+”8 Ìw,”9 Ìw-”ÌC Ìw7”ÌD Ìw8”ÌK Ìw?”ÌL ÌwÌ@”ÌM ÌwÌA”ÌN ÌwÌB”ÌX ÌwÌL”ÌY ÌwÌM”Ì_ ÌwÌS’” Ìq”$ Ìq“” Ìr” Ìr”& Ìr“” Ìs
+”0 Ìs"”ÌQ Ìs=—” Ìt
+”% Ìt”' Ìt”+ Ìt”, Ìt”ÌI Ìt;”ÌK Ìt=‘” Ìu	’” Ìs
+”4 Ìs"—” Ìt
+”) Ìt”+ Ìt”/ Ìt”0 Ìt”ÌM Ìt;”ÌO Ìt=—” Ìt
+”% Ìt”' Ìt”+ Ìt”, Ìt”ÌI Ìt;”ÌK Ìt=”” Ì{”# Ì{”$ Ì{”% Ì{’” Ìy” Ìy’” Ìz” Ìz’” Ìo” Ìo’” Ìp” Ìp	’” ÌX” ÌX
+‘” ÌƒÔrH–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜ‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
+ ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”    ‘”  ! ‘”  " ‘”  # ‘”  $ ‘”  % ‘”  & ‘”  ' ‘”  ( ‘”  ) ‘”  * ‘”  + ‘”  , ‘”  - ‘”  . ‘”  / ‘”  0 ‘”  1 ‘”  2 ‘”  3 ‘”  4 ‘”  5 ‘”  6 ‘”  7 ‘”  8 ‘”  9 ‘”  : ‘”  ; ‘”  < ‘”  = ‘”  > ‘”  ? ‘”  Ì@ ‘”  ÌA ‘”  ÌB ‘”  ÌC ‘”  ÌD ‘”  ÌE ‘”  ÌF ‘”  ÌG ‘”  ÌH ‘”  ÌI ‘”  ÌJ ‘”  ÌK ‘”  ÌL ‘”  ÌM ‘”  ÌN ‘”  ÌO ‘”  ÌP ‘”  ÌQ ‘”  ÌR ‘”  ÌS ‘”  ÌT ‘”  ÌU ‘”  ÌV ‘”  ÌW ‘”  ÌX ‘”  ÌY ‘”  ÌZ ‘”  Ì[ ‘”  Ì\ ‘”  Ì] ‘”  Ì^ ‘”  Ì_ ‘”  Ì` ‘”  Ìa ‘”  Ìb ‘”  Ìc ‘”  Ìd ‘”  Ìe ‘”  Ìf ‘”  Ìg ‘”  Ìh ‘”  Ìi ‘”  Ìj ‘”  Ìk ‘”  Ìl ‘”  Ìm ‘”  Ìn ‘”  Ìo ‘”  Ìp ‘”  Ìq ‘”  Ìr ‘”  Ìs ‘”  Ìt ‘”  Ìu ‘”  Ìv ‘”  Ìw ‘”  Ìx ‘”  Ìy ‘”  Ìz ‘”  Ì{ ‘”  Ì| ‘”  Ì} ‘”  Ì~ ‘”  Ì ‘”  Ì€ ‘”  Ì ‘”  Ì‚ ‘”  Ìƒ ‘”  Ì„ ‘”  Ì… ‘”  Ì† ‘”  Ì‡ ‘”  Ìˆ ‘”  Ì‰ ‘”  ÌŠ ‘”  Ì‹ ‘”  ÌŒ ‘”  Ì ‘”  ÌŽ ‘”  Ì ‘”  Ì ‘”  Ì‘ ‘”  Ì’ ‘”  Ì“ ‘”  Ì” ‘”  Ì• ‘”  Ì– ‘”  Ì— ‘”  Ì˜ ‘”  Ì™ ‘”  Ìš ‘”  Ì› ‘”  Ìœ ‘”  Ì ‘”  Ìž ‘”  ÌŸ ‘”  Ì  ‘”  Ì¡ ‘”  Ì¢ ‘”  Ì£ ‘”  Ì¤ ‘”  Ì¥ ‘”  Ì¦ ‘”  Ì§ ‘”  Ì¨ ‘”  Ì© ‘”  Ìª ‘”  Ì« ‘”  Ì¬ ‘”  Ì­ ‘”  Ì® ‘”  Ì¯ ‘”  Ì° ‘”  Ì± ‘”  Ì² ‘”  Ì³ ‘”  Ì´ ‘”  Ìµ ‘”  Ì¶ ‘”  Ì· ‘”  Ì¸ ‘”  Ì¹ ‘”  Ìº ‘”  Ì» ‘”  Ì¼ ‘”  Ì½ ‘”  Ì¾ ‘”  Ì¿ ‘”  ÌÀ ‘”  ÌÁ ‘”  ÌÂ ‘”  ÌÃ ‘”  ÌÄ ‘”  ÌÅ ‘”  ÌÆ ‘”  ÌÇ ‘”  ÌÈ ‘”  ÌÉ ‘”  ÌÊ ‘”  ÌË ‘”  ÌÌ ‘”  ÌÍ ‘”  ÌÎ ‘”  ÌÏ ‘”  ÌÐ ‘”  ÌÑ ‘”  ÌÒ ‘”  ÌÓ ‘”  ÌÔ ‘”  ÌÕ ‘”  ÌÖ ‘”  Ì× ‘”  ÌØ ‘”  ÌÙ ‘”  ÌÚ ‘”  ÌÛ ‘”  ÌÜ ‘”  ÌÝ ‘”  ÌÞ ‘”  Ìß ‘”  Ìà ‘”  Ìá ‘”  Ìâ ‘”  Ìã ‘”  Ìä ‘”  Ìå ‘”  Ìæ ‘”  Ìç ‘”  Ìè ‘”  Ìé ‘”  Ìê ‘”  Ìë ‘”  Ìì ‘”  Ìí ‘”  Ìî ‘”  Ìï ‘”  Ìð ‘”  Ìñ ‘”  Ìò ‘”  Ìó ‘”  Ìô ‘”  Ìõ ‘”  Ìö ‘”  Ì÷ ‘”  Ìø ‘”  Ìù ‘”  Ìú ‘”  Ìû ‘”  Ìü ‘”  Ìý ‘”  Ìþ ‘”  Ìÿ ‘”  Í  ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í	 ‘”  Í
+ ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ÔrI’§missing¦pluginÃ¦genAbcÂÔ  ÔrJ”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache•ÔrK•¤type¥start£endªspecifiers¦source±ImportDeclarationÍéÍ ‘ÔrL”¤type¥start£end¥local¶ImportDefaultSpecifierÍðÍûÔrM”¤type¥start£end¤nameªIdentifierÍðÍû«CategoryTabÔrN•¤type¥start£end¥value£raw§LiteralÍÍ¼../view/CategoryTabComponent¾'../view/CategoryTabComponent'K±ImportDeclarationÍ"ÍY‘L¶ImportDefaultSpecifierÍ)Í4MªIdentifierÍ)Í4«CategorySubN§LiteralÍ:ÍX¼../view/CategorySubComponent¾'../view/CategorySubComponent'K±ImportDeclarationÍ[ÍŽ‘L¶ImportDefaultSpecifierÍbÍkMªIdentifierÍbÍk©GoodsListN§LiteralÍqÍº../view/GoodsListComponent¼'../view/GoodsListComponent'K±ImportDeclarationÍÍÓ‘ÔrO•¤type¥start£end¨imported¥local¯ImportSpecifierÍ™Í¯MªIdentifierÍ™Í¯¶LAYOUT_WIDTH_OR_HEIGHTMªIdentifierÍ™Í¯¶LAYOUT_WIDTH_OR_HEIGHTN§LiteralÍ·ÍÒ¹../common/CommonConstants»'../common/CommonConstants'K±ImportDeclarationÍÕÍ‘O¯ImportSpecifierÍÞÍëMªIdentifierÍÞÍë­DEFAULT_THEMEMªIdentifierÍÞÍë­DEFAULT_THEMEN§LiteralÍóÍ°../common/Colors²'../common/Colors'

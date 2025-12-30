@@ -21,6 +21,7 @@ import {
   SMALL_FONT_SIZE,
   NAV_BAR_HEIGHT
 } from '../common/CommonConstants';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 @Component
 export default struct SearchPage {
@@ -29,6 +30,8 @@ export default struct SearchPage {
   @State searchHistory: string[] = ['手机', '笔记本', '耳机', '键盘'];
   @State hotSearchList: string[] = ['华为手机', '苹果手机', '小米手机', '蓝牙耳机', '机械键盘'];
   @State searchResults: number = 0;
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;//使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
+
 
   handleSearch() {
     if (this.searchText.trim().length === 0) {
@@ -65,12 +68,12 @@ export default struct SearchPage {
         Text($r('app.string.search_history'))
           .fontSize(NORMAL_FONT_SIZE)
           .fontWeight(FontWeight.Bold)
-          .fontColor('#333333')
+          .fontColor(this.currentThemeColors.primaryTextColor)
           .layoutWeight(1)
 
         Text($r('app.string.clear_history'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor('#999999')
+          .fontColor(this.currentThemeColors.secondaryTextColor)
           .onClick(() => {
             this.clearHistory();
           })

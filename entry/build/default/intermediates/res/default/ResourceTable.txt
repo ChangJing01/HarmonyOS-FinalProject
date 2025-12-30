@@ -40,6 +40,7 @@ string price_199 0x01000027
 string price_265 0x01000028
 string price_810 0x01000029
 string price_999 0x0100002a
+string publish_goods 0x01000066
 string pull_to_refresh 0x0100002b
 string quantity 0x0100002c
 string refresh_failed 0x0100002d

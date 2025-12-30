@@ -253,6 +253,10 @@
       "value": "Compare"
     },
     {
+      "name": "publish_goods",
+      "value": "Publish Goods"
+    },
+    {
       "name": "clear_cache",
       "value": "Clear Cache"
     },

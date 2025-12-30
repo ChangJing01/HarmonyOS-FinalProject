@@ -1,0 +1,555 @@
+Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚ>if (!("finalizeConstruction" in ViewPU.prototype)) {
+    Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
+}
+/*
+ * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Licensed under the Apache License,Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { initTabBarData } from '../viewmodel/InitialData';
+import { LAYOUT_WIDTH_OR_HEIGHT, NORMAL_FONT_SIZE, BIGGER_FONT_SIZE, MAX_FONT_SIZE, MAX_OFFSET_Y, REFRESH_TIME, GOODS_EVALUATE_FONT_SIZE, MAX_LINES_TEXT } from '../common/CommonConstants';
+import GoodsList from './GoodsListComponent';
+import PutDownRefresh from './PutDownRefreshLayout';
+import { DEFAULT_THEME } from '../common/Colors';
+export default class TabBar extends ViewPU {
+    constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
+        super(parent, __localStorage, elmtId, extraInfo);
+        if (typeof paramsLambda === "function") {
+            this.paramsGenerator_ = paramsLambda;
+        }
+        this.currentOffsetY = 0;
+        this.timer = 0;
+        this.__tabsIndex = new ObservedPropertySimplePU(0, this, "tabsIndex");
+        this.__refreshStatus = new ObservedPropertySimplePU(false, this, "refreshStatus");
+        this.__refreshText = new ObservedPropertyObjectPU({ "id": 16777263, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, this, "refreshText");
+        this.__layoutMode = new SynchedPropertySimpleTwoWayPU(params.layoutMode, this, "layoutMode");
+        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
+        this.tabData = [{ "id": 16777271, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, ...initTabBarData];
+        this.setInitiallyProvidedValue(params);
+        this.finalizeConstruction();
+    }
+    setInitiallyProvidedValue(params) {
+        if (params.currentOffsetY !== undefined) {
+            this.currentOffsetY = params.currentOffsetY;
+        }
+        if (params.timer !== undefined) {
+            this.timer = params.timer;
+        }
+        if (params.tabsIndex !== undefined) {
+            this.tabsIndex = params.tabsIndex;
+        }
+        if (params.refreshStatus !== undefined) {
+            this.refreshStatus = params.refreshStatus;
+        }
+        if (params.refreshText !== undefined) {
+            this.refreshText = params.refreshText;
+        }
+        if (params.tabData !== undefined) {
+            this.tabData = params.tabData;
+        }
+    }
+    updateStateVars(params) {
+    }
+    purgeVariableDependenciesOnElmtId(rmElmtId) {
+        this.__tabsIndex.purgeDependencyOnElmtId(rmElmtId);
+        this.__refreshStatus.purgeDependencyOnElmtId(rmElmtId);
+        this.__refreshText.purgeDependencyOnElmtId(rmElmtId);
+        this.__layoutMode.purgeDependencyOnElmtId(rmElmtId);
+        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
+    }
+    aboutToBeDeleted() {
+        this.__tabsIndex.aboutToBeDeleted();
+        this.__refreshStatus.aboutToBeDeleted();
+        this.__refreshText.aboutToBeDeleted();
+        this.__layoutMode.aboutToBeDeleted();
+        this.__currentThemeColors.aboutToBeDeleted();
+        SubscriberManager.Get().delete(this.id__());
+        this.aboutToBeDeletedInternal();
+    }
+    get tabsIndex() {
+        return this.__tabsIndex.get();
+    }
+    set tabsIndex(newValue) {
+        this.__tabsIndex.set(newValue);
+    }
+    get refreshStatus() {
+        return this.__refreshStatus.get();
+    }
+    set refreshStatus(newValue) {
+        this.__refreshStatus.set(newValue);
+    }
+    get refreshText() {
+        return this.__refreshText.get();
+    }
+    set refreshText(newValue) {
+        this.__refreshText.set(newValue);
+    }
+    get layoutMode() {
+        return this.__layoutMode.get();
+    }
+    set layoutMode(newValue) {
+        this.__layoutMode.set(newValue);
+    }
+    get currentThemeColors() {
+        return this.__currentThemeColors.get();
+    }
+    set currentThemeColors(newValue) {
+        this.__currentThemeColors.set(newValue);
+    }
+    putDownRefresh(event) {
+        if (event === undefined) {
+            return;
+        }
+        switch (event.type) {
+            // Record the y-coordinate pressed by the finger.
+            case TouchType.Down:
+                this.currentOffsetY = event.touches[0].y;
+                break;
+            case TouchType.Move:
+                // Determine whether to refresh based on the drop-down offset.
+                this.refreshStatus = event.touches[0].y - this.currentOffsetY > MAX_OFFSET_Y;
+                break;
+            case TouchType.Cancel:
+                break;
+            case TouchType.Up:
+                // Only simulation effect, no data request.
+                this.timer = setTimeout(() => {
+                    this.refreshStatus = false;
+                }, REFRESH_TIME);
+                break;
+            default:
+                break;
+        }
+    }
+    TabItem(content, index, parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create();
+            Column.padding({ left: 12, right: 12 });
+            Column.height(56);
+            Column.justifyContent(FlexAlign.Center);
+            Column.onClick(() => {
+                this.tabsIndex = index;
+            });
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create(content);
+            Text.fontSize(this.tabsIndex === index ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
+            Text.fontColor(this.tabsIndex === index ? this.currentThemeColors.primaryTextColor : this.currentThemeColors.secondaryTextColor);
+            Text.maxLines(MAX_LINES_TEXT);
+            Text.minFontSize(this.tabsIndex === index ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE);
+            Text.maxFontSize(this.tabsIndex === index ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
+            Text.fontWeight(this.tabsIndex === index ? FontWeight.Bold : FontWeight.Normal);
+        }, Text);
+        Text.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            If.create();
+            if (this.tabsIndex === index) {
+                this.ifElseBranchUpdateFunction(0, () => {
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        Divider.create();
+                        Divider.width(40);
+                        Divider.height(3);
+                        Divider.color(this.currentThemeColors.accentColor);
+                        Divider.margin({ top: 4 });
+                    }, Divider);
+                });
+            }
+            else {
+                this.ifElseBranchUpdateFunction(1, () => {
+                });
+            }
+        }, If);
+        If.pop();
+        Column.pop();
+    }
+    getContent(parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            If.create();
+            if (this.tabsIndex === 0) {
+                this.ifElseBranchUpdateFunction(0, () => {
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        Column.create();
+                    }, Column);
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        If.create();
+                        if (this.refreshStatus) {
+                            this.ifElseBranchUpdateFunction(0, () => {
+                                {
+                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                        if (isInitialRender) {
+                                            let componentCall = new PutDownRefresh(this, { refreshText: this.__refreshText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/view/TabBarsComponent.ets", line: 101, col: 11 });
+                                            ViewPU.create(componentCall);
+                                            let paramsLambda = () => {
+                                                return {
+                                                    refreshText: this.refreshText
+                                                };
+                                            };
+                                            componentCall.paramsGenerator_ = paramsLambda;
+                                        }
+                                        else {
+                                            this.updateStateVarsOfChildByElmtId(elmtId, {});
+                                        }
+                                    }, { name: "PutDownRefresh" });
+                                }
+                            });
+                        }
+                        else {
+                            this.ifElseBranchUpdateFunction(1, () => {
+                            });
+                        }
+                    }, If);
+                    If.pop();
+                    {
+                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                            if (isInitialRender) {
+                                let componentCall = new GoodsList(this, {
+                                    layoutMode: this.layoutMode
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/view/TabBarsComponent.ets", line: 103, col: 9 });
+                                ViewPU.create(componentCall);
+                                let paramsLambda = () => {
+                                    return {
+                                        layoutMode: this.layoutMode
+                                    };
+                                };
+                                componentCall.paramsGenerator_ = paramsLambda;
+                            }
+                            else {
+                                this.updateStateVarsOfChildByElmtId(elmtId, {
+                                    layoutMode: this.layoutMode
+                                });
+                            }
+                        }, { name: "GoodsList" });
+                    }
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        Text.create({ "id": 16777286, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+                        Text.fontSize(NORMAL_FONT_SIZE);
+                        Text.fontColor({ "id": 16777291, "type": 10001, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
+                    }, Text);
+                    Text.pop();
+                    Column.pop();
+                });
+            }
+            else {
+                this.ifElseBranchUpdateFunction(1, () => {
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        Column.create();
+                        Column.justifyContent(FlexAlign.Center);
+                        Column.width(LAYOUT_WIDTH_OR_HEIGHT);
+                        Column.height(LAYOUT_WIDTH_OR_HEIGHT);
+                    }, Column);
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        Text.create(initTabBarData[this.tabsIndex - 1]);
+                        Text.fontSize(MAX_FONT_SIZE);
+                    }, Text);
+                    Text.pop();
+                    Column.pop();
+                });
+            }
+        }, If);
+        If.pop();
+    }
+    initialRender() {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create();
+            Column.width(LAYOUT_WIDTH_OR_HEIGHT);
+            Column.height(LAYOUT_WIDTH_OR_HEIGHT);
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // é¡¶éƒ¨å¯¼èˆªæ ï¼štabs å’Œ å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Row.create();
+            // é¡¶éƒ¨å¯¼èˆªæ ï¼štabs å’Œ å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Row.width(LAYOUT_WIDTH_OR_HEIGHT);
+            // é¡¶éƒ¨å¯¼èˆªæ ï¼štabs å’Œ å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Row.height(56);
+            // é¡¶éƒ¨å¯¼èˆªæ ï¼štabs å’Œ å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Row.backgroundColor(this.currentThemeColors.cardBackgroundColor);
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // Tabs éƒ¨åˆ†
+            Scroll.create();
+            // Tabs éƒ¨åˆ†
+            Scroll.scrollable(ScrollDirection.Horizontal);
+            // Tabs éƒ¨åˆ†
+            Scroll.scrollBar(BarState.Off);
+            // Tabs éƒ¨åˆ†
+            Scroll.layoutWeight(1);
+        }, Scroll);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Row.create({ space: 12 });
+            Row.width(LAYOUT_WIDTH_OR_HEIGHT);
+            Row.padding({ left: 8, right: 8 });
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            ForEach.create();
+            const forEachItemGenFunction = (_item, index) => {
+                const item = _item;
+                this.TabItem.bind(this)(item, index !== undefined ? index : 0);
+            };
+            this.forEachUpdateFunction(elmtId, this.tabData, forEachItemGenFunction, undefined, true, false);
+        }, ForEach);
+        ForEach.pop();
+        Row.pop();
+        // Tabs éƒ¨åˆ†
+        Scroll.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Text.create(this.layoutMode === 'list' ? 'âŠž' : 'â˜°');
+            // å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Text.fontSize(16);
+            // å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Text.fontColor(this.currentThemeColors.secondaryTextColor);
+            // å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Text.width(40);
+            // å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Text.height(56);
+            // å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Text.textAlign(TextAlign.Center);
+            // å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Text.backgroundColor(this.currentThemeColors.cardBackgroundColor);
+            // å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+            Text.onClick(() => {
+                this.layoutMode = this.layoutMode === 'list' ? 'grid' : 'list';
+            });
+        }, Text);
+        // å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+        Text.pop();
+        // é¡¶éƒ¨å¯¼èˆªæ ï¼štabs å’Œ å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+        Row.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // å†…å®¹åŒºåŸŸ
+            Scroll.create();
+            // å†…å®¹åŒºåŸŸ
+            Scroll.scrollable(ScrollDirection.Vertical);
+            // å†…å®¹åŒºåŸŸ
+            Scroll.scrollBar(BarState.Off);
+            // å†…å®¹åŒºåŸŸ
+            Scroll.edgeEffect(EdgeEffect.Spring);
+            // å†…å®¹åŒºåŸŸ
+            Scroll.width(LAYOUT_WIDTH_OR_HEIGHT);
+            // å†…å®¹åŒºåŸŸ
+            Scroll.layoutWeight(1);
+            // å†…å®¹åŒºåŸŸ
+            Scroll.onTouch((event) => {
+                this.putDownRefresh(event);
+            });
+        }, Scroll);
+        this.getContent.bind(this)();
+        // å†…å®¹åŒºåŸŸ
+        Scroll.pop();
+        Column.pop();
+    }
+    rerender() {
+        this.updateDirtyElements();
+    }
+}
+//# sourceMappingURL=TabBarsComponent.js.mapÂ•ÙRE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\viewmodel\InitialData.etsÙSE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\CommonConstants.etsÙTE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\GoodsListComponent.etsÙVE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\PutDownRefreshLayout.etsÙJE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\Colors.etsÙRE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\TabBarsComponent.etsÔrBœªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo¯hostModulesInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙ+E:\VsCode\MIPP\HarmonyOS-FinalProject\entryÙ%E:\VsCode\MIPP\HarmonyOS-FinalProject¥entry¥1.0.0Ô  ‘ÔrC’²hostDependencyName®hostModuleName¸../view/TabBarsComponent¥entryÙ+E:\VsCode\MIPP\HarmonyOS-FinalProject\entryÔrDÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationºgetTypeAtLocationForLinterÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFileÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚ¬/*
+ * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Licensed under the Apache License,Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { initTabBarData } from '../viewmodel/InitialData';
+import {
+  LAYOUT_WIDTH_OR_HEIGHT,
+  NORMAL_FONT_SIZE,
+  BIGGER_FONT_SIZE,
+  MAX_FONT_SIZE,
+  MAX_OFFSET_Y,
+  REFRESH_TIME,
+  GOODS_EVALUATE_FONT_SIZE,
+  MAX_LINES_TEXT
+} from '../common/CommonConstants';
+import GoodsList from './GoodsListComponent';
+import PutDownRefresh from './PutDownRefreshLayout';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
+
+@Component
+export default struct TabBar {
+  private currentOffsetY: number = 0;
+  private timer: number = 0;
+  @State tabsIndex: number = 0;
+  @State refreshStatus: boolean = false;
+  @State refreshText: Resource = $r('app.string.refresh_text');
+  @Link layoutMode: 'list' | 'grid';
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
+
+  private tabData: Resource[] = [$r('app.string.selected'), ...initTabBarData];
+
+  putDownRefresh(event?: TouchEvent): void {
+    if (event === undefined) {
+      return;
+    }
+    switch (event.type) {
+      // Record the y-coordinate pressed by the finger.
+      case TouchType.Down:
+        this.currentOffsetY = event.touches[0].y;
+        break;
+      case TouchType.Move:
+      // Determine whether to refresh based on the drop-down offset.
+        this.refreshStatus = event.touches[0].y - this.currentOffsetY > MAX_OFFSET_Y;
+        break;
+      case TouchType.Cancel:
+        break;
+      case TouchType.Up:
+      // Only simulation effect, no data request.
+        this.timer = setTimeout(() => {
+          this.refreshStatus = false;
+        }, REFRESH_TIME);
+        break;
+      default:
+        break;
+    }
+  }
+
+  @Builder
+  TabItem(content: Resource, index: number) {
+    Column() {
+      Text(content)
+        .fontSize(this.tabsIndex === index ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
+        .fontColor(this.tabsIndex === index ? this.currentThemeColors.primaryTextColor : this.currentThemeColors.secondaryTextColor)
+        .maxLines(MAX_LINES_TEXT)
+        .minFontSize(this.tabsIndex === index ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE)
+        .maxFontSize(this.tabsIndex === index ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
+        .fontWeight(this.tabsIndex === index ? FontWeight.Bold : FontWeight.Normal)
+
+      if (this.tabsIndex === index) {
+        Divider()
+          .width(40)
+          .height(3)
+          .color(this.currentThemeColors.accentColor)
+          .margin({ top: 4 })
+      }
+    }
+    .padding({ left: 12, right: 12 })
+    .height(56)
+    .justifyContent(FlexAlign.Center)
+    .onClick(() => {
+      this.tabsIndex = index;
+    })
+  }
+
+  @Builder
+  getContent() {
+    if (this.tabsIndex === 0) {
+      Column() {
+        if (this.refreshStatus) {
+          PutDownRefresh({ refreshText: $refreshText })
+        }
+        GoodsList({
+          layoutMode: this.layoutMode
+        })
+        Text($r('app.string.to_bottom')).fontSize(NORMAL_FONT_SIZE).fontColor($r('app.color.gray'))
+      }
+    } else {
+      Column() {
+        Text(initTabBarData[this.tabsIndex - 1]).fontSize(MAX_FONT_SIZE)
+      }
+      .justifyContent(FlexAlign.Center)
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+      .height(LAYOUT_WIDTH_OR_HEIGHT)
+    }
+  }
+
+  build() {
+    Column() {
+      // é¡¶éƒ¨å¯¼èˆªæ ï¼štabs å’Œ å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+      Row() {
+        // Tabs éƒ¨åˆ†
+        Scroll() {
+          Row({ space: 12 }) {
+            ForEach(this.tabData, (item: Resource, index?: number) => {
+              this.TabItem(item, index !== undefined ? index : 0)
+            })
+          }
+          .width(LAYOUT_WIDTH_OR_HEIGHT)
+          .padding({ left: 8, right: 8 })
+        }
+        .scrollable(ScrollDirection.Horizontal)
+        .scrollBar(BarState.Off)
+        .layoutWeight(1)
+
+        // å¸ƒå±€åˆ‡æ¢æŒ‰é’®
+        Text(this.layoutMode === 'list' ? 'âŠž' : 'â˜°')
+          .fontSize(16)
+          .fontColor(this.currentThemeColors.secondaryTextColor)
+          .width(40)
+          .height(56)
+          .textAlign(TextAlign.Center)
+          .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+          .onClick(() => {
+            this.layoutMode = this.layoutMode === 'list' ? 'grid' : 'list';
+          })
+      }
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+      .height(56)
+      .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+
+      // å†…å®¹åŒºåŸŸ
+      Scroll() {
+        this.getContent()
+      }
+      .scrollable(ScrollDirection.Vertical)
+      .scrollBar(BarState.Off)
+      .edgeEffect(EdgeEffect.Spring)
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+      .layoutWeight(1)
+      .onTouch((event?: TouchEvent) => {
+        this.putDownRefresh(event);
+      })
+    }
+    .width(LAYOUT_WIDTH_OR_HEIGHT)
+    .height(LAYOUT_WIDTH_OR_HEIGHT)
+  }
+}ÀÔrE•¸../viewmodel/InitialData¹../common/CommonConstants°../common/Colors´./GoodsListComponent¶./PutDownRefreshLayoutÔrF—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÂÙRE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\viewmodel\InitialData.etsAÃªoh-resolveÂFAÂÙSE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\CommonConstants.etsAÃªoh-resolveÂFAÂÙJE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\common\Colors.etsAÃªoh-resolveÂFAÂÙTE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\GoodsListComponent.etsAÃªoh-resolveÂFAÂÙVE:\VsCode\MIPP\HarmonyOS-FinalProject\entry\src\main\ets\view\PutDownRefreshLayout.etsAÃªoh-resolveÂ“ÔrG–§version¤fileªsourceRoot§sources¥names¨mappings³TabBarsComponent.js ‘´TabBarsComponent.etsÜ]‘”    ‘” ˜”   ” ”	 	” ” ” ”9 9”: :Ü ”   ” ”	 ” ”! ”1 ”3 ”ÌC ”ÌE ”ÌR ”ÌT ”Ì` ”Ìb ”Ìn ”Ìp ”Ìˆ ”ÌŠ ”Ì˜ ”Ìš ”Ì  ”Ì» "”Ì¼ #–”   ” ” ” ”, ,”- -–”   ” ” ” ”3 3”4 4˜”   ” ”	 ” #” %” +”0 =”1 >–”   ” ” ” ” ” ‘”  ’”  #”  $’” !” !’”8 "”9 "’”< #"”ÌA #'””; &”ÌH &”ÌJ &Ì@”ÌW &ÌM•” ( ”Ìˆ (<”Ì‹ (?”Ì™ (ÌM”Ìš (ÌN‘” >’” "	” "’” "	” "’” #	” #’” #	” #’” $	” $’” $	” $’” %” %’” %” %’” &” &0’” &” &0”” *” *” *” *#–” +” +” +” +” +”! +’” ,” ,‘”	 -–” .” .” .” .” .” .’” /”= /7•” 0” 0” 0” 0” 0ž” 1” 1” 1”# 1”& 1”+ 1#”, 1$”3 1+”4 1,”5 1-”6 1.”7 1/”8 10”9 11’” 2” 2•” 3” 3” 3” 3” 3’” 4”ÌN 4ÌDÜ ” 5” 5” 5”" 5”% 5”* 5"”+ 5#”2 5*”3 5+”4 5,”5 5-”6 5.”7 5/”: 52”> 56”? 57”ÌM 5ÌE”ÌP 5ÌH”Ì\ 5ÌT”Ì] 5ÌU’” 6” 6•” 7” 7” 7” 7”! 7’” 8” 8•” 9” 9” 9” 9” 9’” :”; :1™” ;” ;” ;” ;” ;”' ;”( ; ”+ ;#”- ;%—” <
+” <” <”& <”) <”. <$”/ <%–” =” =	” =” =”  =”! =’” >” >‘” ?’” Ì@” Ì@‘”	 ÌA’” ÌB” ÌB–” ÌE” ÌE	” ÌE
+” ÌE” ÌE” ÌE*’” ÌF” ÌF
+ž” ÌF” ÌF
+” ÌW” ÌW” ÌW” ÌW”! ÌW”# ÌW”% ÌW”' ÌW”, ÌW”. ÌW ”0 ÌW"”2 ÌW$–” ÌF” ÌF
+” ÌX” ÌX” ÌX” ÌX˜” ÌF” ÌF
+” ÌY”! ÌY”" ÌY”+ ÌY”, ÌY”2 ÌY$—” ÌF” ÌF
+” ÌZ” ÌZ” ÌZ” ÌZ”  ÌZ—” Ì[” Ì[
+” Ì[” Ì[”! Ì[”& Ì[”' Ì[’” Ì\” Ì\”” ÌG” ÌG
+” ÌG” ÌGÜ ” ÌG” ÌG
+” ÌH	” ÌH” ÌH” ÌH” ÌH”( ÌH ”- ÌH%”2 ÌH*”3 ÌH+”4 ÌH,”5 ÌH-”ÌE ÌH=”ÌF ÌH>”ÌG ÌH?”ÌH ÌHÌ@”ÌX ÌHÌPÜ ” ÌG” ÌG
+” ÌI	” ÌI” ÌI” ÌI”  ÌI”) ÌI!”. ÌI&”3 ÌI+”4 ÌI,”5 ÌI-”6 ÌI.”: ÌI2”; ÌI3”ÌM ÌIÌE”ÌN ÌIÌF”Ì^ ÌIÌV”Ì_ ÌIÌW”Ì` ÌIÌX”Ìa ÌIÌY”Ìe ÌIÌ]”Ìf ÌIÌ^”Ìx ÌIÌp”Ìy ÌIÌq”Ì‹ ÌIÌƒ–” ÌG” ÌG
+” ÌJ	” ÌJ” ÌJ”( ÌJ Ü ” ÌG” ÌG
+” ÌK	” ÌK” ÌK”! ÌK”" ÌK”+ ÌK#”0 ÌK(”5 ÌK-”6 ÌK.”7 ÌK/”8 ÌK0”ÌH ÌKÌ@”ÌI ÌKÌA”ÌJ ÌKÌB”ÌK ÌKÌC”Ìc ÌKÌ[Ü ” ÌG” ÌG
+” ÌL	” ÌL” ÌL”! ÌL”" ÌL”+ ÌL#”0 ÌL(”5 ÌL-”6 ÌL.”7 ÌL/”8 ÌL0”ÌH ÌLÌ@”ÌI ÌLÌA”ÌJ ÌLÌB”ÌK ÌLÌC”Ì[ ÌLÌSÜ ” ÌG” ÌG
+” ÌM	” ÌM” ÌM”  ÌM”! ÌM”* ÌM"”/ ÌM'”4 ÌM,”5 ÌM-”6 ÌM.”7 ÌM/”ÌA ÌM9”ÌB ÌM:”ÌF ÌM>”ÌG ÌM?”ÌH ÌMÌ@”ÌI ÌMÌA”ÌS ÌMÌK”ÌT ÌMÌL”ÌZ ÌMÌR’” ÌG” ÌG
+˜” ÌO” ÌO
+” ÌO” ÌO” ÌO”# ÌO”( ÌO"”* ÌO$’” ÌP” ÌP–” ÌP” ÌP”  ÌQ”% ÌQ”& ÌQ”( ÌQ–” ÌP” ÌP”  ÌR”& ÌR”' ÌR”( ÌRš” ÌP” ÌP”  ÌS”% ÌS”& ÌS”* ÌS”+ ÌS”= ÌS(”> ÌS)”ÌI ÌS4š” ÌP” ÌP”  ÌT”& ÌT”' ÌT”) ÌT”, ÌT”. ÌT”/ ÌT”1 ÌT‘” ÌU‘” ÌU’” ÌF” ÌF
+‘” Ì]’” Ì`” Ì`˜” Ìa” Ìa” Ìa” Ìa” Ìa”# Ìa”$ Ìa”& Ìa’” Ìb” Ìb–” Ìc” Ìc”  Ìc”! Ìc”. Ìc”0 Ìc —”ÌD Ìd
+”ÌR Ìd”ÌY Ìd”Ì[ Ìd”Ìf Ìd&”Ìz Ìd4”Ì| Ìd6’”4 Ìd”? Ìd&‘” Ìe	‘” Ìe	“”8 Ìf”ÌA Ìf”ÌH Ìf–”$ Ìg
+”. Ìg”0 Ìg”4 Ìg”5 Ìg”? Ìg%‘”! Ìh	–”( Ìg
+”2 Ìg”4 Ìg”8 Ìg”9 Ìg”ÌC Ìg%–”$ Ìg
+”. Ìg”0 Ìg”4 Ìg”5 Ìg”? Ìg%’” Ìi” Ìi–” Ìi” Ìi” Ìi)”% Ìi1”& Ìi2”6 ÌiÌB”” Ìi” Ìi” ÌiÌD”& ÌiÌM’” Ìi” Ìi’” Ìb” Ìb‘” Ìk‘” Ìk’” Ìl” Ìl˜” Ìl” Ìl” Ìo”- Ìo”. Ìo”7 Ìo”8 Ìo ”> Ìo&–” Ìl” Ìl” Ìp”$ Ìp”% Ìp”; Ìp#–” Ìl” Ìl” Ìq”% Ìq”& Ìq”< Ìq$›” Ìm” Ìm”$ Ìm”2 Ìm”3 Ìm”7 Ìm ”8 Ìm!”ÌA Ìm*”ÌD Ìm-”ÌE Ìm.”ÌF Ìm/–” Ìm” Ìm” Ìm1”% Ìm9”& Ìm:”3 ÌmÌG’” Ìm” Ìm’” Ìl” Ìl‘” Ìr‘” Ìs‘” Ìu’” Ìv” Ìv
+–” Ìv” Ìv
+” Ì¤” Ì¤
+” Ì¤”/ Ì¤!–” Ìv” Ìv
+” Ì¥” Ì¥” Ì¥”0 Ì¥"’” Ìw”" Ìw’” Ìx” Ìx	’” Ìw”" Ìw–” Ìx” Ìx	” Ì“” Ì“” Ì“”, Ì“#’” Ìw”" Ìw–” Ìx” Ìx	” Ì”” Ì”” Ì”” Ì”’” Ìw”" Ìwš” Ìx” Ìx	” Ì•” Ì•”  Ì•”$ Ì•”% Ì•”7 Ì•.”8 Ì•/”ÌK Ì•ÌB’” Ìy” Ìy’” Ìz” Ìz’” Ìy” Ìy˜” Ìz” Ìz” Ìƒ	” Ìƒ” Ìƒ”- Ìƒ#”. Ìƒ$”8 Ìƒ.’” Ìy” Ìy˜” Ìz” Ìz” Ì„	” Ì„” Ì„”% Ì„”& Ì„”) Ì„’” Ìy” Ìy–” Ìz” Ìz” Ì…	” Ì…”  Ì…”! Ì…˜” Ì{
+” Ì{” Ì{” Ì{” Ì{”  Ì{”" Ì{”$ Ì{–” Ì{
+” Ì{” Ì€” Ì€” Ì€”, Ì€'ž” Ì{
+” Ì{” Ì” Ì” Ì” Ì” Ì”  Ì”! Ì”# Ì”( Ì#”* Ì%”+ Ì&”- Ì(’” Ì|” Ì|’”3 Ì|3”8 Ì|ÌAÜ ” Ì}” Ì}” Ì}” Ì}”( Ì}”, Ì}”. Ì}!”3 Ì}&”8 Ì}+”ÌA Ì}4”ÌB Ì}5”ÌC Ì}6”ÌD Ì}7”ÌI Ì}<”ÌJ Ì}=”ÌK Ì}>”ÌL Ì}?”ÌM Ì}Ì@”ÌN Ì}ÌA””/ Ì|”3 Ì|”4 Ì|”; Ì| ’” Ì|” Ì|’” Ì{
+” Ì{’” Ìy” Ìy’” Ìz” Ìz’” Ì‡” Ì‡Ü ” Ìˆ” Ìˆ” Ìˆ” Ìˆ” Ìˆ”' Ìˆ”, Ìˆ!”2 Ìˆ'”3 Ìˆ(”4 Ìˆ)”5 Ìˆ*”8 Ìˆ-”9 Ìˆ.”: Ìˆ/”; Ìˆ0”> Ìˆ3’” Ì‡” Ì‡–” Ìˆ” Ìˆ” Ì‰” Ì‰” Ì‰” Ì‰’” Ì‡” Ì‡š” Ìˆ” Ìˆ” ÌŠ” ÌŠ” ÌŠ” ÌŠ”  ÌŠ”2 ÌŠ,”3 ÌŠ-”ÌE ÌŠ?’” Ì‡” Ì‡–” Ìˆ” Ìˆ” Ì‹” Ì‹” Ì‹” Ì‹’” Ì‡” Ì‡–” Ìˆ” Ìˆ” ÌŒ” ÌŒ” ÌŒ” ÌŒ’” Ì‡” Ì‡˜” Ìˆ” Ìˆ” Ì” Ì” Ì”$ Ì”% Ì”+ Ì%’” Ì‡” Ì‡š” Ìˆ” Ìˆ” ÌŽ”  ÌŽ”! ÌŽ”% ÌŽ”& ÌŽ ”8 ÌŽ2”9 ÌŽ3”ÌL ÌŽÌF’” Ì‡” Ì‡—” Ìˆ” Ìˆ” Ì” Ì” Ì” Ì” ÌÜ ” Ì” Ì” Ì” Ì”" Ì”& Ì"”' Ì#”1 Ì-”6 Ì2”< Ì8”= Ì9”> Ì:”? Ì;”ÌE ÌÌA”ÌF ÌÌB”ÌG ÌÌC”ÌH ÌÌD”ÌN ÌÌJ”ÌO ÌÌK’” Ì‘
+” Ì‘’” Ì‡” Ì‡’” Ìˆ” Ìˆ’” Ìw” Ìw’” Ìx” Ìx	’” Ì—” Ì—’” Ì˜” Ì˜’” Ì—” Ì—˜” Ì˜” Ì˜” Ì›” Ì›” Ì›”- Ì›!”. Ì›"”6 Ì›*’” Ì—” Ì—˜” Ì˜” Ì˜” Ìœ” Ìœ” Ìœ”% Ìœ”& Ìœ”) Ìœ’” Ì—” Ì—˜” Ì˜” Ì˜” Ì” Ì” Ì”( Ì”) Ì”/ Ì#’” Ì—” Ì—–” Ì˜” Ì˜” Ìž” Ìž” Ìž”/ Ìž#’” Ì—” Ì—–” Ì˜” Ì˜” ÌŸ” ÌŸ”  ÌŸ”! ÌŸ’” Ì—” Ì—™” Ì˜” Ì˜” Ì ” Ì ” Ì ” Ì ”! Ì "”# Ì $”% Ì &˜” Ì¡” Ì¡” Ì¡”# Ì¡”$ Ì¡”) Ì¡!”* Ì¡"”+ Ì¡#’” Ì¢” Ì¢•” Ì™” Ì™” Ì™” Ì™”$ Ì™’” Ì—” Ì—’” Ì˜” Ì˜’” Ìv” Ìv
+‘” Ì¦ÔrH–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜb‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
+ ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”    ‘”  ! ‘”  " ‘”  # ‘”  $ ‘”  % ‘”  & ‘”  ' ‘”  ( ‘”  ) ‘”  * ‘”  + ‘”  , ‘”  - ‘”  . ‘”  / ‘”  0 ‘”  1 ‘”  2 ‘”  3 ‘”  4 ‘”  5 ‘”  6 ‘”  7 ‘”  8 ‘”  9 ‘”  : ‘”  ; ‘”  < ‘”  = ‘”  > ‘”  ? ‘”  Ì@ ‘”  ÌA ‘”  ÌB ‘”  ÌC ‘”  ÌD ‘”  ÌE ‘”  ÌF ‘”  ÌG ‘”  ÌH ‘”  ÌI ‘”  ÌJ ‘”  ÌK ‘”  ÌL ‘”  ÌM ‘”  ÌN ‘”  ÌO ‘”  ÌP ‘”  ÌQ ‘”  ÌR ‘”  ÌS ‘”  ÌT ‘”  ÌU ‘”  ÌV ‘”  ÌW ‘”  ÌX ‘”  ÌY ‘”  ÌZ ‘”  Ì[ ‘”  Ì\ ‘”  Ì] ‘”  Ì^ ‘”  Ì_ ‘”  Ì` ‘”  Ìa ‘”  Ìb ‘”  Ìc ‘”  Ìd ‘”  Ìe ‘”  Ìf ‘”  Ìg ‘”  Ìh ‘”  Ìi ‘”  Ìj ‘”  Ìk ‘”  Ìl ‘”  Ìm ‘”  Ìn ‘”  Ìo ‘”  Ìp ‘”  Ìq ‘”  Ìr ‘”  Ìs ‘”  Ìt ‘”  Ìu ‘”  Ìv ‘”  Ìw ‘”  Ìx ‘”  Ìy ‘”  Ìz ‘”  Ì{ ‘”  Ì| ‘”  Ì} ‘”  Ì~ ‘”  Ì ‘”  Ì€ ‘”  Ì ‘”  Ì‚ ‘”  Ìƒ ‘”  Ì„ ‘”  Ì… ‘”  Ì† ‘”  Ì‡ ‘”  Ìˆ ‘”  Ì‰ ‘”  ÌŠ ‘”  Ì‹ ‘”  ÌŒ ‘”  Ì ‘”  ÌŽ ‘”  Ì ‘”  Ì ‘”  Ì‘ ‘”  Ì’ ‘”  Ì“ ‘”  Ì” ‘”  Ì• ‘”  Ì– ‘”  Ì— ‘”  Ì˜ ‘”  Ì™ ‘”  Ìš ‘”  Ì› ‘”  Ìœ ‘”  Ì ‘”  Ìž ‘”  ÌŸ ‘”  Ì  ‘”  Ì¡ ‘”  Ì¢ ‘”  Ì£ ‘”  Ì¤ ‘”  Ì¥ ‘”  Ì¦ ‘”  Ì§ ‘”  Ì¨ ‘”  Ì© ‘”  Ìª ‘”  Ì« ‘”  Ì¬ ‘”  Ì­ ‘”  Ì® ‘”  Ì¯ ‘”  Ì° ‘”  Ì± ‘”  Ì² ‘”  Ì³ ‘”  Ì´ ‘”  Ìµ ‘”  Ì¶ ‘”  Ì· ‘”  Ì¸ ‘”  Ì¹ ‘”  Ìº ‘”  Ì» ‘”  Ì¼ ‘”  Ì½ ‘”  Ì¾ ‘”  Ì¿ ‘”  ÌÀ ‘”  ÌÁ ‘”  ÌÂ ‘”  ÌÃ ‘”  ÌÄ ‘”  ÌÅ ‘”  ÌÆ ‘”  ÌÇ ‘”  ÌÈ ‘”  ÌÉ ‘”  ÌÊ ‘”  ÌË ‘”  ÌÌ ‘”  ÌÍ ‘”  ÌÎ ‘”  ÌÏ ‘”  ÌÐ ‘”  ÌÑ ‘”  ÌÒ ‘”  ÌÓ ‘”  ÌÔ ‘”  ÌÕ ‘”  ÌÖ ‘”  Ì× ‘”  ÌØ ‘”  ÌÙ ‘”  ÌÚ ‘”  ÌÛ ‘”  ÌÜ ‘”  ÌÝ ‘”  ÌÞ ‘”  Ìß ‘”  Ìà ‘”  Ìá ‘”  Ìâ ‘”  Ìã ‘”  Ìä ‘”  Ìå ‘”  Ìæ ‘”  Ìç ‘”  Ìè ‘”  Ìé ‘”  Ìê ‘”  Ìë ‘”  Ìì ‘”  Ìí ‘”  Ìî ‘”  Ìï ‘”  Ìð ‘”  Ìñ ‘”  Ìò ‘”  Ìó ‘”  Ìô ‘”  Ìõ ‘”  Ìö ‘”  Ì÷ ‘”  Ìø ‘”  Ìù ‘”  Ìú ‘”  Ìû ‘”  Ìü ‘”  Ìý ‘”  Ìþ ‘”  Ìÿ ‘”  Í  ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í	 ‘”  Í
+ ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í  ‘”  Í! ‘”  Í" ‘”  Í# ‘”  Í$ ‘”  Í% ‘”  Í& ‘”  Í' ‘”  Í( ‘”  Í) ‘”  Í* ‘”  Í+ ‘”  Í, ‘”  Í- ‘”  Í. ‘”  Í/ ‘”  Í0 ‘”  Í1 ‘”  Í2 ‘”  Í3 ‘”  Í4 ‘”  Í5 ‘”  Í6 ‘”  Í7 ‘”  Í8 ‘”  Í9 ‘”  Í: ‘”  Í; ‘”  Í< ‘”  Í= ‘”  Í> ‘”  Í? ‘”  Í@ ‘”  ÍA ‘”  ÍB ‘”  ÍC ‘”  ÍD ‘”  ÍE ‘”  ÍF ‘”  ÍG ‘”  ÍH ‘”  ÍI ‘”  ÍJ ‘”  ÍK ‘”  ÍL ‘”  ÍM ‘”  ÍN ‘”  ÍO ‘”  ÍP ‘”  ÍQ ‘”  ÍR ‘”  ÍS ‘”  ÍT ‘”  ÍU ‘”  ÍV ‘”  ÍW ‘”  ÍX ‘”  ÍY ‘”  ÍZ ‘”  Í[ ‘”  Í\ ‘”  Í] ‘”  Í^ ‘”  Í_ ‘”  Í` ‘”  Ía ÔrI’§missing¦pluginÃ¦genAbcÂÔ  ÔrJ”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache•ÔrK•¤type¥start£endªspecifiers¦source±ImportDeclarationÍéÍ#‘ÔrL•¤type¥start£end¨imported¥local¯ImportSpecifierÍòÍ ÔrM”¤type¥start£end¤nameªIdentifierÍòÍ ®initTabBarDataMªIdentifierÍòÍ ®initTabBarDataÔrN•¤type¥start£end¥value£raw§LiteralÍÍ"¸../viewmodel/InitialDataº'../viewmodel/InitialData'K±ImportDeclarationÍ%Íá˜L¯ImportSpecifierÍ.ÍDMªIdentifierÍ.ÍD¶LAYOUT_WIDTH_OR_HEIGHTMªIdentifierÍ.ÍD¶LAYOUT_WIDTH_OR_HEIGHTL¯ImportSpecifierÍFÍVMªIdentifierÍFÍV°NORMAL_FONT_SIZEMªIdentifierÍFÍV°NORMAL_FONT_SIZEL¯ImportSpecifierÍXÍhMªIdentifierÍXÍh°BIGGER_FONT_SIZEMªIdentifierÍXÍh°BIGGER_FONT_SIZEL¯ImportSpecifierÍjÍwMªIdentifierÍjÍw­MAX_FONT_SIZEMªIdentifierÍjÍw­MAX_FONT_SIZEL¯ImportSpecifierÍyÍ…MªIdentifierÍyÍ…¬MAX_OFFSET_YMªIdentifierÍyÍ…¬MAX_OFFSET_YL¯ImportSpecifierÍ‡Í“MªIdentifierÍ‡Í“¬REFRESH_TIMEMªIdentifierÍ‡Í“¬REFRESH_TIMEL¯ImportSpecifierÍ•Í­MªIdentifierÍ•Í­¸GOODS_EVALUATE_FONT_SIZEMªIdentifierÍ•Í­¸GOODS_EVALUATE_FONT_SIZEL¯ImportSpecifierÍ¯Í½MªIdentifierÍ¯Í½®MAX_LINES_TEXTMªIdentifierÍ¯Í½®MAX_LINES_TEXTN§LiteralÍÅÍà¹../common/CommonConstants»'../common/CommonConstants'K±ImportDeclarationÍãÍ‘ÔrO”¤type¥start£end¥local¶ImportDefaultSpecifierÍêÍóMªIdentifierÍêÍó©GoodsListN§LiteralÍùÍ´./GoodsListComponent¶'./GoodsListComponent'K±ImportDeclarationÍÍF‘O¶ImportDefaultSpecifierÍÍ'MªIdentifierÍÍ'®PutDownRefreshN§LiteralÍ-ÍE¶./PutDownRefreshLayout¸'./PutDownRefreshLayout'K±ImportDeclarationÍHÍy‘L¯ImportSpecifierÍQÍ^MªIdentifierÍQÍ^­DEFAULT_THEMEMªIdentifierÍQÍ^­DEFAULT_THEMEN§LiteralÍfÍx°../common/Colors²'../common/Colors'

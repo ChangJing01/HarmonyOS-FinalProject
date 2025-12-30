@@ -19,6 +19,7 @@ import {
   TAB_FONT_SIZE,
   LAYOUT_WIDTH_OR_HEIGHT
 } from '../common/CommonConstants';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 export interface TabBarItem {
   title: Resource;
@@ -30,6 +31,8 @@ export interface TabBarItem {
 @Component
 export default struct BottomTabBar {
   @Link currentIndex: number;
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;//使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
+
   private tabBarData: TabBarItem[] = [
     {
       title: $r('app.string.home'),
@@ -67,7 +70,7 @@ export default struct BottomTabBar {
 
       Text(item.title)
         .fontSize(TAB_FONT_SIZE)
-        .fontColor(this.currentIndex === item.index ? '#FF4D4F' : '#666666')
+        .fontColor(this.currentIndex === item.index ? this.currentThemeColors.tabSelectedColor : this.currentThemeColors.tabUnselectedColor)
         .fontWeight(this.currentIndex === item.index ? FontWeight.Medium : FontWeight.Normal)
     }
     .layoutWeight(1)
@@ -85,7 +88,7 @@ export default struct BottomTabBar {
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(BOTTOM_TAB_BAR_HEIGHT)
-    .backgroundColor('#FFFFFF')
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     .justifyContent(FlexAlign.SpaceAround)
     .alignItems(VerticalAlign.Center)
     .shadow({

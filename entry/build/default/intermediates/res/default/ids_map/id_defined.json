@@ -407,5 +407,9 @@
 			"type":	"profile",
 			"name":	"main_pages",
 			"id":	"0x01000065"
+		}, {
+			"type":	"string",
+			"name":	"publish_goods",
+			"id":	"0x01000066"
 		}]
 }

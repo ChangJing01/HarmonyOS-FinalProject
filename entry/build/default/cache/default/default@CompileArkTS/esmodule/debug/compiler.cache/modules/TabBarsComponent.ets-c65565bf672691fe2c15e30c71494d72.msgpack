@@ -1,438 +1,0 @@
-Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚ0ÿif (!("finalizeConstruction" in ViewPU.prototype)) {
-    Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
-}
-/*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
- * Licensed under the Apache License,Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-import { initTabBarData } from '../viewmodel/InitialData';
-import { LAYOUT_WIDTH_OR_HEIGHT, NORMAL_FONT_SIZE, BIGGER_FONT_SIZE, MAX_FONT_SIZE, MAX_OFFSET_Y, REFRESH_TIME, GOODS_EVALUATE_FONT_SIZE, MAX_LINES_TEXT } from '../common/CommonConstants';
-import GoodsList from './GoodsListComponent';
-import PutDownRefresh from './PutDownRefreshLayout';
-export default class TabBar extends ViewPU {
-    constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
-        super(parent, __localStorage, elmtId, extraInfo);
-        if (typeof paramsLambda === "function") {
-            this.paramsGenerator_ = paramsLambda;
-        }
-        this.currentOffsetY = 0;
-        this.timer = 0;
-        this.__tabsIndex = new ObservedPropertySimplePU(0, this, "tabsIndex");
-        this.__refreshStatus = new ObservedPropertySimplePU(false, this, "refreshStatus");
-        this.__refreshText = new ObservedPropertyObjectPU({ "id": 16777263, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" }, this, "refreshText");
-        this.setInitiallyProvidedValue(params);
-        this.finalizeConstruction();
-    }
-    setInitiallyProvidedValue(params) {
-        if (params.currentOffsetY !== undefined) {
-            this.currentOffsetY = params.currentOffsetY;
-        }
-        if (params.timer !== undefined) {
-            this.timer = params.timer;
-        }
-        if (params.tabsIndex !== undefined) {
-            this.tabsIndex = params.tabsIndex;
-        }
-        if (params.refreshStatus !== undefined) {
-            this.refreshStatus = params.refreshStatus;
-        }
-        if (params.refreshText !== undefined) {
-            this.refreshText = params.refreshText;
-        }
-    }
-    updateStateVars(params) {
-    }
-    purgeVariableDependenciesOnElmtId(rmElmtId) {
-        this.__tabsIndex.purgeDependencyOnElmtId(rmElmtId);
-        this.__refreshStatus.purgeDependencyOnElmtId(rmElmtId);
-        this.__refreshText.purgeDependencyOnElmtId(rmElmtId);
-    }
-    aboutToBeDeleted() {
-        this.__tabsIndex.aboutToBeDeleted();
-        this.__refreshStatus.aboutToBeDeleted();
-        this.__refreshText.aboutToBeDeleted();
-        SubscriberManager.Get().delete(this.id__());
-        this.aboutToBeDeletedInternal();
-    }
-    get tabsIndex() {
-        return this.__tabsIndex.get();
-    }
-    set tabsIndex(newValue) {
-        this.__tabsIndex.set(newValue);
-    }
-    get refreshStatus() {
-        return this.__refreshStatus.get();
-    }
-    set refreshStatus(newValue) {
-        this.__refreshStatus.set(newValue);
-    }
-    get refreshText() {
-        return this.__refreshText.get();
-    }
-    set refreshText(newValue) {
-        this.__refreshText.set(newValue);
-    }
-    firstTabBar(parent = null) {
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Column.create();
-            Column.width(LAYOUT_WIDTH_OR_HEIGHT);
-            Column.height(LAYOUT_WIDTH_OR_HEIGHT);
-            Column.justifyContent(FlexAlign.Center);
-        }, Column);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Text.create({ "id": 16777271, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
-            Text.fontSize(this.tabsIndex === 0 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
-            Text.fontColor(this.tabsIndex === 0 ? Color.Black : { "id": 16777291, "type": 10001, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
-            Text.maxLines(MAX_LINES_TEXT);
-            Text.minFontSize(this.tabsIndex === 0 ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE);
-            Text.maxFontSize(this.tabsIndex === 0 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
-        }, Text);
-        Text.pop();
-        Column.pop();
-    }
-    otherTabBar(content, index, parent = null) {
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Column.create();
-            Column.width(LAYOUT_WIDTH_OR_HEIGHT);
-            Column.height(LAYOUT_WIDTH_OR_HEIGHT);
-            Column.justifyContent(FlexAlign.Center);
-        }, Column);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Text.create(content);
-            Text.fontSize(this.tabsIndex === index + 1 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
-            Text.fontColor(this.tabsIndex === index + 1 ? Color.Black : { "id": 16777291, "type": 10001, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
-            Text.maxLines(MAX_LINES_TEXT);
-            Text.minFontSize(this.tabsIndex === index + 1 ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE);
-            Text.maxFontSize(this.tabsIndex === index + 1 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE);
-        }, Text);
-        Text.pop();
-        Column.pop();
-    }
-    putDownRefresh(event) {
-        if (event === undefined) {
-            return;
-        }
-        switch (event.type) {
-            // Record the y-coordinate pressed by the finger.
-            case TouchType.Down:
-                this.currentOffsetY = event.touches[0].y;
-                break;
-            case TouchType.Move:
-                // Determine whether to refresh based on the drop-down offset.
-                this.refreshStatus = event.touches[0].y - this.currentOffsetY > MAX_OFFSET_Y;
-                break;
-            case TouchType.Cancel:
-                break;
-            case TouchType.Up:
-                // Only simulation effect, no data request.
-                this.timer = setTimeout(() => {
-                    this.refreshStatus = false;
-                }, REFRESH_TIME);
-                break;
-            default:
-                break;
-        }
-    }
-    aboutToDisappear() {
-        clearTimeout(this.timer);
-    }
-    initialRender() {
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Tabs.create();
-            Tabs.onChange((index) => {
-                this.tabsIndex = index;
-            });
-            Tabs.vertical(false);
-        }, Tabs);
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            TabContent.create(() => {
-                this.observeComponentCreation2((elmtId, isInitialRender) => {
-                    Scroll.create();
-                    Scroll.scrollBar(BarState.Off);
-                    Scroll.edgeEffect(EdgeEffect.Spring);
-                    Scroll.width(LAYOUT_WIDTH_OR_HEIGHT);
-                    Scroll.height(LAYOUT_WIDTH_OR_HEIGHT);
-                    Scroll.onTouch((event) => {
-                        this.putDownRefresh(event);
-                    });
-                }, Scroll);
-                this.observeComponentCreation2((elmtId, isInitialRender) => {
-                    Column.create();
-                    Column.width(LAYOUT_WIDTH_OR_HEIGHT);
-                }, Column);
-                this.observeComponentCreation2((elmtId, isInitialRender) => {
-                    If.create();
-                    if (this.refreshStatus) {
-                        this.ifElseBranchUpdateFunction(0, () => {
-                            {
-                                this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                    if (isInitialRender) {
-                                        let componentCall = new PutDownRefresh(this, { refreshText: this.__refreshText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/view/TabBarsComponent.ets", line: 104, col: 15 });
-                                        ViewPU.create(componentCall);
-                                        let paramsLambda = () => {
-                                            return {
-                                                refreshText: this.refreshText
-                                            };
-                                        };
-                                        componentCall.paramsGenerator_ = paramsLambda;
-                                    }
-                                    else {
-                                        this.updateStateVarsOfChildByElmtId(elmtId, {});
-                                    }
-                                }, { name: "PutDownRefresh" });
-                            }
-                        });
-                    }
-                    else {
-                        this.ifElseBranchUpdateFunction(1, () => {
-                        });
-                    }
-                }, If);
-                If.pop();
-                {
-                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        if (isInitialRender) {
-                            let componentCall = new GoodsList(this, {}, undefined, elmtId, () => { }, { page: "entry/src/main/ets/view/TabBarsComponent.ets", line: 106, col: 13 });
-                            ViewPU.create(componentCall);
-                            let paramsLambda = () => {
-                                return {};
-                            };
-                            componentCall.paramsGenerator_ = paramsLambda;
-                        }
-                        else {
-                            this.updateStateVarsOfChildByElmtId(elmtId, {});
-                        }
-                    }, { name: "GoodsList" });
-                }
-                this.observeComponentCreation2((elmtId, isInitialRender) => {
-                    Text.create({ "id": 16777286, "type": 10003, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
-                    Text.fontSize(NORMAL_FONT_SIZE);
-                    Text.fontColor({ "id": 16777291, "type": 10001, params: [], "bundleName": "com.example.list_harmony", "moduleName": "entry" });
-                }, Text);
-                Text.pop();
-                Column.pop();
-                Scroll.pop();
-            });
-            TabContent.tabBar({ builder: this.firstTabBar.bind(this) });
-        }, TabContent);
-        TabContent.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            ForEach.create();
-            const forEachItemGenFunction = (_item, index) => {
-                const item = _item;
-                this.observeComponentCreation2((elmtId, isInitialRender) => {
-                    TabContent.create(() => {
-                        this.observeComponentCreation2((elmtId, isInitialRender) => {
-                            Column.create();
-                            Column.justifyContent(FlexAlign.Center);
-                            Column.width(LAYOUT_WIDTH_OR_HEIGHT);
-                            Column.height(LAYOUT_WIDTH_OR_HEIGHT);
-                        }, Column);
-                        this.observeComponentCreation2((elmtId, isInitialRender) => {
-                            Text.create(item);
-                            Text.fontSize(MAX_FONT_SIZE);
-                        }, Text);
-                        Text.pop();
-                        Column.pop();
-                    });
-                    TabContent.tabBar({ builder: () => {
-                            this.otherTabBar.call(this, item, index !== undefined ? index : 0);
-                        } });
-                }, TabContent);
-                TabContent.pop();
-            };
-            this.forEachUpdateFunction(elmtId, initTabBarData, forEachItemGenFunction, undefined, true, false);
-        }, ForEach);
-        ForEach.pop();
-        Tabs.pop();
-    }
-    rerender() {
-        this.updateDirtyElements();
-    }
-}
-//# sourceMappingURL=TabBarsComponent.js.mapÂ”ÙQD:\Codes\DevEcoStudio\List_commodity\entry\src\main\ets\viewmodel\InitialData.etsÙRD:\Codes\DevEcoStudio\List_commodity\entry\src\main\ets\common\CommonConstants.etsÙSD:\Codes\DevEcoStudio\List_commodity\entry\src\main\ets\view\GoodsListComponent.etsÙUD:\Codes\DevEcoStudio\List_commodity\entry\src\main\ets\view\PutDownRefreshLayout.etsÙQD:\Codes\DevEcoStudio\List_commodity\entry\src\main\ets\view\TabBarsComponent.etsÔrBœªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo¯hostModulesInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙ*D:\Codes\DevEcoStudio\List_commodity\entryÙ$D:\Codes\DevEcoStudio\List_commodity¥entry¥1.0.0Ô  ‘ÔrC’²hostDependencyName®hostModuleName¸../view/TabBarsComponent¥entryÙ*D:\Codes\DevEcoStudio\List_commodity\entryÔrDÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFile³createIntrinsicTypeÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚ/*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
- * Licensed under the Apache License,Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import { initTabBarData } from '../viewmodel/InitialData';
-import {
-  LAYOUT_WIDTH_OR_HEIGHT,
-  NORMAL_FONT_SIZE,
-  BIGGER_FONT_SIZE,
-  MAX_FONT_SIZE,
-  MAX_OFFSET_Y,
-  REFRESH_TIME,
-  GOODS_EVALUATE_FONT_SIZE,
-  MAX_LINES_TEXT
-} from '../common/CommonConstants';
-import GoodsList from './GoodsListComponent';
-import PutDownRefresh from './PutDownRefreshLayout';
-
-@Component
-export default struct TabBar {
-  private currentOffsetY: number = 0;
-  private timer: number = 0;
-  @State tabsIndex: number = 0;
-  @State refreshStatus: boolean = false;
-  @State refreshText: Resource = $r('app.string.refresh_text');
-
-  @Builder
-  firstTabBar() {
-    Column() {
-      Text($r('app.string.selected'))
-        .fontSize(this.tabsIndex === 0 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
-        .fontColor(this.tabsIndex === 0 ? Color.Black : $r('app.color.gray'))
-        .maxLines(MAX_LINES_TEXT)
-        .minFontSize(this.tabsIndex === 0 ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE)
-        .maxFontSize(this.tabsIndex === 0 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
-    }
-    .width(LAYOUT_WIDTH_OR_HEIGHT)
-    .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .justifyContent(FlexAlign.Center)
-  }
-
-  @Builder
-  otherTabBar(content: Resource, index: number) {
-    Column() {
-      Text(content)
-        .fontSize(this.tabsIndex === index + 1 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
-        .fontColor(this.tabsIndex === index + 1 ? Color.Black : $r('app.color.gray'))
-        .maxLines(MAX_LINES_TEXT)
-        .minFontSize(this.tabsIndex === index + 1 ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE)
-        .maxFontSize(this.tabsIndex === index + 1 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
-    }
-    .width(LAYOUT_WIDTH_OR_HEIGHT)
-    .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .justifyContent(FlexAlign.Center)
-  }
-
-  putDownRefresh(event?: TouchEvent): void {
-    if (event === undefined) {
-      return;
-    }
-    switch (event.type) {
-      // Record the y-coordinate pressed by the finger.
-      case TouchType.Down:
-        this.currentOffsetY = event.touches[0].y;
-        break;
-      case TouchType.Move:
-      // Determine whether to refresh based on the drop-down offset.
-        this.refreshStatus = event.touches[0].y - this.currentOffsetY > MAX_OFFSET_Y;
-        break;
-      case TouchType.Cancel:
-        break;
-      case TouchType.Up:
-      // Only simulation effect, no data request.
-        this.timer = setTimeout(() => {
-          this.refreshStatus = false;
-        }, REFRESH_TIME);
-        break;
-      default:
-        break;
-    }
-  }
-
-  aboutToDisappear() {
-    clearTimeout(this.timer);
-  }
-
-  build() {
-    Tabs() {
-      TabContent() {
-        Scroll() {
-          Column() {
-            if (this.refreshStatus) {
-              PutDownRefresh({ refreshText: $refreshText })
-            }
-            GoodsList()
-            Text($r('app.string.to_bottom')).fontSize(NORMAL_FONT_SIZE).fontColor($r('app.color.gray'))
-          }
-          .width(LAYOUT_WIDTH_OR_HEIGHT)
-        }
-        .scrollBar(BarState.Off)
-        .edgeEffect(EdgeEffect.Spring)
-        .width(LAYOUT_WIDTH_OR_HEIGHT)
-        .height(LAYOUT_WIDTH_OR_HEIGHT)
-        .onTouch((event?: TouchEvent) => {
-          this.putDownRefresh(event);
-        })
-      }
-      .tabBar(this.firstTabBar)
-
-      ForEach(initTabBarData, (item: Resource, index?: number) => {
-        TabContent() {
-          Column() {
-            Text(item).fontSize(MAX_FONT_SIZE)
-          }
-          .justifyContent(FlexAlign.Center)
-          .width(LAYOUT_WIDTH_OR_HEIGHT)
-          .height(LAYOUT_WIDTH_OR_HEIGHT)
-        }
-        .tabBar(this.otherTabBar(item, index !== undefined ? index : 0))
-      })
-    }
-    .onChange((index: number) => {
-      this.tabsIndex = index;
-    })
-    .vertical(false)
-  }
-}ÀÔrE”¹../common/CommonConstants¸../viewmodel/InitialData¶./PutDownRefreshLayout´./GoodsListComponentÔrF—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÂÙRD:\Codes\DevEcoStudio\List_commodity\entry\src\main\ets\common\CommonConstants.etsAÃªoh-resolveÂFAÂÙQD:\Codes\DevEcoStudio\List_commodity\entry\src\main\ets\viewmodel\InitialData.etsAÃªoh-resolveÂFAÂÙUD:\Codes\DevEcoStudio\List_commodity\entry\src\main\ets\view\PutDownRefreshLayout.etsAÃªoh-resolveÂFAÂÙSD:\Codes\DevEcoStudio\List_commodity\entry\src\main\ets\view\GoodsListComponent.etsAÃªoh-resolveÂ“ÔrG–§version¤fileªsourceRoot§sources¥names¨mappings³TabBarsComponent.js ‘´TabBarsComponent.etsÜ‘”    ‘” ˜”   ” ”	 	” ” ” ”9 9”: :Ü ”   ” ”	 ” ”! ”1 ”3 ”ÌC ”ÌE ”ÌR ”ÌT ”Ì` ”Ìb ”Ìn ”Ìp ”Ìˆ ”ÌŠ ”Ì˜ ”Ìš ”Ì  ”Ì» "”Ì¼ #–”   ” ” ” ”, ,”- -–”   ” ” ” ”3 3”4 4–”   ” ” ” ” ” ‘”  ’” #” $’”  ”  ’”8 !”9 !’”< ""”ÌA "'‘” 4’” !	” !’” !	” !’” "	” "’” "	” "’” #	” #’” #	” #’” &” &’” '” '
-–” '” '
-” /” /
-” /”/ /!–” '” '
-” 0” 0” 0”0 0"˜” '” '
-” 1”! 1”" 1”+ 1”, 1”2 1$’” (” (
-Ü ” (” (
-” )	” )” )” )” )”( ) ”- )%”. )&”/ )'”0 )(”1 ))”ÌA )9”ÌB ):”ÌC );”ÌD )<”ÌT )ÌLÜ ” (” (
-” *	” *” *” *”  *”) *!”. *&”/ *'”0 *(”1 *)”2 **”7 */”8 *0”= *5”> *6”? *7”Ì® *ÌL–” (” (
-” +	” +” +”( + Ü ” (” (
-” ,	” ,” ,”! ,”" ,”+ ,#”0 ,(”1 ,)”2 ,*”3 ,+”4 ,,”ÌD ,<”ÌE ,=”ÌF ,>”ÌG ,?”Ì_ ,ÌWÜ ” (” (
-” -	” -” -”! -”" -”+ -#”0 -(”1 -)”2 -*”3 -+”4 -,”ÌD -<”ÌE -=”ÌF ->”ÌG -?”ÌW -ÌO’” (” (
-’” '” '
-‘” 2–” 5” 5” 5” 5” 5!” 5.’” 6” 6
-–” 6” 6
-” >” >
-” >”/ >!–” 6” 6
-” ?” ?” ?”0 ?"˜” 6” 6
-” Ì@”! Ì@”" Ì@”+ Ì@”, Ì@”2 Ì@$”” 7” 7
-” 7” 7Ü ” 7” 7
-” 8	” 8” 8” 8” 8”( 8 ”- 8%”2 8*”5 8-”6 8.”7 8/”8 80”9 81”ÌI 8ÌA”ÌJ 8ÌB”ÌK 8ÌC”ÌL 8ÌD”Ì\ 8ÌTÜ ” 7” 7
-” 9	” 9” 9” 9”  9”) 9!”. 9&”3 9+”6 9.”7 9/”8 90”9 91”: 92”? 97”Ì@ 98”ÌE 9=”ÌF 9>”ÌG 9?”Ì¶ 9ÌT–” 7” 7
-” :	” :” :”( : Ü ” 7” 7
-” ;	” ;” ;”! ;”" ;”+ ;#”0 ;(”5 ;-”8 ;0”9 ;1”: ;2”; ;3”< ;4”ÌL ;ÌD”ÌM ;ÌE”ÌN ;ÌF”ÌO ;ÌG”Ìg ;Ì_Ü ” 7” 7
-” <	” <” <”! <”" <”+ <#”0 <(”5 <-”8 <0”9 <1”: <2”; <3”< <4”ÌL <ÌD”ÌM <ÌE”ÌN <ÌF”ÌO <ÌG”Ì_ <ÌW’” 7” 7
-’” 6” 6
-‘” ÌA”” ÌC” ÌC” ÌC” ÌC#–” ÌD” ÌD” ÌD” ÌD” ÌD”! ÌD’” ÌE” ÌE‘”	 ÌF–” ÌG” ÌG” ÌG” ÌG” ÌG” ÌG’” ÌH”= ÌH7•” ÌI” ÌI” ÌI” ÌI” ÌI” ÌJ” ÌJ” ÌJ”# ÌJ”& ÌJ”+ ÌJ#”, ÌJ$”3 ÌJ+”4 ÌJ,”5 ÌJ-”6 ÌJ.”7 ÌJ/”8 ÌJ0”9 ÌJ1’” ÌK” ÌK•” ÌL” ÌL” ÌL” ÌL” ÌL’” ÌM”ÌN ÌMÌDÜ ” ÌN” ÌN” ÌN”" ÌN”% ÌN”* ÌN"”+ ÌN#”2 ÌN*”3 ÌN+”4 ÌN,”5 ÌN-”6 ÌN.”7 ÌN/”: ÌN2”> ÌN6”? ÌN7”ÌM ÌNÌE”ÌP ÌNÌH”Ì\ ÌNÌT”Ì] ÌNÌU’” ÌO” ÌO•” ÌP” ÌP” ÌP” ÌP”! ÌP’” ÌQ” ÌQ•” ÌR” ÌR” ÌR” ÌR” ÌR’” ÌS”; ÌS1™” ÌT” ÌT” ÌT” ÌT” ÌT”' ÌT”( ÌT ”+ ÌT#”- ÌT%—” ÌU
-” ÌU” ÌU”& ÌU”) ÌU”. ÌU$”/ ÌU%–” ÌV” ÌV	” ÌV” ÌV”  ÌV”! ÌV’” ÌW” ÌW‘” ÌX’” ÌY” ÌY‘”	 ÌZ’” Ì[” Ì[’” Ì]” Ì]˜” Ì^” Ì^” Ì^” Ì^” Ì^” Ì^”  Ì^”! Ì^’” Ì_” Ì_‘” Ìa’” Ìb” Ìb™” Ìb” Ìb” Ì„” Ì„” Ì„” Ì„”  Ì„”" Ì„”$ Ì„ —” Ì…” Ì…
-” Ì…” Ì…”! Ì…”& Ì…”' Ì…’” Ì†” Ì†–” Ìb” Ìb” Ì‡” Ì‡” Ì‡” Ì‡’” Ìd” Ìd˜” Ìd” Ìd” Ìn	”$ Ìn”% Ìn”- Ìn”. Ìn”1 Ìn˜” Ìd” Ìd” Ìo	”% Ìo”& Ìo”0 Ìo”1 Ìo”7 Ìo%–” Ìd” Ìd” Ìp	”  Ìp”! Ìp”7 Ìp%–” Ìd” Ìd” Ìq	”! Ìq”" Ìq”8 Ìq&™” Ìd” Ìd” Ìr	”" Ìr”# Ìr”$ Ìr”) Ìr$”+ Ìr&”- Ìr(˜” Ìs
-” Ìs” Ìs”+ Ìs”, Ìs”1 Ìs#”2 Ìs$”3 Ìs%’” Ìt” Ìt	’” Ìe
-” Ìe–” Ìe
-” Ìe” Ìl”  Ìl”! Ìl”7 Ìl'–” Ìf” Ìf” Ìf” Ìf”* Ìf"”, Ìf$—”Ì@ Ìg”ÌN Ìg”ÌU Ìg”ÌW Ìg”Ìb Ìg*”Ìv Ìg8”Ìx Ìg:’”0 Ìg”; Ìg*‘” Ìh‘” Ìh’”4 Ìi”= Ìi’” Ìj” Ìj–” Ìj” Ìj” Ìj-”! Ìj5”" Ìj6”2 ÌjÌF”” Ìj” Ìj” ÌjÌH”" ÌjÌQ’” Ìj” Ìj’” Ìe
-” Ìe’” Ìd” Ìd–” Ìv” Ìv”) Ìv”- Ìv”. Ìv”9 Ìv’” Ìx” Ìx’”3 Ìx/”8 Ìx=’” Ìz
-”" Ìz˜” Ìz
-”" Ìz”# Ì}”1 Ì}”2 Ì}”; Ì}#”< Ì}$”ÌB Ì}*–” Ìz
-”" Ìz”# Ì~”( Ì~”) Ì~”? Ì~'–” Ìz
-”" Ìz”# Ì”) Ì”* Ì”Ì@ Ì(”” Ì{”  Ì{”( Ì{”, Ì{–” Ì{”  Ì{”! Ì{”) Ì{”* Ì{ ”7 Ì{-’” Ì{” Ì{’” Ìz
-” Ìz’” Ì	”% ÌÜ ” Ì”  Ì”! Ì”, Ì ”8 Ì!”< Ì%”> Ì'”ÌC Ì,”ÌH Ì1”ÌQ Ì:”ÌR Ì;”ÌS Ì<”ÌT Ì=”ÌY ÌÌB”ÌZ ÌÌC”Ì[ ÌÌD”Ì\ ÌÌE”Ì] ÌÌF’”/ Ìx”= Ìx’” Ìx” Ìx’” Ìb” Ìb‘” ÌˆÔrH–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜ‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
- ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”    ‘”  ! ‘”  " ‘”  # ‘”  $ ‘”  % ‘”  & ‘”  ' ‘”  ( ‘”  ) ‘”  * ‘”  + ‘”  , ‘”  - ‘”  . ‘”  / ‘”  0 ‘”  1 ‘”  2 ‘”  3 ‘”  4 ‘”  5 ‘”  6 ‘”  7 ‘”  8 ‘”  9 ‘”  : ‘”  ; ‘”  < ‘”  = ‘”  > ‘”  ? ‘”  Ì@ ‘”  ÌA ‘”  ÌB ‘”  ÌC ‘”  ÌD ‘”  ÌE ‘”  ÌF ‘”  ÌG ‘”  ÌH ‘”  ÌI ‘”  ÌJ ‘”  ÌK ‘”  ÌL ‘”  ÌM ‘”  ÌN ‘”  ÌO ‘”  ÌP ‘”  ÌQ ‘”  ÌR ‘”  ÌS ‘”  ÌT ‘”  ÌU ‘”  ÌV ‘”  ÌW ‘”  ÌX ‘”  ÌY ‘”  ÌZ ‘”  Ì[ ‘”  Ì\ ‘”  Ì] ‘”  Ì^ ‘”  Ì_ ‘”  Ì` ‘”  Ìa ‘”  Ìb ‘”  Ìc ‘”  Ìd ‘”  Ìe ‘”  Ìf ‘”  Ìg ‘”  Ìh ‘”  Ìi ‘”  Ìj ‘”  Ìk ‘”  Ìl ‘”  Ìm ‘”  Ìn ‘”  Ìo ‘”  Ìp ‘”  Ìq ‘”  Ìr ‘”  Ìs ‘”  Ìt ‘”  Ìu ‘”  Ìv ‘”  Ìw ‘”  Ìx ‘”  Ìy ‘”  Ìz ‘”  Ì{ ‘”  Ì| ‘”  Ì} ‘”  Ì~ ‘”  Ì ‘”  Ì€ ‘”  Ì ‘”  Ì‚ ‘”  Ìƒ ‘”  Ì„ ‘”  Ì… ‘”  Ì† ‘”  Ì‡ ‘”  Ìˆ ‘”  Ì‰ ‘”  ÌŠ ‘”  Ì‹ ‘”  ÌŒ ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì‘ ‘”  Ì’ ‘”  Ì“ ‘”  Ì” ‘”  Ì• ‘”  Ì– ‘”  Ì— ‘”  Ì˜ ‘”  Ì™ ‘”  Ìš ‘”  Ì› ‘”  Ìœ ‘”  Ì ‘”  Ì ‘”  ÌŸ ‘”  Ì  ‘”  Ì¡ ‘”  Ì¢ ‘”  Ì£ ‘”  Ì¤ ‘”  Ì¥ ‘”  Ì¦ ‘”  Ì§ ‘”  Ì¨ ‘”  Ì© ‘”  Ìª ‘”  Ì« ‘”  Ì¬ ‘”  Ì­ ‘”  Ì® ‘”  Ì¯ ‘”  Ì° ‘”  Ì± ‘”  Ì² ‘”  Ì³ ‘”  Ì´ ‘”  Ìµ ‘”  Ì¶ ‘”  Ì· ‘”  Ì¸ ‘”  Ì¹ ‘”  Ìº ‘”  Ì» ‘”  Ì¼ ‘”  Ì½ ‘”  Ì¾ ‘”  Ì¿ ‘”  ÌÀ ‘”  ÌÁ ‘”  ÌÂ ‘”  ÌÃ ‘”  ÌÄ ‘”  ÌÅ ‘”  ÌÆ ‘”  ÌÇ ‘”  ÌÈ ‘”  ÌÉ ‘”  ÌÊ ‘”  ÌË ‘”  ÌÌ ‘”  ÌÍ ‘”  ÌÎ ‘”  ÌÏ ‘”  ÌĞ ‘”  ÌÑ ‘”  ÌÒ ‘”  ÌÓ ‘”  ÌÔ ‘”  ÌÕ ‘”  ÌÖ ‘”  Ì× ‘”  ÌØ ‘”  ÌÙ ‘”  ÌÚ ‘”  ÌÛ ‘”  ÌÜ ‘”  Ìİ ‘”  ÌŞ ‘”  Ìß ‘”  Ìà ‘”  Ìá ‘”  Ìâ ‘”  Ìã ‘”  Ìä ‘”  Ìå ‘”  Ìæ ‘”  Ìç ‘”  Ìè ‘”  Ìé ‘”  Ìê ‘”  Ìë ‘”  Ìì ‘”  Ìí ‘”  Ìî ‘”  Ìï ‘”  Ìğ ‘”  Ìñ ‘”  Ìò ‘”  Ìó ‘”  Ìô ‘”  Ìõ ‘”  Ìö ‘”  Ì÷ ‘”  Ìø ‘”  Ìù ‘”  Ìú ‘”  Ìû ‘”  Ìü ‘”  Ìı ‘”  Ìş ‘”  Ìÿ ‘”  Í  ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ÔrI’§missing¦pluginÃ¦genAbcÂÔ  ÔrJ”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache”ÔrK•¤type¥start£endªspecifiers¦source±ImportDeclarationÍéÍ#‘ÔrL•¤type¥start£end¨imported¥local¯ImportSpecifierÍòÍ ÔrM”¤type¥start£end¤nameªIdentifierÍòÍ ®initTabBarDataMªIdentifierÍòÍ ®initTabBarDataÔrN•¤type¥start£end¥value£raw§LiteralÍÍ"¸../viewmodel/InitialDataº'../viewmodel/InitialData'K±ImportDeclarationÍ%Íá˜L¯ImportSpecifierÍ.ÍDMªIdentifierÍ.ÍD¶LAYOUT_WIDTH_OR_HEIGHTMªIdentifierÍ.ÍD¶LAYOUT_WIDTH_OR_HEIGHTL¯ImportSpecifierÍFÍVMªIdentifierÍFÍV°NORMAL_FONT_SIZEMªIdentifierÍFÍV°NORMAL_FONT_SIZEL¯ImportSpecifierÍXÍhMªIdentifierÍXÍh°BIGGER_FONT_SIZEMªIdentifierÍXÍh°BIGGER_FONT_SIZEL¯ImportSpecifierÍjÍwMªIdentifierÍjÍw­MAX_FONT_SIZEMªIdentifierÍjÍw­MAX_FONT_SIZEL¯ImportSpecifierÍyÍ…MªIdentifierÍyÍ…¬MAX_OFFSET_YMªIdentifierÍyÍ…¬MAX_OFFSET_YL¯ImportSpecifierÍ‡Í“MªIdentifierÍ‡Í“¬REFRESH_TIMEMªIdentifierÍ‡Í“¬REFRESH_TIMEL¯ImportSpecifierÍ•Í­MªIdentifierÍ•Í­¸GOODS_EVALUATE_FONT_SIZEMªIdentifierÍ•Í­¸GOODS_EVALUATE_FONT_SIZEL¯ImportSpecifierÍ¯Í½MªIdentifierÍ¯Í½®MAX_LINES_TEXTMªIdentifierÍ¯Í½®MAX_LINES_TEXTN§LiteralÍÅÍà¹../common/CommonConstants»'../common/CommonConstants'K±ImportDeclarationÍãÍ‘ÔrO”¤type¥start£end¥local¶ImportDefaultSpecifierÍêÍóMªIdentifierÍêÍó©GoodsListN§LiteralÍùÍ´./GoodsListComponent¶'./GoodsListComponent'K±ImportDeclarationÍÍF‘O¶ImportDefaultSpecifierÍÍ'MªIdentifierÍÍ'®PutDownRefreshN§LiteralÍ-ÍE¶./PutDownRefreshLayout¸'./PutDownRefreshLayout'
