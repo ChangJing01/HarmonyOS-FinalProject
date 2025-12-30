@@ -7,6 +7,7 @@
 
 # Build outputs
 entry/build/
+entry/.preview/
 
 # ArkTS / TypeScript cache
 **/.tsbuildinfo
