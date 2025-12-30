@@ -26,12 +26,12 @@ export interface ThemeColors {
 
 // 默认主题
 export const DEFAULT_THEME: ThemeColors = {
-  backgroundColor: '#FFFFFF',
+  backgroundColor: '#F5F5F5',
   primaryTextColor: '#333333',
   secondaryTextColor: '#666666',
   accentColor: '#FF4D4F',
   cardBackgroundColor: '#FFFFFF',
-  dividerColor: '#EEEEEE',
+  dividerColor: '#EEEEEE', //'#F0F0F0'
   tabSelectedColor: '#FF4D4F',
   tabUnselectedColor: '#666666',
 };
@@ -54,7 +54,7 @@ export const EYECARE_THEME: ThemeColors = {
   primaryTextColor: '#333333',
   secondaryTextColor: '#666666',
   accentColor: '#FF6B35',
-  cardBackgroundColor: '#FFFFFF',
+  cardBackgroundColor: '#FFFFFF', //'#f3f3f3ff'  '#FFFFFF' '#fff9ecff'
   dividerColor: '#E8E8D0',
   tabSelectedColor: '#FF6B35',
   tabUnselectedColor: '#666666',

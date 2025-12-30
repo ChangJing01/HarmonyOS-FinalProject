@@ -26,6 +26,7 @@ import {
 } from '../common/CommonConstants';
 import GoodsList from './GoodsListComponent';
 import PutDownRefresh from './PutDownRefreshLayout';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
 @Component
 export default struct TabBar {
@@ -34,13 +35,14 @@ export default struct TabBar {
   @State tabsIndex: number = 0;
   @State refreshStatus: boolean = false;
   @State refreshText: Resource = $r('app.string.refresh_text');
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
 
   @Builder
   firstTabBar() {
     Column() {
       Text($r('app.string.selected'))
         .fontSize(this.tabsIndex === 0 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
-        .fontColor(this.tabsIndex === 0 ? Color.Black : $r('app.color.gray'))
+        .fontColor(this.tabsIndex === 0 ? this.currentThemeColors.primaryTextColor : this.currentThemeColors.secondaryTextColor)
         .maxLines(MAX_LINES_TEXT)
         .minFontSize(this.tabsIndex === 0 ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE)
         .maxFontSize(this.tabsIndex === 0 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
@@ -55,7 +57,7 @@ export default struct TabBar {
     Column() {
       Text(content)
         .fontSize(this.tabsIndex === index + 1 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)
-        .fontColor(this.tabsIndex === index + 1 ? Color.Black : $r('app.color.gray'))
+        .fontColor(this.tabsIndex === index + 1 ? this.currentThemeColors.primaryTextColor : this.currentThemeColors.secondaryTextColor)
         .maxLines(MAX_LINES_TEXT)
         .minFontSize(this.tabsIndex === index + 1 ? NORMAL_FONT_SIZE : GOODS_EVALUATE_FONT_SIZE)
         .maxFontSize(this.tabsIndex === index + 1 ? BIGGER_FONT_SIZE : NORMAL_FONT_SIZE)

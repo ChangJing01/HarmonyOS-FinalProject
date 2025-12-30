@@ -17,7 +17,9 @@ import TabBar from '../view/TabBarsComponent';
 import BottomTabBar from '../view/BottomTabBarComponent';
 import CategoryPage from './CategoryPage';
 import ShoppingCartPage from './ShoppingCartPage';
+import SearchPage from './SearchPage';
 import PersonalPage from './PersonalPage';
+import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 import {
   LAYOUT_WIDTH_OR_HEIGHT,
   NAV_BAR_HEIGHT
@@ -27,6 +29,8 @@ import {
 @Component
 struct ListIndex {
   @State currentTabIndex: number = 0;
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;//使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
+
 
   @Builder
   NavigationTitle() {
@@ -34,11 +38,13 @@ struct ListIndex {
       Text(this.getPageTitle())
         .fontSize(20)
         .fontWeight(FontWeight.Bold)
-        .fontColor('#333333')
+        .fontColor(this.currentThemeColors.primaryTextColor)
+        .margin({top:34})
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(NAV_BAR_HEIGHT)
     .justifyContent(FlexAlign.Center)
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
   }
 
   getPageTitle(): Resource {
@@ -51,6 +57,8 @@ struct ListIndex {
         return $r('app.string.shopping_cart');
       case 3:
         return $r('app.string.personal');
+      case 4:
+        return $r('app.string.search');
       default:
         return $r('app.string.shopping_mall');
     }
@@ -74,6 +82,9 @@ struct ListIndex {
     } else if (this.currentTabIndex === 3) {
       // 个人中心页面
       PersonalPage()
+    } else if (this.currentTabIndex === 4) {
+      // 搜索页面
+      SearchPage()
     }
   }
 
@@ -94,6 +105,6 @@ struct ListIndex {
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .backgroundColor($r('app.color.primaryBgColor'))
+    .backgroundColor(this.currentThemeColors.backgroundColor) //$r('app.color.primaryBgColor')
   }
 }
