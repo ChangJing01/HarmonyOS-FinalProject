@@ -21,14 +21,11 @@ import {
   INPUT_BORDER_RADIUS,
   INPUT_PADDING
 } from '../common/CommonConstants';
-import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
-
 
 @Component
 export default struct SearchBar {
   @Link searchText: string;
   @State placeholder: Resource = $r('app.string.search_placeholder');
-  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
   private onSearchClick?: () => void;
   private onClearClick?: () => void;
 
@@ -71,8 +68,8 @@ export default struct SearchBar {
       // 搜索按钮
       Button($r('app.string.search'))
         .fontSize(NORMAL_FONT_SIZE)
-        .fontColor(this.currentThemeColors.primaryTextColor)
-        .backgroundColor(this.currentThemeColors.accentColor)
+        .fontColor('#FFFFFF')
+        .backgroundColor('#FF4D4F')
         .height(INPUT_HEIGHT - 8)
         .padding({ left: 16, right: 16 })
         .margin({ right: 8 })
@@ -84,7 +81,7 @@ export default struct SearchBar {
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(INPUT_HEIGHT)
-    .backgroundColor(this.currentThemeColors.backgroundColor)
+    .backgroundColor('#F5F5F5')
     .borderRadius(INPUT_BORDER_RADIUS)
     .alignItems(VerticalAlign.Center)
   }

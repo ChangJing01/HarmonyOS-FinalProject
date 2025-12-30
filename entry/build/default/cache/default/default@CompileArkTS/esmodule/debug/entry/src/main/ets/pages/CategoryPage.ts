@@ -5,7 +5,6 @@ interface CategoryPage_Params {
     selectedCategoryIndex?: number;
     selectedSubCategoryIndex?: number;
     showSubCategory?: boolean;
-    currentThemeColors?: ThemeColors;
     categoryData?: CategoryData[];
 }
 import CategoryTab from "@bundle:com.example.list_harmony/entry/ets/view/CategoryTabComponent";
@@ -13,8 +12,6 @@ import type { CategoryData, SubCategoryData } from "@bundle:com.example.list_har
 import CategorySub from "@bundle:com.example.list_harmony/entry/ets/view/CategorySubComponent";
 import GoodsList from "@bundle:com.example.list_harmony/entry/ets/view/GoodsListComponent";
 import { LAYOUT_WIDTH_OR_HEIGHT } from "@bundle:com.example.list_harmony/entry/ets/common/CommonConstants";
-import { DEFAULT_THEME } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
-import type { ThemeColors } from "@bundle:com.example.list_harmony/entry/ets/common/Colors";
 export default class CategoryPage extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
         super(parent, __localStorage, elmtId, extraInfo);
@@ -24,7 +21,6 @@ export default class CategoryPage extends ViewPU {
         this.__selectedCategoryIndex = new ObservedPropertySimplePU(0, this, "selectedCategoryIndex");
         this.__selectedSubCategoryIndex = new ObservedPropertySimplePU(0, this, "selectedSubCategoryIndex");
         this.__showSubCategory = new ObservedPropertySimplePU(true, this, "showSubCategory");
-        this.__currentThemeColors = this.createStorageLink('themeColors', DEFAULT_THEME, "currentThemeColors");
         this.categoryData = [
             {
                 id: 0,
@@ -95,13 +91,11 @@ export default class CategoryPage extends ViewPU {
         this.__selectedCategoryIndex.purgeDependencyOnElmtId(rmElmtId);
         this.__selectedSubCategoryIndex.purgeDependencyOnElmtId(rmElmtId);
         this.__showSubCategory.purgeDependencyOnElmtId(rmElmtId);
-        this.__currentThemeColors.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__selectedCategoryIndex.aboutToBeDeleted();
         this.__selectedSubCategoryIndex.aboutToBeDeleted();
         this.__showSubCategory.aboutToBeDeleted();
-        this.__currentThemeColors.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -126,13 +120,6 @@ export default class CategoryPage extends ViewPU {
     set showSubCategory(newValue: boolean) {
         this.__showSubCategory.set(newValue);
     }
-    private __currentThemeColors: ObservedPropertyAbstractPU<ThemeColors>;
-    get currentThemeColors() {
-        return this.__currentThemeColors.get();
-    }
-    set currentThemeColors(newValue: ThemeColors) {
-        this.__currentThemeColors.set(newValue);
-    }
     private categoryData: CategoryData[];
     getSubCategoriesForCurrentTab(): SubCategoryData[] {
         return this.categoryData[this.selectedCategoryIndex].subCategories;
@@ -146,7 +133,7 @@ export default class CategoryPage extends ViewPU {
             Column.create();
             Column.width(LAYOUT_WIDTH_OR_HEIGHT);
             Column.height(LAYOUT_WIDTH_OR_HEIGHT);
-            Column.backgroundColor(this.currentThemeColors.backgroundColor);
+            Column.backgroundColor('#F5F5F5');
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 一级分类 Tab（横向）
@@ -164,7 +151,7 @@ export default class CategoryPage extends ViewPU {
                     let componentCall = new CategoryTab(this, {
                         selectedCategoryIndex: this.__selectedCategoryIndex,
                         selectedSubCategoryIndex: this.__selectedSubCategoryIndex
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 92, col: 9 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 90, col: 9 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -186,7 +173,7 @@ export default class CategoryPage extends ViewPU {
             // 切换左侧栏显示/隐藏按钮
             Text.fontSize(16);
             // 切换左侧栏显示/隐藏按钮
-            Text.fontColor(this.currentThemeColors.secondaryTextColor);
+            Text.fontColor('#666666');
             // 切换左侧栏显示/隐藏按钮
             Text.width(40);
             // 切换左侧栏显示/隐藏按钮
@@ -194,7 +181,7 @@ export default class CategoryPage extends ViewPU {
             // 切换左侧栏显示/隐藏按钮
             Text.textAlign(TextAlign.Center);
             // 切换左侧栏显示/隐藏按钮
-            Text.backgroundColor(this.currentThemeColors.cardBackgroundColor);
+            Text.backgroundColor('#FFFFFF');
             // 切换左侧栏显示/隐藏按钮
             Text.onClick(() => {
                 this.showSubCategory = !this.showSubCategory;
@@ -225,7 +212,7 @@ export default class CategoryPage extends ViewPU {
                     CategorySub(this, {
                         selectedSubCategoryIndex: this.__selectedSubCategoryIndex,
                         subCategories: this.getSubCategoriesForCurrentTab()
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 115, col: 9 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 113, col: 9 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -252,7 +239,7 @@ export default class CategoryPage extends ViewPU {
                 if (isInitialRender) {
                     let componentCall = new 
                     // 右侧：商品列表
-                    GoodsList(this, {}, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 123, col: 9 });
+                    GoodsList(this, {}, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/CategoryPage.ets", line: 121, col: 9 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {};

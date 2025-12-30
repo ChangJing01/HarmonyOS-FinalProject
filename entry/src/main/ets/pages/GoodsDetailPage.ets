@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-import router from '@ohos.router';
 import {
   LAYOUT_WIDTH_OR_HEIGHT,
   NORMAL_FONT_SIZE,
@@ -24,19 +23,15 @@ import {
   BUTTON_HEIGHT,
   BUTTON_BORDER_RADIUS
 } from '../common/CommonConstants';
-import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 
-@Entry
 @Component
 export default struct GoodsDetailPage {
-  @State goodsName: string = (router.getParams() as Record<string, Object>)['goodsName'] as string;
-  @State goodsPrice: string = (router.getParams() as Record<string, Object>)['goodsPrice'] as string;
+  @State goodsName: string = '【新到】长乐冰晶绿低脂新品上市';
+  @State goodsPrice: string = '¥199';
   @State originalPrice: string = '¥299';
   @State salesCount: string = '6662人已购买';
   @State rating: string = '95%好评';
   @State selectedQuantity: number = 1;
-  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;//使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
-
 
   @Builder
   TopNavigationBar() {
@@ -50,15 +45,15 @@ export default struct GoodsDetailPage {
       // 返回按钮
       Text('←')
         .fontSize(24)
-        .fontColor(this.currentThemeColors.primaryTextColor)   //'#333333'
+        .fontColor('#333333')
         .onClick(() => {
-          router.back();
+          // 返回上一页
         })
 
       Text($r('app.string.goods_detail'))
         .fontSize(NORMAL_FONT_SIZE)
         .fontWeight(FontWeight.Bold)
-        .fontColor(this.currentThemeColors.primaryTextColor)
+        .fontColor('#333333')
         .layoutWeight(1)
         .textAlign(TextAlign.Center)
 
@@ -68,12 +63,12 @@ export default struct GoodsDetailPage {
       // 分享按钮
       Text('⋯')
         .fontSize(24)
-        .fontColor(this.currentThemeColors.primaryTextColor)
+        .fontColor('#333333')
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(NAV_BAR_HEIGHT)
     .padding({ left: 16, right: 16 })
-    .backgroundColor(this.currentThemeColors.backgroundColor)
+    .backgroundColor('#FFFFFF')
     .justifyContent(FlexAlign.SpaceBetween)
   }
 
@@ -110,12 +105,12 @@ export default struct GoodsDetailPage {
       Row({ space: 8 }) {
         Text(this.goodsPrice)
           .fontSize(MAX_FONT_SIZE)
-          .fontColor(this.currentThemeColors.accentColor)
+          .fontColor('#FF4D4F')
           .fontWeight(FontWeight.Bold)
 
         Text(this.originalPrice)
           .fontSize(NORMAL_FONT_SIZE)
-          .fontColor(this.currentThemeColors.secondaryTextColor)
+          .fontColor('#999999')
           .decoration({ type: TextDecorationType.LineThrough })
       }
       .width(LAYOUT_WIDTH_OR_HEIGHT)
@@ -124,7 +119,7 @@ export default struct GoodsDetailPage {
       // 商品名称
       Text(this.goodsName)
         .fontSize(BIGGER_FONT_SIZE)
-        .fontColor(this.currentThemeColors.primaryTextColor)
+        .fontColor('#333333')
         .fontWeight(FontWeight.Bold)
         .maxLines(2)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
@@ -134,17 +129,17 @@ export default struct GoodsDetailPage {
       Row({ space: 16 }) {
         Text(this.salesCount)
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor(this.currentThemeColors.secondaryTextColor)
+          .fontColor('#666666')
 
         Text(this.rating)
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor(this.currentThemeColors.secondaryTextColor)
+          .fontColor('#666666')
       }
       .width(LAYOUT_WIDTH_OR_HEIGHT)
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .padding(16)
-    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+    .backgroundColor('#FFFFFF')
     .borderRadius(8)
   }
 
@@ -154,7 +149,7 @@ export default struct GoodsDetailPage {
       Row() {
         Text($r('app.string.quantity'))
           .fontSize(NORMAL_FONT_SIZE)
-          .fontColor(this.currentThemeColors.primaryTextColor)
+          .fontColor('#333333')
           .layoutWeight(1)
 
         Row({ space: 12 }) {
@@ -162,8 +157,8 @@ export default struct GoodsDetailPage {
             .width(32)
             .height(32)
             .fontSize(BIGGER_FONT_SIZE)
-            .backgroundColor(this.selectedQuantity <= 1 ? this.currentThemeColors.tabUnselectedColor : this.currentThemeColors.tabSelectedColor)
-            .fontColor(this.selectedQuantity <= 1 ? this.currentThemeColors.secondaryTextColor : this.currentThemeColors.cardBackgroundColor)
+            .backgroundColor(this.selectedQuantity <= 1 ? '#F5F5F5' : '#FF4D4F')
+            .fontColor(this.selectedQuantity <= 1 ? '#CCCCCC' : '#FFFFFF')
             .enabled(this.selectedQuantity > 1)
             .onClick(() => {
               if (this.selectedQuantity > 1) {
@@ -173,7 +168,7 @@ export default struct GoodsDetailPage {
 
           Text(this.selectedQuantity.toString())
             .fontSize(NORMAL_FONT_SIZE)
-            .fontColor(this.currentThemeColors.primaryTextColor)
+            .fontColor('#333333')
             .width(40)
             .textAlign(TextAlign.Center)
 
@@ -181,8 +176,8 @@ export default struct GoodsDetailPage {
             .width(32)
             .height(32)
             .fontSize(BIGGER_FONT_SIZE)
-            .backgroundColor(this.currentThemeColors.accentColor)
-            .fontColor(this.currentThemeColors.cardBackgroundColor)
+            .backgroundColor('#FF4D4F')
+            .fontColor('#FFFFFF')
             .onClick(() => {
               if (this.selectedQuantity < 99) {
                 this.selectedQuantity++;
@@ -196,7 +191,7 @@ export default struct GoodsDetailPage {
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .padding({ left: 16, right: 16 })
-    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+    .backgroundColor('#FFFFFF')
     .borderRadius(8)
     .margin({ top: 8 })
   }
@@ -207,18 +202,18 @@ export default struct GoodsDetailPage {
       Text($r('app.string.goods_description'))
         .fontSize(NORMAL_FONT_SIZE)
         .fontWeight(FontWeight.Bold)
-        .fontColor(this.currentThemeColors.primaryTextColor)
+        .fontColor('#333333')
         .width(LAYOUT_WIDTH_OR_HEIGHT)
 
       Text($r('app.string.advertising_language'))
         .fontSize(SMALL_FONT_SIZE)
-        .fontColor(this.currentThemeColors.secondaryTextColor)
+        .fontColor('#666666')
         .width(LAYOUT_WIDTH_OR_HEIGHT)
         .lineHeight(24)
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .padding(16)
-    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+    .backgroundColor('#FFFFFF')
     .borderRadius(8)
     .margin({ top: 8 })
   }
@@ -233,11 +228,11 @@ export default struct GoodsDetailPage {
         // 收藏图标
         Text('♡')
           .fontSize(20)
-          .fontColor(this.currentThemeColors.secondaryTextColor)
+          .fontColor('#666666')
 
         Text($r('app.string.favorite'))
           .fontSize(SMALL_FONT_SIZE)
-          .fontColor(this.currentThemeColors.secondaryTextColor)
+          .fontColor('#666666')
       }
       .onClick(() => {
         // 收藏逻辑
@@ -245,7 +240,7 @@ export default struct GoodsDetailPage {
 
       Button($r('app.string.add_to_cart'))
         .fontSize(NORMAL_FONT_SIZE)
-        .fontColor(this.currentThemeColors.cardBackgroundColor)
+        .fontColor('#FFFFFF')
         .backgroundColor('#FF9800')
         .height(BUTTON_HEIGHT)
         .borderRadius(BUTTON_BORDER_RADIUS)
@@ -256,8 +251,8 @@ export default struct GoodsDetailPage {
 
       Button($r('app.string.buy_now'))
         .fontSize(NORMAL_FONT_SIZE)
-        .fontColor(this.currentThemeColors.cardBackgroundColor)
-        .backgroundColor(this.currentThemeColors.accentColor)
+        .fontColor('#FFFFFF')
+        .backgroundColor('#FF4D4F')
         .height(BUTTON_HEIGHT)
         .borderRadius(BUTTON_BORDER_RADIUS)
         .layoutWeight(1)
@@ -268,7 +263,7 @@ export default struct GoodsDetailPage {
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(72)
     .padding({ left: 16, right: 16, top: 12, bottom: 12 })
-    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+    .backgroundColor('#FFFFFF')
     .shadow({
       radius: 8,
       color: '#00000015',
@@ -299,14 +294,13 @@ export default struct GoodsDetailPage {
         .width(LAYOUT_WIDTH_OR_HEIGHT)
       }
       .layoutWeight(1)
-      .backgroundColor(this.currentThemeColors.backgroundColor)
+      .backgroundColor('#F5F5F5')
 
       // 底部操作栏
       this.BottomActionBar()
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .backgroundColor(this.currentThemeColors.backgroundColor)
-    .padding({top : 34})
+    .backgroundColor('#F5F5F5')
   }
 }
