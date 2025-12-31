@@ -216,7 +216,7 @@ export default struct ShoppingCartPage {
               .width(28)
               .height(28)
               .fontSize(NORMAL_FONT_SIZE)
-              .backgroundColor(item.quantity <= 1 ? this.currentThemeColors.tabUnselectedColor : '#F1F3F5')
+              .backgroundColor(item.quantity <= 1 ? this.currentThemeColors.tabUnselectedColor : this.currentThemeColors.accentColor)
               .fontColor(item.quantity <= 1 ? this.currentThemeColors.secondaryTextColor : this.currentThemeColors.primaryTextColor)
               .enabled(item.quantity > 1)
               .onClick(() => this.updateQuantity(index, -1))
@@ -231,11 +231,11 @@ export default struct ShoppingCartPage {
               .width(28)
               .height(28)
               .fontSize(NORMAL_FONT_SIZE)
-              .backgroundColor('#F1F3F5')
+              .backgroundColor(this.currentThemeColors.accentColor)
               .fontColor(this.currentThemeColors.primaryTextColor)
               .onClick(() => this.updateQuantity(index, 1))
           }
-          .backgroundColor('#F1F3F5') // 给数量选择器加个浅色背景底色
+          .backgroundColor(this.currentThemeColors.backgroundColor) // 给数量选择器加个浅色背景底色
           .borderRadius(6)
 
           Blank() // 自动撑开中间空白
