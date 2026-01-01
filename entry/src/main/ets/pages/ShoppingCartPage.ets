@@ -23,6 +23,12 @@ import {
 } from '../common/CommonConstants';
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 import router from '@ohos.router';
+import promptAction from '@ohos.promptAction';
+import Logger from '../model/Logger';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { common } from '@kit.AbilityKit';
+
+const TAG: string = '[ShoppingCartPage]';
 
 export interface CartItem {
   id: number;
@@ -56,6 +62,9 @@ export default struct ShoppingCartPage {
   ];
   @State isAllSelected: boolean = false;
   @State totalPrice: number = 0;
+  @State showPaymentDialog: boolean = false;
+  @State selectedPaymentMethod: string = 'alipay'; // alipay, wechat, unionpay
+  @State isPaying: boolean = false;
   @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;//使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
 
   // 添加商品
@@ -142,6 +151,166 @@ export default struct ShoppingCartPage {
     this.cartItems = this.cartItems.filter(item => !item.selected);
     this.isAllSelected = false;
     this.calculateTotalPrice();
+  }
+
+  // 结算按钮点击
+  checkout() {
+    const selectedItems = this.cartItems.filter(item => item.selected);
+    if (selectedItems.length === 0) {
+      promptAction.showToast({
+        message: '请选择要结算的商品',
+        duration: 2000
+      });
+      return;
+    }
+    // 显示支付对话框
+    this.showPaymentDialog = true;
+  }
+
+  // 华为IAP支付（银联支付）
+  async processHuaweiPay(): Promise<boolean> {
+    try {
+      Logger.info(TAG, '调用华为IAP支付');
+      
+      // 注意：这里需要实际的商品ID和开发者配置
+      // 以下是示例代码，实际使用需要：
+      // 1. 在华为开发者联盟配置商品
+      // 2. 安装 @hms/iap 模块
+      // 3. 替换为真实的productId
+      
+      promptAction.showToast({
+        message: '正在调起华为支付...',
+        duration: 2000
+      });
+      
+      // 模拟华为IAP调用（实际应用中替换为真实IAP调用）
+      // const iap = require('@hms/iap');
+      // const result = await iap.createPurchaseIntent({
+      //   priceType: 0, // 消耗型
+      //   productId: 'your_product_id',
+      //   developerPayload: JSON.stringify({
+      //     orderId: Date.now().toString(),
+      //     amount: this.totalPrice
+      //   })
+      // });
+      
+      // 由于无法直接调用华为IAP（需要配置商品等），这里提供完整的错误处理示例
+      await new Promise<void>((resolve, reject) => {
+        setTimeout(() => {
+          // 模拟支付结果
+          const success = Math.random() > 0.2; // 80%成功率
+          if (success) {
+            resolve();
+          } else {
+            reject(new Error('用户取消支付'));
+          }
+        }, 3000);
+      });
+      
+      Logger.info(TAG, '华为IAP支付成功');
+      return true;
+      
+    } catch (error) {
+      const err = error as BusinessError;
+      Logger.error(TAG, `华为IAP支付失败: ${err.message}`);
+      
+      // 根据错误码提供友好提示
+      if (err.message?.includes('取消')) {
+        promptAction.showToast({
+          message: '支付已取消',
+          duration: 2000
+        });
+      } else {
+        promptAction.showToast({
+          message: '支付失败，请重试',
+          duration: 2000
+        });
+      }
+      return false;
+    }
+  }
+
+  // 模拟第三方支付（支付宝/微信）
+  async processThirdPartyPay(paymentMethod: string): Promise<boolean> {
+    try {
+      Logger.info(TAG, `模拟${paymentMethod}支付`);
+      
+      const methodName = paymentMethod === 'alipay' ? '支付宝' : '微信';
+      promptAction.showToast({
+        message: `正在调起${methodName}支付...`,
+        duration: 2000
+      });
+      
+      // 模拟支付请求
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 2000);
+      });
+      
+      Logger.info(TAG, `${methodName}支付成功`);
+      return true;
+      
+    } catch (error) {
+      Logger.error(TAG, `第三方支付失败: ${error}`);
+      return false;
+    }
+  }
+
+  // 执行支付
+  async processPayment(): Promise<void> {
+    if (this.isPaying) {
+      return;
+    }
+
+    this.isPaying = true;
+    Logger.info(TAG, `开始支付，支付方式: ${this.selectedPaymentMethod}, 金额: ${this.totalPrice}`);
+
+    try {
+      let paymentSuccess = false;
+      
+      // 根据支付方式调用不同的支付逻辑
+      if (this.selectedPaymentMethod === 'unionpay') {
+        // 银联支付 -> 使用华为IAP
+        paymentSuccess = await this.processHuaweiPay();
+      } else {
+        // 支付宝/微信 -> 模拟支付
+        paymentSuccess = await this.processThirdPartyPay(this.selectedPaymentMethod);
+      }
+      
+      this.isPaying = false;
+      
+      if (paymentSuccess) {
+        // 支付成功
+        this.showPaymentDialog = false;
+        
+        promptAction.showToast({
+          message: '支付成功！',
+          duration: 2000
+        });
+        
+        Logger.info(TAG, '支付成功');
+        
+        // 清除已购买的商品
+        this.cartItems = this.cartItems.filter(item => !item.selected);
+        this.isAllSelected = false;
+        this.calculateTotalPrice();
+      }
+      
+    } catch (error) {
+      this.isPaying = false;
+      Logger.error(TAG, `支付失败: ${error}`);
+      promptAction.showToast({
+        message: '支付异常，请重试',
+        duration: 2000
+      });
+    }
+  }
+
+  // 取消支付
+  cancelPayment() {
+    this.showPaymentDialog = false;
+    this.selectedPaymentMethod = 'alipay';
   }
 
   @Builder
@@ -307,6 +476,9 @@ export default struct ShoppingCartPage {
         .height(BUTTON_HEIGHT)
         .borderRadius(BUTTON_BORDER_RADIUS)
         .width(120)
+        .onClick(() => {
+          this.checkout();
+        })
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(72)
@@ -361,6 +533,168 @@ export default struct ShoppingCartPage {
       .width(LAYOUT_WIDTH_OR_HEIGHT)
       .height(LAYOUT_WIDTH_OR_HEIGHT)
       .backgroundColor(this.currentThemeColors.backgroundColor)
+      .bindContentCover(this.showPaymentDialog, this.PaymentDialogBuilder(), {
+        modalTransition: ModalTransition.DEFAULT
+      })
     }
+  }
+
+  // 支付对话框
+  @Builder
+  PaymentDialogBuilder() {
+    Column() {
+      // 遮罩层
+      Column()
+        .width(LAYOUT_WIDTH_OR_HEIGHT)
+        .height(LAYOUT_WIDTH_OR_HEIGHT)
+        .backgroundColor('rgba(0, 0, 0, 0.5)')
+        .onClick(() => {
+          if (!this.isPaying) {
+            this.cancelPayment();
+          }
+        })
+      
+      // 支付弹窗
+      Column({ space: 20 }) {
+        // 标题
+        Text('选择支付方式')
+          .fontSize(BIGGER_FONT_SIZE)
+          .fontColor(this.currentThemeColors.primaryTextColor)
+          .fontWeight(FontWeight.Bold)
+        
+        Divider().strokeWidth(1).color(this.currentThemeColors.dividerColor)
+        
+        // 支付金额
+        Row({ space: 8 }) {
+          Text('支付金额：')
+            .fontSize(NORMAL_FONT_SIZE)
+            .fontColor(this.currentThemeColors.primaryTextColor)
+          Text('¥' + this.totalPrice.toFixed(2))
+            .fontSize(24)
+            .fontColor(this.currentThemeColors.accentColor)
+            .fontWeight(FontWeight.Bold)
+        }
+        .width('100%')
+        .justifyContent(FlexAlign.Center)
+        .margin({ top: 10, bottom: 10 })
+        
+        // 支付方式选择
+        Column({ space: 12 }) {
+          // 支付宝
+          Row({ space: 12 }) {
+            Radio({ value: 'alipay', group: 'paymentGroup' })
+              .checked(this.selectedPaymentMethod === 'alipay')
+              .onChange((isChecked: boolean) => {
+                if (isChecked) this.selectedPaymentMethod = 'alipay';
+              })
+            Image($r('app.media.ic_cart_normal'))
+              .width(32)
+              .height(32)
+            Text('支付宝')
+              .fontSize(NORMAL_FONT_SIZE)
+              .fontColor(this.currentThemeColors.primaryTextColor)
+              .layoutWeight(1)
+          }
+          .width('100%')
+          .padding(12)
+          .backgroundColor(this.selectedPaymentMethod === 'alipay' ? this.currentThemeColors.tabUnselectedColor : this.currentThemeColors.cardBackgroundColor)
+          .borderRadius(8)
+          .onClick(() => {
+            this.selectedPaymentMethod = 'alipay';
+          })
+          
+          // 微信支付
+          Row({ space: 12 }) {
+            Radio({ value: 'wechat', group: 'paymentGroup' })
+              .checked(this.selectedPaymentMethod === 'wechat')
+              .onChange((isChecked: boolean) => {
+                if (isChecked) this.selectedPaymentMethod = 'wechat';
+              })
+            Image($r('app.media.ic_cart_normal'))
+              .width(32)
+              .height(32)
+            Text('微信支付')
+              .fontSize(NORMAL_FONT_SIZE)
+              .fontColor(this.currentThemeColors.primaryTextColor)
+              .layoutWeight(1)
+          }
+          .width('100%')
+          .padding(12)
+          .backgroundColor(this.selectedPaymentMethod === 'wechat' ? this.currentThemeColors.tabUnselectedColor : this.currentThemeColors.cardBackgroundColor)
+          .borderRadius(8)
+          .onClick(() => {
+            this.selectedPaymentMethod = 'wechat';
+          })
+          
+          // 银联支付（华为IAP）
+          Row({ space: 12 }) {
+            Radio({ value: 'unionpay', group: 'paymentGroup' })
+              .checked(this.selectedPaymentMethod === 'unionpay')
+              .onChange((isChecked: boolean) => {
+                if (isChecked) this.selectedPaymentMethod = 'unionpay';
+              })
+            Image($r('app.media.ic_cart_normal'))
+              .width(32)
+              .height(32)
+            Column({ space: 4 }) {
+              Text('华为支付')
+                .fontSize(NORMAL_FONT_SIZE)
+                .fontColor(this.currentThemeColors.primaryTextColor)
+              Text('应用内支付')
+                .fontSize(10)
+                .fontColor(this.currentThemeColors.secondaryTextColor)
+            }
+            .alignItems(HorizontalAlign.Start)
+            .layoutWeight(1)
+          }
+          .width('100%')
+          .padding(12)
+          .backgroundColor(this.selectedPaymentMethod === 'unionpay' ? this.currentThemeColors.tabUnselectedColor : this.currentThemeColors.cardBackgroundColor)
+          .borderRadius(8)
+          .onClick(() => {
+            this.selectedPaymentMethod = 'unionpay';
+          })
+        }
+        .width('100%')
+        
+        Divider().strokeWidth(1).color(this.currentThemeColors.dividerColor)
+        
+        // 按钮组
+        Row({ space: 12 }) {
+          Button('取消')
+            .fontSize(NORMAL_FONT_SIZE)
+            .fontColor(this.currentThemeColors.primaryTextColor)
+            .backgroundColor(this.currentThemeColors.tabUnselectedColor)
+            .layoutWeight(1)
+            .height(48)
+            .borderRadius(8)
+            .enabled(!this.isPaying)
+            .onClick(() => {
+              this.cancelPayment();
+            })
+          
+          Button(this.isPaying ? '支付中...' : '确认支付')
+            .fontSize(NORMAL_FONT_SIZE)
+            .fontColor('#FFFFFF')
+            .backgroundColor(this.currentThemeColors.accentColor)
+            .layoutWeight(1)
+            .height(48)
+            .borderRadius(8)
+            .enabled(!this.isPaying)
+            .onClick(() => {
+              this.processPayment();
+            })
+        }
+        .width('100%')
+      }
+      .width('85%')
+      .padding(24)
+      .backgroundColor(this.currentThemeColors.backgroundColor)
+      .borderRadius(16)
+      .position({ x: '7.5%', y: '50%' })
+      .translate({ y: '-50%' })
+    }
+    .width(LAYOUT_WIDTH_OR_HEIGHT)
+    .height(LAYOUT_WIDTH_OR_HEIGHT)
   }
 }
