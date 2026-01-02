@@ -43,6 +43,14 @@ const GOODS_NAMES: Resource[] = [
   $r('app.string.another_goodsName'),
 ];
 
+// 在组件外或类中定义一个图片资源池
+const GOODS_PRICES: Resource[] = [
+  $r('app.string.price_199'),
+  $r('app.string.price_265'),
+  $r('app.string.price_810'),
+  $r('app.string.price_999'),
+];
+
 
 @Entry
 @Component
@@ -318,9 +326,9 @@ export default struct GoodsDetailPage {
             let newItem: CartItem = {
               id: currentCart.length + 1,
               name: GOODS_NAMES[(currentCart.length + 1) % 2], // 确保这里的字段名和接口定义一致
-              price: this.goodsPrice,
+              price: GOODS_PRICES[(currentCart.length + 1) % 2],
               quantity: 1,
-              image: GOODS_IMAGES[currentCart.length],
+              image: GOODS_IMAGES[(currentCart.length + 1) % 2],
               selected: true // 新加入的默认选中
             };
             currentCart.push(newItem);

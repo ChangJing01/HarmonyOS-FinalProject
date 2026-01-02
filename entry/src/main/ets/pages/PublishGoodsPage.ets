@@ -22,16 +22,55 @@ import { GoodsListItemType } from '../viewmodel/InitialData';
 import { ListDataSource } from '../viewmodel/ListDataSource';
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 import router from '@ohos.router';
+import { photoAccessHelper } from '@kit.MediaLibraryKit';
+import { BusinessError } from '@kit.BasicServicesKit';
+import promptAction from '@ohos.promptAction';
+import Logger from '../model/Logger';
+
+const TAG: string = '[PublishGoodsPage]';
 @Entry
 @Component
 export default struct PublishGoodsPage {
   @State goodsName: string = '';
   @State goodsDescription: string = '';
   @State goodsPrice: string = '';
-  @State goodsImage: Resource = $r('app.media.goodsImg'); // 默认图片
+  @State goodsImage: Resource | string = $r('app.media.goodsImg'); // 默认图片
   @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
 
   private dataSource: ListDataSource = ListDataSource.getInstance();
+
+  // 选择商品图片
+  private async selectGoodsImage(): Promise<void> {
+    try {
+      const photoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
+      photoSelectOptions.MIMEType = photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE;
+      photoSelectOptions.maxSelectNumber = 1;
+
+      const photoPicker = new photoAccessHelper.PhotoViewPicker();
+      const photoSelectResult: photoAccessHelper.PhotoSelectResult = 
+        await photoPicker.select(photoSelectOptions);
+      
+      if (photoSelectResult && photoSelectResult.photoUris.length > 0) {
+        const photoUri = photoSelectResult.photoUris[0];
+        this.goodsImage = photoUri;
+        Logger.info(TAG, `Selected goods image: ${photoUri}`);
+        
+        promptAction.showToast({
+          message: '图片已选择',
+          duration: 2000
+        });
+      }
+    } catch (error) {
+      const err = error as BusinessError;
+      Logger.error(TAG, `selectGoodsImage failed, code: ${err.code}, message: ${err.message}`);
+      if (err.code !== 0) { // 用户取消选择返回0，不提示错误
+        promptAction.showToast({
+          message: '选择图片失败',
+          duration: 2000
+        });
+      }
+    }
+  }
 
   build() {
     Scroll() {
@@ -102,15 +141,21 @@ export default struct PublishGoodsPage {
               .width(100)
               .height(100)
               .borderRadius(8)
-            Button('选择图片')
-              .fontSize(NORMAL_FONT_SIZE)
-              .backgroundColor(this.currentThemeColors.accentColor)
-              .fontColor(Color.White)
-              .borderRadius(8)
-              .onClick(() => {
-                // 选择图片逻辑（暂时使用默认图片）
-                // 这里可以集成图片选择器
-              })
+              .objectFit(ImageFit.Cover)
+            Column({ space: 8 }) {
+              Button('选择图片')
+                .fontSize(NORMAL_FONT_SIZE)
+                .backgroundColor(this.currentThemeColors.accentColor)
+                .fontColor(Color.White)
+                .borderRadius(8)
+                .onClick(() => {
+                  this.selectGoodsImage();
+                })
+              Text('支持jpg、png格式')
+                .fontSize(12)
+                .fontColor(this.currentThemeColors.secondaryTextColor)
+            }
+            .alignItems(HorizontalAlign.Start)
           }
         }
 
@@ -148,7 +193,10 @@ export default struct PublishGoodsPage {
 
   private publishGoods(): void {
     if (this.goodsName.trim() === '' || this.goodsPrice.trim() === '') {
-      // 显示错误提示
+      promptAction.showToast({
+        message: '请填写商品名称和价格',
+        duration: 2000
+      });
       return;
     }
 
