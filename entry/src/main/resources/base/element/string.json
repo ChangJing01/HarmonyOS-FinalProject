@@ -287,6 +287,14 @@
     {
       "name": "logout",
       "value": "Logout"
+    },
+    {
+      "name": "location_permission_reason",
+      "value": "Used to obtain current location for auto-filling address"
+    },
+    {
+      "name": "media_permission_reason",
+      "value": "Used to access photo gallery for selecting avatar"
     }
   ]
 }

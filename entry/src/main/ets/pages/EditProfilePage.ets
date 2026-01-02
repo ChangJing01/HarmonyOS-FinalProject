@@ -5,6 +5,10 @@ import { common } from '@kit.AbilityKit';
 import { AccountData } from '../model/AccountData';
 import Logger from '../model/Logger';
 import promptAction from '@ohos.promptAction';
+import { photoAccessHelper } from '@kit.MediaLibraryKit';
+import { geoLocationManager } from '@kit.LocationKit';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { abilityAccessCtrl, PermissionRequestResult, Permissions } from '@kit.AbilityKit';
 
 const TAG: string = '[EditProfilePage]';
 
@@ -13,13 +17,14 @@ const TAG: string = '[EditProfilePage]';
 export default struct EditProfilePage {
     @StorageLink('currentUsername') currentUsername: string = '';
   @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
-  @State userAvatar: Resource = $r('app.media.ic_avatar');
+  @State userAvatar: Resource | string = $r('app.media.ic_avatar');
   @State accountName: string = '';
   @State nickname: string = '';
   @State gender: string = '保密'; // 保密、男、女
   @State birthDate: string = '';
   @State address: string = '';
   @State isLoading: boolean = false;
+  @State isLocating: boolean = false;
 
   private accountData: AccountData = new AccountData();
   private context: common.Context = getContext(this) as common.Context;
@@ -29,34 +34,86 @@ export default struct EditProfilePage {
   }
 
   // 加载用户数据
-  private loadUserData(): void {
+  private async loadUserData(): Promise<void> {
     try {
-      const STORAGE_KEY = 'account_storage';
-      // 从存储获取账号名
-      this.accountData.getStorageValue(
-        this.context,
-        'username',
-        STORAGE_KEY
-      ).then((result) => {
-        this.accountName = String(result) || '';
-        Logger.info(TAG, `Loaded username: ${this.accountName}`);
-      }).catch(() => {
-        Logger.error(TAG, 'Failed to load username');
-      });
-    } catch (_) {
-      Logger.error(TAG, 'loadUserData failed');
+      const STORAGE_KEY = 'profile_storage';
+      
+      // 加载账号名
+      this.accountData.getStorageValue(this.context, 'username', STORAGE_KEY)
+        .then((result) => {
+          this.accountName = String(result) || '';
+          Logger.info(TAG, `Loaded username: ${this.accountName}`);
+        }).catch(() => {});
+      
+      // 加载昵称
+      this.accountData.getStorageValue(this.context, 'nickname', STORAGE_KEY)
+        .then((result) => {
+          this.nickname = String(result) || '';
+        }).catch(() => {});
+      
+      // 加载性别
+      this.accountData.getStorageValue(this.context, 'gender', STORAGE_KEY)
+        .then((result) => {
+          this.gender = String(result) || '保密';
+        }).catch(() => {});
+      
+      // 加载出生日期
+      this.accountData.getStorageValue(this.context, 'birthDate', STORAGE_KEY)
+        .then((result) => {
+          this.birthDate = String(result) || '';
+        }).catch(() => {});
+      
+      // 加载地址
+      this.accountData.getStorageValue(this.context, 'address', STORAGE_KEY)
+        .then((result) => {
+          this.address = String(result) || '';
+        }).catch(() => {});
+      
+      // 加载头像
+      this.accountData.getStorageValue(this.context, 'avatar', STORAGE_KEY)
+        .then((result) => {
+          const avatarUrl = String(result);
+          if (avatarUrl && avatarUrl !== 'undefined') {
+            this.userAvatar = avatarUrl;
+          }
+        }).catch(() => {});
+        
+      Logger.info(TAG, 'Load user data completed');
+    } catch (error) {
+      Logger.error(TAG, `loadUserData failed: ${error}`);
     }
   }
 
-  // 选择头像（模拟）
-  private selectAvatar(): void {
+  // 选择头像
+  private async selectAvatar(): Promise<void> {
     try {
-      promptAction.showToast({
-        message: '头像修改功能开发中',
-        duration: 2000
-      });
-    } catch (_) {
-      Logger.error(TAG, 'showToast failed');
+      const photoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
+      photoSelectOptions.MIMEType = photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE;
+      photoSelectOptions.maxSelectNumber = 1;
+
+      const photoPicker = new photoAccessHelper.PhotoViewPicker();
+      const photoSelectResult: photoAccessHelper.PhotoSelectResult = 
+        await photoPicker.select(photoSelectOptions);
+      
+      if (photoSelectResult && photoSelectResult.photoUris.length > 0) {
+        const photoUri = photoSelectResult.photoUris[0];
+        this.userAvatar = photoUri;
+        Logger.info(TAG, `Selected photo: ${photoUri}`);
+        
+        promptAction.showToast({
+          message: '头像已更新',
+          duration: 2000
+        });
+      }
+    } catch (error) {
+      const err = error as BusinessError;
+      Logger.error(TAG, `selectAvatar failed, code: ${err.code}, message: ${err.message}`);
+      if (err.code !== 0) { // 用户取消选择返回0，不提示错误
+        promptAction.showToast({
+          message: '选择头像失败',
+          duration: 2000
+        });
+      }
     }
   }
 
@@ -81,6 +138,196 @@ export default struct EditProfilePage {
     }
   }
 
+  // 逆地理编码：将经纬度转换为地址
+  private async getAddressFromLocation(latitude: number, longitude: number): Promise<void> {
+    try {
+      const reverseGeoCodeRequest: geoLocationManager.ReverseGeoCodeRequest = {
+        latitude: latitude,
+        longitude: longitude,
+        maxItems: 1,
+        locale: 'zh'
+      };
+
+      geoLocationManager.getAddressesFromLocation(reverseGeoCodeRequest, (err, data) => {
+        if (err) {
+          Logger.error(TAG, `getAddressesFromLocation failed, code: ${err.code}, message: ${err.message}`);
+          // 如果逆地理编码失败，降级使用经纬度
+          const lat = latitude.toFixed(6);
+          const lon = longitude.toFixed(6);
+          this.address = `纬度: ${lat}, 经度: ${lon}`;
+          promptAction.showToast({
+            message: '定位成功，但获取地址失败',
+            duration: 2000
+          });
+          return;
+        }
+
+        if (data && data.length > 0) {
+          const geoAddress = data[0];
+          Logger.info(TAG, `Address: ${JSON.stringify(geoAddress)}`);
+          
+          // 拼接完整地址
+          let fullAddress = '';
+          if (geoAddress.countryName) fullAddress += geoAddress.countryName;
+          if (geoAddress.administrativeArea) fullAddress += geoAddress.administrativeArea;
+          if (geoAddress.locality) fullAddress += geoAddress.locality;
+          if (geoAddress.subLocality) fullAddress += geoAddress.subLocality;
+          if (geoAddress.roadName) fullAddress += geoAddress.roadName;
+          if (geoAddress.subRoadName) fullAddress += geoAddress.subRoadName;
+          
+          // 如果有详细地址描述，优先使用
+          if (geoAddress.placeName) {
+            fullAddress = geoAddress.placeName;
+          } else if (!fullAddress) {
+            fullAddress = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          }
+          
+          this.address = fullAddress;
+          Logger.info(TAG, `Full address: ${fullAddress}`);
+          
+          promptAction.showToast({
+            message: '定位成功',
+            duration: 2000
+          });
+        } else {
+          // 没有获取到地址信息，使用经纬度
+          const lat = latitude.toFixed(6);
+          const lon = longitude.toFixed(6);
+          this.address = `纬度: ${lat}, 经度: ${lon}`;
+          promptAction.showToast({
+            message: '定位成功',
+            duration: 2000
+          });
+        }
+      });
+    } catch (error) {
+      const err = error as BusinessError;
+      Logger.error(TAG, `getAddressFromLocation exception, code: ${err.code}, message: ${err.message}`);
+      // 异常时使用经纬度
+      const lat = latitude.toFixed(6);
+      const lon = longitude.toFixed(6);
+      this.address = `纬度: ${lat}, 经度: ${lon}`;
+    }
+  }
+
+  // 检查并请求定位权限
+  private async checkLocationPermission(): Promise<boolean> {
+    try {
+      const atManager = abilityAccessCtrl.createAtManager();
+      const permissions: Array<Permissions> = [
+        'ohos.permission.APPROXIMATELY_LOCATION',
+        'ohos.permission.LOCATION'
+      ];
+      
+      // 检查权限状态
+      const grantStatus = await atManager.checkAccessToken(
+        this.context.applicationInfo.accessTokenId,
+        'ohos.permission.LOCATION'
+      );
+      
+      if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+        return true;
+      }
+      
+      // 请求权限
+      const result: PermissionRequestResult = await atManager.requestPermissionsFromUser(
+        this.context,
+        permissions
+      );
+      
+      // 检查权限请求结果
+      const allGranted = result.authResults.every(item => item === 0);
+      if (!allGranted) {
+        promptAction.showToast({
+          message: '定位权限被拒绝，无法获取位置',
+          duration: 2000
+        });
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      const err = error as BusinessError;
+      Logger.error(TAG, `checkLocationPermission failed, code: ${err.code}, message: ${err.message}`);
+      return false;
+    }
+  }
+
+  // 获取当前位置
+  private async getCurrentLocation(): Promise<void> {
+    if (this.isLocating) {
+      return;
+    }
+
+    // 先检查并请求权限
+    const hasPermission = await this.checkLocationPermission();
+    if (!hasPermission) {
+      Logger.error(TAG, 'No location permission');
+      return;
+    }
+
+    this.isLocating = true;
+    try {
+      // 请求位置权限并获取位置
+      const requestInfo: geoLocationManager.LocationRequest = {
+        'priority': geoLocationManager.LocationRequestPriority.FIRST_FIX,
+        'scenario': geoLocationManager.LocationRequestScenario.UNSET,
+        'timeInterval': 0,
+        'distanceInterval': 0,
+        'maxAccuracy': 0
+      };
+
+      promptAction.showToast({
+        message: '正在定位...',
+        duration: 2000
+      });
+
+      geoLocationManager.getCurrentLocation(requestInfo, (err, location) => {
+        this.isLocating = false;
+        if (err) {
+          Logger.error(TAG, `getCurrentLocation failed, code: ${err.code}, message: ${err.message}`);
+          
+          // 根据错误码提供友好提示
+          let errorMsg = '定位失败';
+          if (err.code === 3301100) {
+            errorMsg = '请先在设置中开启设备定位服务';
+          } else if (err.code === 3301200) {
+            errorMsg = '定位失败，请稍后重试';
+          } else {
+            errorMsg = `定位失败: ${err.message}`;
+          }
+          
+          promptAction.showToast({
+            message: errorMsg,
+            duration: 3000
+          });
+          return;
+        }
+        
+        if (location) {
+          Logger.info(TAG, `Location: lat=${location.latitude}, lon=${location.longitude}`);
+          
+          // 使用逆地理编码获取具体地址
+          this.getAddressFromLocation(location.latitude, location.longitude);
+        } else {
+          Logger.error(TAG, 'Location is null');
+          promptAction.showToast({
+            message: '未获取到定位信息',
+            duration: 2000
+          });
+        }
+      });
+    } catch (error) {
+      this.isLocating = false;
+      const err = error as BusinessError;
+      Logger.error(TAG, `Location request failed, code: ${err.code}, message: ${err.message}`);
+      promptAction.showToast({
+        message: `定位异常: ${err.message}`,
+        duration: 3000
+      });
+    }
+  }
+
   // 选择出生日期
   private selectBirthDate(): void {
     try {
@@ -94,7 +341,7 @@ export default struct EditProfilePage {
   }
 
   // 保存信息
-  private saveProfile(): void {
+  private async saveProfile(): Promise<void> {
     if (!this.accountName.trim()) {
       try {
         promptAction.showToast({
@@ -109,41 +356,45 @@ export default struct EditProfilePage {
 
     this.isLoading = true;
     try {
-      const STORAGE_KEY = 'account_storage';
-      this.accountData.putStorageValue(
-        this.context,
-        'username',
-        this.accountName,
-        STORAGE_KEY
-      ).then((): void => {
-        this.isLoading = false;
-        try {
-          promptAction.showToast({
-            message: '保存成功',
-            duration: 2000
-          });
-        } catch (_) {
-          Logger.error(TAG, 'showToast failed');
-        }
-        // 返回上一页
-        setTimeout(() => {
-          router.back();
-        }, 500);
-      }).catch((): void => {
-        this.isLoading = false;
-        Logger.error(TAG, 'Save profile failed');
-        try {
-          promptAction.showToast({
-            message: '保存失败',
-            duration: 2000
-          });
-        } catch (_) {
-          Logger.error(TAG, 'showToast failed');
-        }
-      });
-    } catch (_) {
+      const STORAGE_KEY = 'profile_storage';
+      
+      // 保存所有字段
+      await Promise.all([
+        this.accountData.putStorageValue(this.context, 'username', this.accountName, STORAGE_KEY),
+        this.accountData.putStorageValue(this.context, 'nickname', this.nickname, STORAGE_KEY),
+        this.accountData.putStorageValue(this.context, 'gender', this.gender, STORAGE_KEY),
+        this.accountData.putStorageValue(this.context, 'birthDate', this.birthDate, STORAGE_KEY),
+        this.accountData.putStorageValue(this.context, 'address', this.address, STORAGE_KEY),
+        this.accountData.putStorageValue(this.context, 'avatar', String(this.userAvatar), STORAGE_KEY)
+      ]);
+      
       this.isLoading = false;
-      Logger.error(TAG, 'saveProfile failed');
+      Logger.info(TAG, 'Save profile success');
+      
+      try {
+        promptAction.showToast({
+          message: '保存成功',
+          duration: 2000
+        });
+      } catch (_) {
+        Logger.error(TAG, 'showToast failed');
+      }
+      
+      // 返回上一页
+      setTimeout(() => {
+        router.back();
+      }, 500);
+    } catch (error) {
+      this.isLoading = false;
+      Logger.error(TAG, `Save profile failed: ${error}`);
+      try {
+        promptAction.showToast({
+          message: '保存失败',
+          duration: 2000
+        });
+      } catch (_) {
+        Logger.error(TAG, 'showToast failed');
+      }
     }
   }
 
@@ -302,14 +553,37 @@ export default struct EditProfilePage {
       )
       Divider().strokeWidth(1).color(this.currentThemeColors.dividerColor)
 
-      // 地址
-      this.EditItemRow(
-        '地址',
-        this.address,
-        '输入地址',
-        true,
-        (text) => { this.address = text; }
-      )
+      // 地址 - 带定位功能
+      Row({ space: 12 }) {
+        Text('地址')
+          .fontSize(NORMAL_FONT_SIZE)
+          .fontColor(this.currentThemeColors.primaryTextColor)
+          .width(80)
+          .textAlign(TextAlign.Start)
+
+        Row({ space: 8 }) {
+          // 定位图标
+          Image($r('app.media.ic_location'))
+            .width(20)
+            .height(20)
+            .fillColor(this.isLocating ? this.currentThemeColors.accentColor : this.currentThemeColors.secondaryTextColor)
+            .onClick(() => { this.getCurrentLocation(); })
+
+          TextInput({ placeholder: '输入地址或点击定位', text: this.address })
+            .fontSize(NORMAL_FONT_SIZE)
+            .fontColor(this.currentThemeColors.primaryTextColor)
+            .placeholderColor(this.currentThemeColors.secondaryTextColor)
+            .backgroundColor('transparent')
+            .onChange((text) => { this.address = text; })
+            .layoutWeight(1)
+        }
+        .layoutWeight(1)
+      }
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+      .height(56)
+      .padding({ left: 16, right: 16 })
+      .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+      .alignItems(VerticalAlign.Center)
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .borderRadius(8)
