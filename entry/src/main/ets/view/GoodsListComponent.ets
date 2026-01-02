@@ -26,17 +26,27 @@ export default struct GoodsList {
   @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
   @Provide goodsListData: ListDataSource = ListDataSource.getInstance();
   @Prop layoutMode: 'list' | 'grid' = 'list';
-
-  // 【新增】控制加载状态
+  @State hasMoreData: boolean = this.goodsListData.hasMore();
+  // 控制加载状态
   @State isLoading: boolean = false;
-  // 【新增】定义动画播放一轮的最短时间 (毫秒)，根据你的 GIF 实际时长调整
+  //
+  @State showEndTip: boolean = true;
+  @State endTipOpacity: number = 1;
+  @State endTipAnimated: boolean = false;
+  // 定义动画播放一轮的最短时间
   private readonly ANIMATION_DURATION = 1500;
 
   // 判断商品是否已在对比列表中
   isInCompareList(item: GoodsListItemType): boolean {
     return this.compareList.some(compareItem => compareItem.id === item.id);
   }
-
+  // 到达列表底部
+  onReachEnd() {
+    if (this.goodsListData.hasMore()) {
+      this.goodsListData.loadNextPage()
+      this.hasMoreData = this.goodsListData.hasMore()
+    }
+  }
   // 处理对比点击
   handleCompare(item: GoodsListItemType) {
     if (this.isInCompareList(item)) {
@@ -61,43 +71,77 @@ export default struct GoodsList {
       return;
     }
     this.isLoading = true;
-    const startTime = Date.now();
 
-    // 任务1: 最小动画时长
-    const animationTask = new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, this.ANIMATION_DURATION);
-    });
-
-    // 任务2: 数据加载
-    const dataTask = new Promise<void>((resolve) => {
-      // 模拟网络延迟，setTimeout 500ms
-      resolve();
-    });
-
+    // ... (省略原本的 animationTask 和 dataTask 代码，保持不变) ...
     // 等待动画 和 数据准备 两个都完成
+    const animationTask = new Promise<void>((resolve) => {
+      setTimeout(() => { resolve(); }, this.ANIMATION_DURATION);
+    });
+    const dataTask = new Promise<void>((resolve) => {
+      // 模拟网络延迟
+      setTimeout(() => { resolve(); }, 500);
+    });
+
     await Promise.all([animationTask, dataTask]);
     this.goodsListData.loadNextPage();
+    this.hasMoreData = this.goodsListData.hasMore();
+
+    if (!this.hasMoreData && !this.endTipAnimated) {
+      // 1. 标记已进入动画流程，防止重复触发
+      this.endTipAnimated = true;
+      // 2. 确保提示是显示的，且透明度为 1
+      this.showEndTip = true;
+      this.endTipOpacity = 1;
+
+      // 3. 延迟 1.5秒执行消失动画
+      setTimeout(() => {
+        animateTo({
+          duration: 600,
+          curve: Curve.EaseOut,
+          onFinish: () => {
+            this.showEndTip = false;
+          }
+        }, () => {
+          this.endTipOpacity = 0;
+        });
+      }, 1500);
+    }
     this.isLoading = false;
   }
 
   @Builder
   LoadingIndicator() {
-    Row() {
-      Image($r('app.media.refreshing'))
-        .width(30)
-        .height(30)
-        .margin({ right: 10 })
-
-      Text('加载中...')
-        .fontSize(14)
-        .fontColor(this.currentThemeColors.secondaryTextColor || '#999999')
+    if (this.hasMoreData) {
+      Row() {
+        if (this.isLoading) {
+          Image($r('app.media.refreshing'))
+            .width(30)
+            .height(30)
+            .margin({ right: 10 })
+        }
+        Text(this.isLoading ? '加载中...' : '上拉加载更多')
+          .fontSize(14)
+          .fontColor(this.currentThemeColors.secondaryTextColor || '#999999')
+      }
+      .width('100%')
+      .height(50)
+      .justifyContent(FlexAlign.Center)
+      .alignItems(VerticalAlign.Center)
+    } else {
+      // 只有当 showEndTip 为 true 时才渲染这个 Row
+      if (this.showEndTip) {
+        Row() {
+          Text('—— 已加载全部商品 ——')
+            .fontSize(14)
+            .fontColor(this.currentThemeColors.secondaryTextColor || '#999999')
+        }
+        .width('100%')
+        .height(50)
+        .justifyContent(FlexAlign.Center)
+        .alignItems(VerticalAlign.Center)
+        .opacity(this.endTipOpacity) // 绑定透明度变量
+      }
     }
-    .width('100%')
-    .height(50)
-    .justifyContent(FlexAlign.Center)
-    .backgroundColor(Color.Transparent)
   }
 
   @Builder
@@ -157,6 +201,7 @@ export default struct GoodsList {
         // ================== 列表布局 (List) ==================
         Column() {
           List({ space: commonConst.LIST_ITEM_SPACE }) {
+            // 懒加载实现
             LazyForEach(this.goodsListData, (item: GoodsListItemType) => {
               ListItem() {
                 Row() {
@@ -226,11 +271,10 @@ export default struct GoodsList {
             })
 
             // 在列表末尾添加加载条 ListItem
-            if (this.isLoading) {
-              ListItem() {
-                this.LoadingIndicator()
-              }
+            ListItem() {
+              this.LoadingIndicator()
             }
+
           }
           .width(commonConst.GOODS_LIST_WIDTH)
           .divider({ strokeWidth: 1, color: this.currentThemeColors.dividerColor })
