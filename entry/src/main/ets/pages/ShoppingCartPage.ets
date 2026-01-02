@@ -33,7 +33,7 @@ const TAG: string = '[ShoppingCartPage]';
 export interface CartItem {
   id: number;
   name: Resource;
-  price: string;
+  price: Resource;
   quantity: number;
   image: Resource;
   selected: boolean;
@@ -42,11 +42,11 @@ export interface CartItem {
 @Component
 export default struct ShoppingCartPage {
   @StorageLink('isLoggedIn') isLoggedIn: boolean = false;
-  @StorageLink('cartItems') cartItems: CartItem[] = [
+  @StorageLink('cartItems') @Watch('onCartChange') cartItems: CartItem[] = [
     {
       id: 1,
       name: $r('app.string.goodsName'),
-      price: '¥199',
+      price: $r('app.string.price_199'),
       quantity: 1,
       image: $r('app.media.goodsImg'),
       selected: false
@@ -54,7 +54,7 @@ export default struct ShoppingCartPage {
     {
       id: 2,
       name: $r('app.string.another_goodsName'),
-      price: '¥265',
+      price: $r('app.string.price_265'),
       quantity: 2,
       image: $r('app.media.goodsImg_2'),
       selected: false
@@ -66,6 +66,24 @@ export default struct ShoppingCartPage {
   @State selectedPaymentMethod: string = 'alipay'; // alipay, wechat, unionpay
   @State isPaying: boolean = false;
   @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;//使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
+
+  // 监听到变化后的处理函数
+  onCartChange() {
+    console.info('购物车数据发生变化，重新校验状态');
+    // 1. 自动同步全选状态
+    if (this.cartItems.length > 0) {
+      this.isAllSelected = this.cartItems.every(item => item.selected);
+    } else {
+      this.isAllSelected = false;
+    }
+    // 2. 自动重新计算总价
+    this.calculateTotalPrice();
+  }
+
+  // 组件加载时也运行一次
+  aboutToAppear() {
+    this.onCartChange();
+  }
 
   // 添加商品
   // 此方法可以被外部调用（商品详情页）来向数组添加数据
@@ -94,15 +112,30 @@ export default struct ShoppingCartPage {
   // 确保每次计算都是基于最新状态
   calculateTotalPrice() {
     let total = 0;
+    // 获取资源管理器
+    const resManager = getContext(this).resourceManager;
+
     this.cartItems.forEach(item => {
-      if (item.selected) {
-        // 移除所有非数字字符（保留小数点），确保解析准确
-        const priceNum = parseFloat(item.price.replace(/[^\d.]/g, ''));
-        if (!isNaN(priceNum)) {
-          total += priceNum * item.quantity;
+      if (item.selected && item.price) {
+        try {
+          // 1. 将 Resource 对象转换为 string
+          // getStringSync 是同步方法，可以直接在循环里用
+          let priceStr: string = resManager.getStringSync(item.price);
+
+          // 2. 清洗字符串，只保留数字和小数点（逻辑同前）
+          const priceNum = parseFloat(priceStr.replace(/[^\d.]/g, ''));
+
+          // 3. 累加总价
+          if (!isNaN(priceNum)) {
+            total += priceNum * item.quantity;
+          }
+        } catch (error) {
+          console.error("资源解析失败，请检查 Resource 是否有效", error);
         }
       }
     });
+
+    // 更新总价状态
     this.totalPrice = total;
   }
 
