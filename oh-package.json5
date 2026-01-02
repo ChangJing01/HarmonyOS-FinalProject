@@ -1,5 +1,5 @@
 {
-  "modelVersion": "5.0.5",
+  "modelVersion": "6.0.0",
   "license": "",
   "devDependencies": {
   },
@@ -8,5 +8,6 @@
   "description": "Please describe the basic information.",
   "main": "",
   "version": "1.0.0",
-  "dependencies": {}
+  "dependencies": {
+  }
 }

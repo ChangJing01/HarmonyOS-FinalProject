@@ -22,19 +22,54 @@ $r('app.string.home_furnishing')
 
 export class GoodsListItemType {
   id:number;
-  goodsImg: Resource;
+  goodsImg: Resource | string;
   goodsName: string | Resource;
   advertisingLanguage: string | Resource;
   evaluate: string | Resource;
   price: string | Resource;
 
-  constructor(id: number, goodsImg: Resource, goodsName: string | Resource, price: string | Resource) {
+  constructor(id: number, goodsImg: Resource | string, goodsName: string | Resource, price: string | Resource) {
     this.id = id;
     this.goodsImg = goodsImg;
     this.goodsName = goodsName;
     this.advertisingLanguage = $r('app.string.advertising_language');
     this.evaluate = $r('app.string.evaluate');
     this.price = price;
+  }
+}
+
+// 浏览记录类型
+export class BrowsingHistoryItem {
+  id: number;
+  goodsImg: Resource | string;
+  goodsName: string;
+  price: string;
+  browsedTime: number; // 毫秒级时间戳
+  selected: boolean;
+
+  constructor(id: number, goodsImg: Resource | string, goodsName: string, price: string, browsedTime: number) {
+    this.id = id;
+    this.goodsImg = goodsImg;
+    this.goodsName = goodsName;
+    this.price = price;
+    this.browsedTime = browsedTime;
+    this.selected = false;
+  }
+
+  // 获取浏览日期的格式化字符串
+  getFormattedDate(): string {
+    const date = new Date(this.browsedTime);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}年${month}月${day}日`;
+  }
+
+  // 获取浏览日期的时间戳（用于分组，精确到天）
+  getDateTimestamp(): number {
+    const date = new Date(this.browsedTime);
+    date.setHours(0, 0, 0, 0);
+    return date.getTime();
   }
 }
 

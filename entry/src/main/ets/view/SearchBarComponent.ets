@@ -45,7 +45,8 @@ export default struct SearchBar {
         .layoutWeight(1)
         .height(INPUT_HEIGHT)
         .fontSize(NORMAL_FONT_SIZE)
-        .backgroundColor(Color.Transparent)
+        .placeholderColor(this.currentThemeColors.secondaryTextColor)
+        .backgroundColor(this.currentThemeColors.backgroundColor)
         .onChange((value: string) => {
           this.searchText = value;
         })

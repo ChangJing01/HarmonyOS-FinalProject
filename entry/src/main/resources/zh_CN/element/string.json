@@ -287,6 +287,14 @@
     {
       "name": "logout",
       "value": "退出登录"
+    },
+    {
+      "name": "permission_location_reason",
+      "value": "需要获取您的位置信息以自动填充地址"
+    },
+    {
+      "name": "permission_read_media_reason",
+      "value": "需要访问您的相册以选择头像图片"
     }
   ]
 }

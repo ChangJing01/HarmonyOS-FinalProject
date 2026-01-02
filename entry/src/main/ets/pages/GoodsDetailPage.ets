@@ -25,18 +25,78 @@ import {
   BUTTON_BORDER_RADIUS
 } from '../common/CommonConstants';
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
+import { CartItem } from './ShoppingCartPage';
+import promptAction from '@ohos.promptAction';
+import { BrowsingHistoryItem } from '../viewmodel/InitialData';
+
+// 在组件外或类中定义一个图片资源池
+const GOODS_IMAGES: Resource[] = [
+  $r('app.media.goodsImg'),
+  $r('app.media.goodsImg_2'),
+  $r('app.media.goodsImg_3'),
+  $r('app.media.goodsImg_4'),
+];
+
+// 在组件外或类中定义一个图片资源池
+const GOODS_NAMES: Resource[] = [
+  $r('app.string.goodsName'),
+  $r('app.string.another_goodsName'),
+];
+
+// 在组件外或类中定义一个图片资源池
+const GOODS_PRICES: Resource[] = [
+  $r('app.string.price_199'),
+  $r('app.string.price_265'),
+  $r('app.string.price_810'),
+  $r('app.string.price_999'),
+];
+
 
 @Entry
 @Component
 export default struct GoodsDetailPage {
   @State goodsName: string = (router.getParams() as Record<string, Object>)['goodsName'] as string;
   @State goodsPrice: string = (router.getParams() as Record<string, Object>)['goodsPrice'] as string;
+  @State goodsImg: string = '';
+  @State goodsId: number = 0;
   @State originalPrice: string = '¥299';
   @State salesCount: string = '6662人已购买';
   @State rating: string = '95%好评';
   @State selectedQuantity: number = 1;
-  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;//使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
+  @StorageLink('browsingHistory') browsingHistory: BrowsingHistoryItem[] = [];
 
+  aboutToAppear(): void {
+    // 获取路由参数
+    const params = router.getParams() as Record<string, Object>;
+    this.goodsImg = params['goodsImg'] as string;
+    this.goodsId = params['goodsId'] as number;
+    // 记录浏览历史
+    this.recordBrowsingHistory();
+  }
+
+  private recordBrowsingHistory(): void {
+    // 检查是否已经浏览过该商品（防止重复）
+    const existingIndex = this.browsingHistory.findIndex(item => item.id === this.goodsId);
+    
+    if (existingIndex !== -1) {
+      // 如果已存在，更新时间戳并移到最前面
+      const existingItem = this.browsingHistory[existingIndex];
+      existingItem.browsedTime = Date.now();
+      this.browsingHistory.splice(existingIndex, 1);
+      this.browsingHistory.unshift(existingItem);
+    } else {
+      // 如果不存在，创建新记录
+      const newRecord = new BrowsingHistoryItem(
+        this.goodsId,
+        $r('app.media.goodsImg'),
+        this.goodsName,
+        this.goodsPrice,
+        Date.now()
+      );
+      this.browsingHistory.unshift(newRecord);
+    }
+  }
 
   @Builder
   TopNavigationBar() {
@@ -158,7 +218,7 @@ export default struct GoodsDetailPage {
           .layoutWeight(1)
 
         Row({ space: 12 }) {
-          Button('-')
+          Button() {Text('-')}
             .width(32)
             .height(32)
             .fontSize(BIGGER_FONT_SIZE)
@@ -177,7 +237,7 @@ export default struct GoodsDetailPage {
             .width(40)
             .textAlign(TextAlign.Center)
 
-          Button('+')
+          Button() {Text('+')}
             .width(32)
             .height(32)
             .fontSize(BIGGER_FONT_SIZE)
@@ -251,7 +311,38 @@ export default struct GoodsDetailPage {
         .borderRadius(BUTTON_BORDER_RADIUS)
         .layoutWeight(1)
         .onClick(() => {
-          // 加入购物车逻辑
+          // 加入购物车
+          // 从 AppStorage 获取当前的购物车列表（如果不存在则创建一个空数组）
+          let currentCart: CartItem[] = AppStorage.get<CartItem[]>('cartItems') || [];
+
+          // 检查商品是否已经在购物车里
+          const index = currentCart.findIndex(item => (item.name === GOODS_NAMES[(currentCart.length + 1) % 2]));
+
+          if (index > -1) {
+            // 情况 A：商品已存在，数量加 1
+            currentCart[index].quantity += 1;
+          } else {
+            // 情况 B：商品不存在，构造一个新的 CartItem 并添加
+            let newItem: CartItem = {
+              id: currentCart.length + 1,
+              name: GOODS_NAMES[(currentCart.length + 1) % 2], // 确保这里的字段名和接口定义一致
+              price: GOODS_PRICES[(currentCart.length + 1) % 2],
+              quantity: 1,
+              image: GOODS_IMAGES[(currentCart.length + 1) % 2],
+              selected: true // 新加入的默认选中
+            };
+            currentCart.push(newItem);
+          }
+
+          // 将更新后的数组写回 AppStorage，触发全局同步
+          // 使用 [...currentCart] 确保内存地址改变，触发 UI 刷新
+          AppStorage.setOrCreate('cartItems', [...currentCart]);
+
+          // 提示用户添加成功
+          promptAction.showToast({
+            message: '已加入购物车',
+            duration: 2000
+          });
         })
 
       Button($r('app.string.buy_now'))

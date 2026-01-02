@@ -16,9 +16,6 @@
 import { goodsInitialList, GoodsListItemType } from './InitialData';
 import { MAGNIFICATION, MAX_DATA_LENGTH } from '../common/CommonConstants';
 
-/**
- * create a List range
- */
 const createListRange = (): GoodsListItemType[] => {
   let result = new Array<GoodsListItemType>();
   for (let i = 0; i < MAGNIFICATION; i++) {
@@ -27,9 +24,6 @@ const createListRange = (): GoodsListItemType[] => {
   return result;
 }
 
-/**
- * LazyLoad Class
- */
 class BasicDataSource implements IDataSource {
   private listeners: DataChangeListener[] = [];
 
