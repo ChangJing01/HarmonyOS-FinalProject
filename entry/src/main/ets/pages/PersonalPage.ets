@@ -84,7 +84,9 @@ export default struct PersonalPage {
           .fontSize(SMALL_FONT_SIZE)
           .fontColor(this.currentThemeColors.secondaryTextColor)
           .onClick(() => {
-            // 编辑资料逻辑
+            router.pushUrl({
+              url: 'pages/EditProfilePage'
+            });
           })
       }
       .alignItems(HorizontalAlign.Start)

@@ -4,6 +4,7 @@
     "pages/GoodsDetailPage",
     "pages/PublishGoodsPage",
     "pages/ComparisonPage",
-    "pages/BrowsingHistoryPage"
+    "pages/BrowsingHistoryPage",
+    "pages/EditProfilePage"
   ]
 }
