@@ -38,6 +38,24 @@ export class GoodsListItemType {
   }
 }
 
+// 评论类型定义
+export class CommentItem {
+  user: string;
+  avatar: Resource;
+  content: string;
+  time: string;
+  rating: number; // 1-5 星
+
+  constructor(user: string, content: string, rating: number) {
+    this.user = user;
+    this.avatar = $r('app.media.ic_avatar'); // 确保你有这个默认头像，或者用 goodsImg 代替
+    this.content = content;
+    this.time = new Date().toLocaleDateString();
+    this.rating = rating;
+  }
+}
+
+
 // 浏览记录类型
 export class BrowsingHistoryItem {
   id: number;
