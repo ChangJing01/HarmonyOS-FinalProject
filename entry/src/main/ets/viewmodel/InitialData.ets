@@ -22,13 +22,13 @@ $r('app.string.home_furnishing')
 
 export class GoodsListItemType {
   id:number;
-  goodsImg: Resource;
+  goodsImg: Resource | string;
   goodsName: string | Resource;
   advertisingLanguage: string | Resource;
   evaluate: string | Resource;
   price: string | Resource;
 
-  constructor(id: number, goodsImg: Resource, goodsName: string | Resource, price: string | Resource) {
+  constructor(id: number, goodsImg: Resource | string, goodsName: string | Resource, price: string | Resource) {
     this.id = id;
     this.goodsImg = goodsImg;
     this.goodsName = goodsName;
@@ -41,13 +41,13 @@ export class GoodsListItemType {
 // 浏览记录类型
 export class BrowsingHistoryItem {
   id: number;
-  goodsImg: Resource;
+  goodsImg: Resource | string;
   goodsName: string;
   price: string;
   browsedTime: number; // 毫秒级时间戳
   selected: boolean;
 
-  constructor(id: number, goodsImg: Resource, goodsName: string, price: string, browsedTime: number) {
+  constructor(id: number, goodsImg: Resource | string, goodsName: string, price: string, browsedTime: number) {
     this.id = id;
     this.goodsImg = goodsImg;
     this.goodsName = goodsName;
