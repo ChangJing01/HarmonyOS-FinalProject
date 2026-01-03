@@ -67,6 +67,7 @@ export default struct GoodsDetailPage {
   @State commentText: string = ''; // 输入框内容
   @State commentList: CommentItem[] = []; // 当前商品的评论列表
   @State toastMessage: string = '';
+  @State publishRating: number = 5;
   dialogController: CustomDialogController = new CustomDialogController({
     builder: CustomToastDialog({ message: this.toastMessage }),
     customStyle: true, // 允许完全自定义样式（去背景、去圆角等由我们自己控制）
@@ -313,7 +314,7 @@ export default struct GoodsDetailPage {
   @Builder
   CommentSection() {
     Column() {
-      // 标题栏
+      // 1. 标题栏 (保持不变)
       Text('商品评价 (' + this.commentList.length + ')')
         .fontSize(NORMAL_FONT_SIZE)
         .fontWeight(FontWeight.Bold)
@@ -321,13 +322,14 @@ export default struct GoodsDetailPage {
         .width('100%')
         .padding({ left: 16, top: 16 })
 
-      // 评论列表
+      // 2. 评论列表 (修改星星展示部分)
       List() {
         ForEach(this.commentList, (item: CommentItem) => {
           ListItem() {
             Column({ space: 8 }) {
+              // 用户信息行 (保持不变)
               Row() {
-                Image(item.avatar) // 头像
+                Image(item.avatar)
                   .width(30).height(30).borderRadius(15)
                   .margin({ right: 10 })
                 Text(item.user)
@@ -340,18 +342,15 @@ export default struct GoodsDetailPage {
               }
               .width('100%')
 
-              Text(item.content) // 内容
+              // 评论内容 (保持不变)
+              Text(item.content)
                 .fontSize(NORMAL_FONT_SIZE)
                 .fontColor(this.currentThemeColors.primaryTextColor)
-                .margin({ left: 40 }) // 对齐头像右侧
+                .margin({ left: 40 })
 
-              // 星级展示（简单版）
+              // 👇 [修改] 使用新的星星组件 (只读模式)
               Row() {
-                ForEach([1, 2, 3, 4, 5], (star: number) => {
-                  Text(star <= item.rating ? '★' : '☆')
-                    .fontColor('#FF9800') // 星星颜色
-                    .fontSize(14)
-                })
+                this.StarRatingBar(item.rating, false)
               }.margin({ left: 40 })
             }
             .padding(16)
@@ -361,26 +360,40 @@ export default struct GoodsDetailPage {
       }
       .divider({ strokeWidth: 1, color: this.currentThemeColors.backgroundColor, startMargin: 16, endMargin: 16 })
 
-      // 发布评论区域
-      Row({ space: 10 }) {
-        TextInput({ text: this.commentText, placeholder: '看对眼了？写句评价吧~' })
-          .layoutWeight(1)
-          .height(40)
-          .placeholderColor(this.currentThemeColors.secondaryTextColor)
-          .backgroundColor(this.currentThemeColors.backgroundColor)
-          .borderRadius(20)
-          .onChange((val) => this.commentText = val)
+      // 3. 发布评论区域 (布局大改：改为 Column 包裹 Row)
+      Column({ space: 10 }) {
 
-        Button('发布')
-          .height(36)
-          .fontSize(14)
-          .backgroundColor(this.currentThemeColors.accentColor)
-          .fontColor(this.currentThemeColors.backgroundColor)
-          .onClick(() => {
-            this.handlePublishComment();
-          })
+        // 👇 [新增] 评分交互区
+        Row() {
+          Text('评分：')
+            .fontSize(NORMAL_FONT_SIZE)
+            .fontColor(this.currentThemeColors.secondaryTextColor)
+          this.StarRatingBar(this.publishRating, true) // 开启交互模式
+        }
+        .width('100%')
+        .padding({ left: 4 })
+
+        // 输入框和按钮 (保持原有逻辑，但外层无需再加 padding，统一在父容器加)
+        Row({ space: 10 }) {
+          TextInput({ text: this.commentText, placeholder: '看对眼了？写句评价吧~' })
+            .layoutWeight(1)
+            .height(40)
+            .placeholderColor(this.currentThemeColors.secondaryTextColor)
+            .backgroundColor(this.currentThemeColors.backgroundColor)
+            .borderRadius(20)
+            .onChange((val) => this.commentText = val)
+
+          Button('发布')
+            .height(36)
+            .fontSize(14)
+            .backgroundColor(this.currentThemeColors.accentColor)
+            .fontColor(this.currentThemeColors.backgroundColor) // 注意：这里通常用白色，用 backgroundColor 可能看不清，建议改回 Color.White 或对应的主题色
+            .onClick(() => {
+              this.handlePublishComment();
+            })
+        }
       }
-      .padding(16)
+      .padding(16) // 统一内边距
       .width('100%')
       .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     }
@@ -389,19 +402,45 @@ export default struct GoodsDetailPage {
     .borderRadius(8)
   }
 
+  /**
+   * 打分组件
+   * 通用星星评分条
+   * @param rating 当前分数
+   * @param isInteractive 是否支持点击交互 (true: 可打分, false: 只读展示)
+   */
+  @Builder
+  StarRatingBar(rating: number, isInteractive: boolean = false) {
+    Row() {
+      ForEach([1, 2, 3, 4, 5], (index: number) => {
+        Text(index <= rating ? '★' : '☆') // 实心星 vs 空心星
+          .fontColor('#FF9800') // 橙色
+          .fontSize(isInteractive ? 28 : 14) // 交互模式下星星大一点，方便点击
+          .margin({ right: isInteractive ? 10 : 0 }) // 交互模式下拉开间距
+          .onClick(() => {
+            // 只有开启交互模式时，点击才生效
+            if (isInteractive) {
+              this.publishRating = index;
+            }
+          })
+      })
+    }
+  }
+
   // 发布评论的逻辑
   handlePublishComment() {
     if (this.commentText.trim() === '') {
-      this.showCustomToast('请输入评价内容'); // 使用我们刚才自定义的弹窗
+      this.showCustomToast('请输入评价内容');
       return;
     }
 
-    // 新增一条评论
-    const newComment = new CommentItem('我', this.commentText, 5); // 默认给5星
+    // 👇 [修改] 使用用户选择的 publishRating
+    const newComment = new CommentItem('我', this.commentText, this.publishRating);
+
     this.commentList.unshift(newComment); // 加到最前面
 
     this.showCustomToast('评价成功！');
     this.commentText = ''; // 清空输入框
+    this.publishRating = 5; // 👇 [新增] 发布完成后重置为 5 星
   }
 
   @Builder
