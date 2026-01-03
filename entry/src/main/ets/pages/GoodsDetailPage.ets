@@ -27,7 +27,8 @@ import {
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 import { CartItem } from './ShoppingCartPage';
 import promptAction from '@ohos.promptAction';
-import { BrowsingHistoryItem } from '../viewmodel/InitialData';
+import { BrowsingHistoryItem, CommentItem } from '../viewmodel/InitialData';
+import {CustomToastDialog} from '../view/CustomDialog'
 
 // 在组件外或类中定义一个图片资源池
 const GOODS_IMAGES: Resource[] = [
@@ -63,6 +64,15 @@ export default struct GoodsDetailPage {
   @State salesCount: string = '6662人已购买';
   @State rating: string = '95%好评';
   @State selectedQuantity: number = 1;
+  @State commentText: string = ''; // 输入框内容
+  @State commentList: CommentItem[] = []; // 当前商品的评论列表
+  @State toastMessage: string = '';
+  dialogController: CustomDialogController = new CustomDialogController({
+    builder: CustomToastDialog({ message: this.toastMessage }),
+    customStyle: true, // 允许完全自定义样式（去背景、去圆角等由我们自己控制）
+    alignment: DialogAlignment.Bottom, // 底部显示
+    offset: { dx: 0, dy: -80 } // 距离底部的偏移量
+  })
   @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
   @StorageLink('browsingHistory') browsingHistory: BrowsingHistoryItem[] = [];
 
@@ -73,6 +83,22 @@ export default struct GoodsDetailPage {
     this.goodsId = params['goodsId'] as number;
     // 记录浏览历史
     this.recordBrowsingHistory();
+
+    this.commentList = [
+      new CommentItem('用户A', '东西很不错，物流很快！', 5),
+      new CommentItem('用户B', '性价比很高，推荐购买。', 4)
+    ];
+  }
+
+  showCustomToast(msg: string) {
+    this.toastMessage = msg;
+    this.dialogController.open();
+    // 2秒后自动关闭
+    setTimeout(() => {
+      try {
+        this.dialogController.close();
+      } catch (e) {}
+    }, 2000);
   }
 
   private recordBrowsingHistory(): void {
@@ -283,6 +309,101 @@ export default struct GoodsDetailPage {
     .margin({ top: 8 })
   }
 
+//评论模块
+  @Builder
+  CommentSection() {
+    Column() {
+      // 标题栏
+      Text('商品评价 (' + this.commentList.length + ')')
+        .fontSize(NORMAL_FONT_SIZE)
+        .fontWeight(FontWeight.Bold)
+        .fontColor(this.currentThemeColors.primaryTextColor)
+        .width('100%')
+        .padding({ left: 16, top: 16 })
+
+      // 评论列表
+      List() {
+        ForEach(this.commentList, (item: CommentItem) => {
+          ListItem() {
+            Column({ space: 8 }) {
+              Row() {
+                Image(item.avatar) // 头像
+                  .width(30).height(30).borderRadius(15)
+                  .margin({ right: 10 })
+                Text(item.user)
+                  .fontSize(SMALL_FONT_SIZE)
+                  .fontColor(this.currentThemeColors.secondaryTextColor)
+                Blank()
+                Text(item.time)
+                  .fontSize(12)
+                  .fontColor(this.currentThemeColors.secondaryTextColor)
+              }
+              .width('100%')
+
+              Text(item.content) // 内容
+                .fontSize(NORMAL_FONT_SIZE)
+                .fontColor(this.currentThemeColors.primaryTextColor)
+                .margin({ left: 40 }) // 对齐头像右侧
+
+              // 星级展示（简单版）
+              Row() {
+                ForEach([1, 2, 3, 4, 5], (star: number) => {
+                  Text(star <= item.rating ? '★' : '☆')
+                    .fontColor('#FF9800') // 星星颜色
+                    .fontSize(14)
+                })
+              }.margin({ left: 40 })
+            }
+            .padding(16)
+            .alignItems(HorizontalAlign.Start)
+          }
+        })
+      }
+      .divider({ strokeWidth: 1, color: this.currentThemeColors.backgroundColor, startMargin: 16, endMargin: 16 })
+
+      // 发布评论区域
+      Row({ space: 10 }) {
+        TextInput({ text: this.commentText, placeholder: '看对眼了？写句评价吧~' })
+          .layoutWeight(1)
+          .height(40)
+          .placeholderColor(this.currentThemeColors.secondaryTextColor)
+          .backgroundColor(this.currentThemeColors.backgroundColor)
+          .borderRadius(20)
+          .onChange((val) => this.commentText = val)
+
+        Button('发布')
+          .height(36)
+          .fontSize(14)
+          .backgroundColor(this.currentThemeColors.accentColor)
+          .fontColor(this.currentThemeColors.backgroundColor)
+          .onClick(() => {
+            this.handlePublishComment();
+          })
+      }
+      .padding(16)
+      .width('100%')
+      .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+    }
+    .margin({ top: 10 })
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+    .borderRadius(8)
+  }
+
+  // 发布评论的逻辑
+  handlePublishComment() {
+    if (this.commentText.trim() === '') {
+      this.showCustomToast('请输入评价内容'); // 使用我们刚才自定义的弹窗
+      return;
+    }
+
+    // 新增一条评论
+    const newComment = new CommentItem('我', this.commentText, 5); // 默认给5星
+    this.commentList.unshift(newComment); // 加到最前面
+
+    this.showCustomToast('评价成功！');
+    this.commentText = ''; // 清空输入框
+  }
+
   @Builder
   BottomActionBar() {
     Row({ space: 12 }) {
@@ -386,6 +507,9 @@ export default struct GoodsDetailPage {
 
           // 商品描述
           this.GoodsDescription()
+          //评价模块
+          this.CommentSection()
+          Text('').height(80)
         }
         .width(LAYOUT_WIDTH_OR_HEIGHT)
       }
