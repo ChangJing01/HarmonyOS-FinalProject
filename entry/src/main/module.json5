@@ -10,6 +10,38 @@
     "deliveryWithInstall": true,
     "installationFree": false,
     "pages": "$profile:main_pages",
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.APPROXIMATELY_LOCATION",
+        "reason": "$string:permission_location_reason",
+        "usedScene": {
+          "abilities": [
+            "entryAbility"
+          ],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.LOCATION",
+        "reason": "$string:permission_location_reason",
+        "usedScene": {
+          "abilities": [
+            "entryAbility"
+          ],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.READ_IMAGEVIDEO",
+        "reason": "$string:permission_read_media_reason",
+        "usedScene": {
+          "abilities": [
+            "entryAbility"
+          ],
+          "when": "inuse"
+        }
+      }
+    ],
     "abilities": [
       {
         "name": "entryAbility",

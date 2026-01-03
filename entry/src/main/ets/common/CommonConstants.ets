@@ -72,7 +72,7 @@ export const TAB_ANIMATION_DURATION: number = 300;
 export const TRANSITION_DURATION: number = 300;
 
 // ============ Data ============
-export const MAGNIFICATION: number = 2;
+export const MAGNIFICATION: number = 10;
 export const MAX_DATA_LENGTH: number = 12;
 export const PAGE_SIZE: number = 20;
 export const MAX_PAGES: number = 10;

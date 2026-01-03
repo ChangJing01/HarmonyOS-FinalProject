@@ -27,6 +27,8 @@ export default class EntryAbility extends UIAbility {
     // 初始化登录状态到 AppStorage
     AppStorage.SetOrCreate('isLoggedIn', false);
     AppStorage.SetOrCreate('currentUsername', '');
+    // 初始化浏览记录
+    AppStorage.SetOrCreate('browsingHistory', []);
     hilog.isLoggable(0x0000, 'testTag', hilog.LogLevel.INFO);
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
     hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');

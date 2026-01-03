@@ -25,18 +25,105 @@ import {
   BUTTON_BORDER_RADIUS
 } from '../common/CommonConstants';
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
+import { CartItem } from './ShoppingCartPage';
+import promptAction from '@ohos.promptAction';
+import { BrowsingHistoryItem, CommentItem } from '../viewmodel/InitialData';
+import {CustomToastDialog} from '../view/CustomDialog'
+
+// 在组件外或类中定义一个图片资源池
+const GOODS_IMAGES: Resource[] = [
+  $r('app.media.goodsImg'),
+  $r('app.media.goodsImg_2'),
+  $r('app.media.goodsImg_3'),
+  $r('app.media.goodsImg_4'),
+];
+
+// 在组件外或类中定义一个图片资源池
+const GOODS_NAMES: Resource[] = [
+  $r('app.string.goodsName'),
+  $r('app.string.another_goodsName'),
+];
+
+// 在组件外或类中定义一个图片资源池
+const GOODS_PRICES: Resource[] = [
+  $r('app.string.price_199'),
+  $r('app.string.price_265'),
+  $r('app.string.price_810'),
+  $r('app.string.price_999'),
+];
+
 
 @Entry
 @Component
 export default struct GoodsDetailPage {
   @State goodsName: string = (router.getParams() as Record<string, Object>)['goodsName'] as string;
   @State goodsPrice: string = (router.getParams() as Record<string, Object>)['goodsPrice'] as string;
+  @State goodsImg: string = '';
+  @State goodsId: number = 0;
   @State originalPrice: string = '¥299';
   @State salesCount: string = '6662人已购买';
   @State rating: string = '95%好评';
   @State selectedQuantity: number = 1;
-  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;//使用 @StorageLink 确保当 PersonalPage 改变主题时，这里会自动刷新
+  @State commentText: string = ''; // 输入框内容
+  @State commentList: CommentItem[] = []; // 当前商品的评论列表
+  @State toastMessage: string = '';
+  @State publishRating: number = 5;
+  dialogController: CustomDialogController = new CustomDialogController({
+    builder: CustomToastDialog({ message: this.toastMessage }),
+    customStyle: true, // 允许完全自定义样式（去背景、去圆角等由我们自己控制）
+    alignment: DialogAlignment.Bottom, // 底部显示
+    offset: { dx: 0, dy: -80 } // 距离底部的偏移量
+  })
+  @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
+  @StorageLink('browsingHistory') browsingHistory: BrowsingHistoryItem[] = [];
 
+  aboutToAppear(): void {
+    // 获取路由参数
+    const params = router.getParams() as Record<string, Object>;
+    this.goodsImg = params['goodsImg'] as string;
+    this.goodsId = params['goodsId'] as number;
+    // 记录浏览历史
+    this.recordBrowsingHistory();
+
+    this.commentList = [
+      new CommentItem('用户A', '东西很不错，物流很快！', 5),
+      new CommentItem('用户B', '性价比很高，推荐购买。', 4)
+    ];
+  }
+
+  showCustomToast(msg: string) {
+    this.toastMessage = msg;
+    this.dialogController.open();
+    // 2秒后自动关闭
+    setTimeout(() => {
+      try {
+        this.dialogController.close();
+      } catch (e) {}
+    }, 2000);
+  }
+
+  private recordBrowsingHistory(): void {
+    // 检查是否已经浏览过该商品（防止重复）
+    const existingIndex = this.browsingHistory.findIndex(item => item.id === this.goodsId);
+    
+    if (existingIndex !== -1) {
+      // 如果已存在，更新时间戳并移到最前面
+      const existingItem = this.browsingHistory[existingIndex];
+      existingItem.browsedTime = Date.now();
+      this.browsingHistory.splice(existingIndex, 1);
+      this.browsingHistory.unshift(existingItem);
+    } else {
+      // 如果不存在，创建新记录
+      const newRecord = new BrowsingHistoryItem(
+        this.goodsId,
+        $r('app.media.goodsImg'),
+        this.goodsName,
+        this.goodsPrice,
+        Date.now()
+      );
+      this.browsingHistory.unshift(newRecord);
+    }
+  }
 
   @Builder
   TopNavigationBar() {
@@ -158,7 +245,7 @@ export default struct GoodsDetailPage {
           .layoutWeight(1)
 
         Row({ space: 12 }) {
-          Button('-')
+          Button() {Text('-')}
             .width(32)
             .height(32)
             .fontSize(BIGGER_FONT_SIZE)
@@ -177,7 +264,7 @@ export default struct GoodsDetailPage {
             .width(40)
             .textAlign(TextAlign.Center)
 
-          Button('+')
+          Button() {Text('+')}
             .width(32)
             .height(32)
             .fontSize(BIGGER_FONT_SIZE)
@@ -223,6 +310,139 @@ export default struct GoodsDetailPage {
     .margin({ top: 8 })
   }
 
+//评论模块
+  @Builder
+  CommentSection() {
+    Column() {
+      // 1. 标题栏 (保持不变)
+      Text('商品评价 (' + this.commentList.length + ')')
+        .fontSize(NORMAL_FONT_SIZE)
+        .fontWeight(FontWeight.Bold)
+        .fontColor(this.currentThemeColors.primaryTextColor)
+        .width('100%')
+        .padding({ left: 16, top: 16 })
+
+      // 2. 评论列表 (修改星星展示部分)
+      List() {
+        ForEach(this.commentList, (item: CommentItem) => {
+          ListItem() {
+            Column({ space: 8 }) {
+              // 用户信息行 (保持不变)
+              Row() {
+                Image(item.avatar)
+                  .width(30).height(30).borderRadius(15)
+                  .margin({ right: 10 })
+                Text(item.user)
+                  .fontSize(SMALL_FONT_SIZE)
+                  .fontColor(this.currentThemeColors.secondaryTextColor)
+                Blank()
+                Text(item.time)
+                  .fontSize(12)
+                  .fontColor(this.currentThemeColors.secondaryTextColor)
+              }
+              .width('100%')
+
+              // 评论内容 (保持不变)
+              Text(item.content)
+                .fontSize(NORMAL_FONT_SIZE)
+                .fontColor(this.currentThemeColors.primaryTextColor)
+                .margin({ left: 40 })
+
+              // 👇 [修改] 使用新的星星组件 (只读模式)
+              Row() {
+                this.StarRatingBar(item.rating, false)
+              }.margin({ left: 40 })
+            }
+            .padding(16)
+            .alignItems(HorizontalAlign.Start)
+          }
+        })
+      }
+      .divider({ strokeWidth: 1, color: this.currentThemeColors.backgroundColor, startMargin: 16, endMargin: 16 })
+
+      // 3. 发布评论区域 (布局大改：改为 Column 包裹 Row)
+      Column({ space: 10 }) {
+
+        // 👇 [新增] 评分交互区
+        Row() {
+          Text('评分：')
+            .fontSize(NORMAL_FONT_SIZE)
+            .fontColor(this.currentThemeColors.secondaryTextColor)
+          this.StarRatingBar(this.publishRating, true) // 开启交互模式
+        }
+        .width('100%')
+        .padding({ left: 4 })
+
+        // 输入框和按钮 (保持原有逻辑，但外层无需再加 padding，统一在父容器加)
+        Row({ space: 10 }) {
+          TextInput({ text: this.commentText, placeholder: '看对眼了？写句评价吧~' })
+            .layoutWeight(1)
+            .height(40)
+            .placeholderColor(this.currentThemeColors.secondaryTextColor)
+            .backgroundColor(this.currentThemeColors.backgroundColor)
+            .borderRadius(20)
+            .onChange((val) => this.commentText = val)
+
+          Button('发布')
+            .height(36)
+            .fontSize(14)
+            .backgroundColor(this.currentThemeColors.accentColor)
+            .fontColor(this.currentThemeColors.backgroundColor) // 注意：这里通常用白色，用 backgroundColor 可能看不清，建议改回 Color.White 或对应的主题色
+            .onClick(() => {
+              this.handlePublishComment();
+            })
+        }
+      }
+      .padding(16) // 统一内边距
+      .width('100%')
+      .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+    }
+    .margin({ top: 10 })
+    .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+    .borderRadius(8)
+  }
+
+  /**
+   * 打分组件
+   * 通用星星评分条
+   * @param rating 当前分数
+   * @param isInteractive 是否支持点击交互 (true: 可打分, false: 只读展示)
+   */
+  @Builder
+  StarRatingBar(rating: number, isInteractive: boolean = false) {
+    Row() {
+      ForEach([1, 2, 3, 4, 5], (index: number) => {
+        Text(index <= rating ? '★' : '☆') // 实心星 vs 空心星
+          .fontColor('#FF9800') // 橙色
+          .fontSize(isInteractive ? 28 : 14) // 交互模式下星星大一点，方便点击
+          .margin({ right: isInteractive ? 10 : 0 }) // 交互模式下拉开间距
+          .onClick(() => {
+            // 只有开启交互模式时，点击才生效
+            if (isInteractive) {
+              this.publishRating = index;
+            }
+          })
+      })
+    }
+  }
+
+  // 发布评论的逻辑
+  handlePublishComment() {
+    if (this.commentText.trim() === '') {
+      this.showCustomToast('请输入评价内容');
+      return;
+    }
+
+    // 👇 [修改] 使用用户选择的 publishRating
+    const newComment = new CommentItem('我', this.commentText, this.publishRating);
+
+    this.commentList.unshift(newComment); // 加到最前面
+
+    this.showCustomToast('评价成功！');
+    this.commentText = ''; // 清空输入框
+    this.publishRating = 5; // 👇 [新增] 发布完成后重置为 5 星
+  }
+
   @Builder
   BottomActionBar() {
     Row({ space: 12 }) {
@@ -251,7 +471,38 @@ export default struct GoodsDetailPage {
         .borderRadius(BUTTON_BORDER_RADIUS)
         .layoutWeight(1)
         .onClick(() => {
-          // 加入购物车逻辑
+          // 加入购物车
+          // 从 AppStorage 获取当前的购物车列表（如果不存在则创建一个空数组）
+          let currentCart: CartItem[] = AppStorage.get<CartItem[]>('cartItems') || [];
+
+          // 检查商品是否已经在购物车里
+          const index = currentCart.findIndex(item => (item.name === GOODS_NAMES[(currentCart.length + 1) % 2]));
+
+          if (index > -1) {
+            // 情况 A：商品已存在，数量加 1
+            currentCart[index].quantity += 1;
+          } else {
+            // 情况 B：商品不存在，构造一个新的 CartItem 并添加
+            let newItem: CartItem = {
+              id: currentCart.length + 1,
+              name: GOODS_NAMES[(currentCart.length + 1) % 2], // 确保这里的字段名和接口定义一致
+              price: GOODS_PRICES[(currentCart.length + 1) % 2],
+              quantity: 1,
+              image: GOODS_IMAGES[(currentCart.length + 1) % 2],
+              selected: true // 新加入的默认选中
+            };
+            currentCart.push(newItem);
+          }
+
+          // 将更新后的数组写回 AppStorage，触发全局同步
+          // 使用 [...currentCart] 确保内存地址改变，触发 UI 刷新
+          AppStorage.setOrCreate('cartItems', [...currentCart]);
+
+          // 提示用户添加成功
+          promptAction.showToast({
+            message: '已加入购物车',
+            duration: 2000
+          });
         })
 
       Button($r('app.string.buy_now'))
@@ -295,6 +546,9 @@ export default struct GoodsDetailPage {
 
           // 商品描述
           this.GoodsDescription()
+          //评价模块
+          this.CommentSection()
+          Text('').height(80)
         }
         .width(LAYOUT_WIDTH_OR_HEIGHT)
       }

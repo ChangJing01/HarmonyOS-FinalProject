@@ -16,9 +16,6 @@
 import { goodsInitialList, GoodsListItemType } from './InitialData';
 import { MAGNIFICATION, MAX_DATA_LENGTH } from '../common/CommonConstants';
 
-/**
- * create a List range
- */
 const createListRange = (): GoodsListItemType[] => {
   let result = new Array<GoodsListItemType>();
   for (let i = 0; i < MAGNIFICATION; i++) {
@@ -27,9 +24,6 @@ const createListRange = (): GoodsListItemType[] => {
   return result;
 }
 
-/**
- * LazyLoad Class
- */
 class BasicDataSource implements IDataSource {
   private listeners: DataChangeListener[] = [];
 
@@ -87,17 +81,22 @@ class BasicDataSource implements IDataSource {
 
 export class ListDataSource extends BasicDataSource {
   private static instance: ListDataSource | null = null;
-  private listData = createListRange();
+
+  private allData: GoodsListItemType[] = createListRange(); // 全量数据
+  private listData: GoodsListItemType[] = []; // 当前显示的数据
+  private pageSize: number = 10;
+  private currentPage: number = 0;
+
+  private constructor() {
+    super();
+    this.loadNextPage(); // 初始化第一页
+  }
 
   public static getInstance(): ListDataSource {
     if (!ListDataSource.instance) {
       ListDataSource.instance = new ListDataSource();
     }
     return ListDataSource.instance;
-  }
-
-  private constructor() {
-    super();
   }
 
   public totalCount(): number {
@@ -108,15 +107,22 @@ export class ListDataSource extends BasicDataSource {
     return this.listData[index];
   }
 
-  public pushData(): void {
-    if (this.listData.length < MAX_DATA_LENGTH) {
-      this.listData = this.listData.concat(goodsInitialList);
-      this.notifyDataAdd(this.listData.length - 1);
-    }
+  // 加载下一页数据
+  public loadNextPage(): void {
+    const start = this.currentPage * this.pageSize;
+    const end = Math.min(start + this.pageSize, this.allData.length);
+    if (start >= end) return; // 没有更多数据
+
+    this.listData.push(...this.allData.slice(start, end));
+    this.notifyDataAdd(this.listData.length - 1);
+    this.currentPage++;
   }
 
   public addNewItem(item: GoodsListItemType): void {
-    this.listData.push(item);
-    this.notifyDataAdd(this.listData.length - 1);
+    this.allData.push(item); // 新增商品加入全量数据
+  }
+  // 检查是否还有数据未加载
+  public hasMore(): boolean {
+    return this.listData.length < this.allData.length;
   }
 }

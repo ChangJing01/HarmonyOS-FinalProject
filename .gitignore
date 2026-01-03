@@ -9,7 +9,7 @@
 entry/.preview/
 
 # 构建输出目录
-/build/
+entry/build/
 
 ############################
 # IDE / Editor

@@ -84,7 +84,9 @@ export default struct PersonalPage {
           .fontSize(SMALL_FONT_SIZE)
           .fontColor(this.currentThemeColors.secondaryTextColor)
           .onClick(() => {
-            // 编辑资料逻辑
+            router.pushUrl({
+              url: 'pages/EditProfilePage'
+            });
           })
       }
       .alignItems(HorizontalAlign.Start)
@@ -183,15 +185,26 @@ export default struct PersonalPage {
     .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     .onClick(() => {
       // 菜单项点击逻辑 根据id判断点击逻辑 update1.2
-      if (item.id === 3) {
+      if (item.id === 1) {
+        // 我的订单
+        console.info('Clicked my orders');
+      } else if (item.id === 2) {
+        // 浏览记录
+        router.pushUrl({
+          url: 'pages/BrowsingHistoryPage'
+        });
+      } else if (item.id === 3) {
         this.showThemeDialog();
       } else if (item.id === 7) {
         router.pushUrl({
           url: 'pages/PublishGoodsPage'
         });
-      } else {
-        // 其他菜单项逻辑
-        console.info('Clicked menu item:', item.id);
+      } else if (item.id === 5) {
+        // 清除缓存
+        console.info('Clear cache');
+      } else if (item.id === 6) {
+        // 关于我们
+        console.info('About us');
       }
     })
   }
