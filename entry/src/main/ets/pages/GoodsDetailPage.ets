@@ -60,8 +60,8 @@ export default struct GoodsDetailPage {
   @State goodsImg: string | Resource = '';
   @State goodsId: number = 0;
   @State originalPrice: string = '¥299';
-  @State salesCount: number = 0; // 改为数字计数器
-  @State goodReviewCount: number = 0; // 好评计数器
+  @State salesCount: number = 2; // 改为数字计数器
+  @State goodReviewCount: number = 2; // 好评计数器
   @State selectedQuantity: number = 1;
   @State commentText: string = ''; // 输入框内容
   @State commentList: CommentItem[] = []; // 当前商品的评论列表
