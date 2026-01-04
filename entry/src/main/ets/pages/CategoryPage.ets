@@ -16,6 +16,7 @@
 import CategoryTab, { CategoryData, SubCategoryData } from '../view/CategoryTabComponent';
 import CategorySub from '../view/CategorySubComponent';
 import GoodsList from '../view/GoodsListComponent';
+import { GoodsCategory } from '../viewmodel/InitialData';
 import {
   LAYOUT_WIDTH_OR_HEIGHT
 } from '../common/CommonConstants';
@@ -85,6 +86,18 @@ export default struct CategoryPage {
     return subCategories[this.selectedSubCategoryIndex].name;
   }
 
+  // 获取当前选中分类对应的GoodsCategory
+  getCurrentCategory(): GoodsCategory | null {
+    const categoryMap = [
+      null,                      // 0: 精选 - 显示全部
+      GoodsCategory.PHONE,       // 1: 手机
+      GoodsCategory.CLOTHES,     // 2: 服饰
+      GoodsCategory.WEAR,        // 3: 穿搭
+      GoodsCategory.FURNITURE    // 4: 家具
+    ];
+    return categoryMap[this.selectedCategoryIndex];
+  }
+
   build() {
     Column() {
       // 一级分类 Tab（横向）
@@ -119,9 +132,39 @@ export default struct CategoryPage {
           .width(this.showSubCategory ? '25%' : '0%')
           .visibility(this.showSubCategory ? Visibility.Visible : Visibility.Hidden)
 
-        // 右侧：商品列表
-        GoodsList()
-          .layoutWeight(1)
+        // 右侧：商品列表（根据选中的分类显示）
+        // 使用条件渲染确保切换分类时重新创建GoodsList组件
+        if (this.selectedCategoryIndex === 0) {
+          // 精选 - 显示所有商品的随机列表
+          GoodsList({
+            shuffle: true
+          })
+            .layoutWeight(1)
+        } else if (this.selectedCategoryIndex === 1) {
+          // 手机
+          GoodsList({
+            category: GoodsCategory.PHONE
+          })
+            .layoutWeight(1)
+        } else if (this.selectedCategoryIndex === 2) {
+          // 服饰
+          GoodsList({
+            category: GoodsCategory.CLOTHES
+          })
+            .layoutWeight(1)
+        } else if (this.selectedCategoryIndex === 3) {
+          // 穿搭
+          GoodsList({
+            category: GoodsCategory.WEAR
+          })
+            .layoutWeight(1)
+        } else if (this.selectedCategoryIndex === 4) {
+          // 家具
+          GoodsList({
+            category: GoodsCategory.FURNITURE
+          })
+            .layoutWeight(1)
+        }
       }
       .width(LAYOUT_WIDTH_OR_HEIGHT)
       .layoutWeight(1)
