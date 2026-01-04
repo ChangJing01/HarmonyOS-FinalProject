@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import { initTabBarData } from '../viewmodel/InitialData';
+import { initTabBarData, GoodsCategory, getGoodsByCategory, getFeaturedGoods } from '../viewmodel/InitialData';
 import {
   LAYOUT_WIDTH_OR_HEIGHT,
   NORMAL_FONT_SIZE,
@@ -95,23 +95,45 @@ export default struct TabBar {
 
   @Builder
   getContent() {
-    if (this.tabsIndex === 0) {
-      Column() {
-        if (this.refreshStatus) {
-          PutDownRefresh({ refreshText: $refreshText })
-        }
+    Column() {
+      if (this.refreshStatus) {
+        PutDownRefresh({ refreshText: $refreshText })
+      }
+      
+      // 根据选中的tab显示对应类别的商品
+      if (this.tabsIndex === 0) {
+        // 精选 - 显示所有商品的随机混合列表
         GoodsList({
-          layoutMode: this.layoutMode
+          layoutMode: this.layoutMode,
+          shuffle: true
         })
-        Text($r('app.string.to_bottom')).fontSize(NORMAL_FONT_SIZE).fontColor($r('app.color.gray'))
+      } else if (this.tabsIndex === 1) {
+        // 手机
+        GoodsList({
+          layoutMode: this.layoutMode,
+          category: GoodsCategory.PHONE
+        })
+      } else if (this.tabsIndex === 2) {
+        // 服饰
+        GoodsList({
+          layoutMode: this.layoutMode,
+          category: GoodsCategory.CLOTHES
+        })
+      } else if (this.tabsIndex === 3) {
+        // 穿搭
+        GoodsList({
+          layoutMode: this.layoutMode,
+          category: GoodsCategory.WEAR
+        })
+      } else if (this.tabsIndex === 4) {
+        // 家具
+        GoodsList({
+          layoutMode: this.layoutMode,
+          category: GoodsCategory.FURNITURE
+        })
       }
-    } else {
-      Column() {
-        Text(initTabBarData[this.tabsIndex - 1]).fontSize(MAX_FONT_SIZE)
-      }
-      .justifyContent(FlexAlign.Center)
-      .width(LAYOUT_WIDTH_OR_HEIGHT)
-      .height(LAYOUT_WIDTH_OR_HEIGHT)
+      
+      Text($r('app.string.to_bottom')).fontSize(NORMAL_FONT_SIZE).fontColor($r('app.color.gray'))
     }
   }
 

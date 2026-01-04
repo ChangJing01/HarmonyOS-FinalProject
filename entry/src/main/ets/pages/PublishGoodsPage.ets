@@ -18,7 +18,7 @@ import {
   NORMAL_FONT_SIZE,
   BIGGER_FONT_SIZE
 } from '../common/CommonConstants';
-import { GoodsListItemType } from '../viewmodel/InitialData';
+import { GoodsListItemType, GoodsCategory } from '../viewmodel/InitialData';
 import { ListDataSource } from '../viewmodel/ListDataSource';
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 import router from '@ohos.router';
@@ -90,6 +90,7 @@ export default struct PublishGoodsPage {
           TextInput({ placeholder: '请输入商品名称', text: this.goodsName })
             .width(LAYOUT_WIDTH_OR_HEIGHT)
             .height(48)
+            .placeholderColor(this.currentThemeColors.secondaryTextColor)
             .backgroundColor(this.currentThemeColors.cardBackgroundColor)
             .borderRadius(8)
             .padding(8)
@@ -106,6 +107,7 @@ export default struct PublishGoodsPage {
           TextInput({ placeholder: '请输入商品描述', text: this.goodsDescription })
             .width(LAYOUT_WIDTH_OR_HEIGHT)
             .height(80)
+            .placeholderColor(this.currentThemeColors.secondaryTextColor)
             .backgroundColor(this.currentThemeColors.cardBackgroundColor)
             .borderRadius(8)
             .padding(8)
@@ -122,6 +124,7 @@ export default struct PublishGoodsPage {
           TextInput({ placeholder: '请输入商品价格', text: this.goodsPrice })
             .width(LAYOUT_WIDTH_OR_HEIGHT)
             .height(48)
+            .placeholderColor(this.currentThemeColors.secondaryTextColor)
             .backgroundColor(this.currentThemeColors.cardBackgroundColor)
             .borderRadius(8)
             .padding(8)
@@ -204,10 +207,11 @@ export default struct PublishGoodsPage {
       Date.now(),
       this.goodsImage,
       this.goodsName,
-      this.goodsPrice
+      this.goodsPrice,
+      GoodsCategory.CLOTHES, // 默认为服饰类
+      this.goodsDescription || '暂无描述',
+      '新发布'
     );
-    newItem.advertisingLanguage = this.goodsDescription || '暂无描述';
-    newItem.evaluate = '新发布';
 
     this.dataSource.addNewItem(newItem);
 
