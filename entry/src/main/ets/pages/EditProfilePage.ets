@@ -368,6 +368,9 @@ export default struct EditProfilePage {
         this.accountData.putStorageValue(this.context, 'avatar', String(this.userAvatar), STORAGE_KEY)
       ]);
       
+      // 同步更新AppStorage，确保PersonalPage能立即看到变化
+      AppStorage.setOrCreate('userAvatar', this.userAvatar);
+      
       this.isLoading = false;
       Logger.info(TAG, 'Save profile success');
       
