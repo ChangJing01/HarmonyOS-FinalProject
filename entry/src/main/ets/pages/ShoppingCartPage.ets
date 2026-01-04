@@ -32,34 +32,17 @@ const TAG: string = '[ShoppingCartPage]';
 
 export interface CartItem {
   id: number;
-  name: Resource;
-  price: Resource;
+  name: string | Resource;
+  price: string | Resource;
   quantity: number;
-  image: Resource;
+  image: string | Resource;
   selected: boolean;
 }
 
 @Component
 export default struct ShoppingCartPage {
   @StorageLink('isLoggedIn') isLoggedIn: boolean = false;
-  @StorageLink('cartItems') @Watch('onCartChange') cartItems: CartItem[] = [
-    {
-      id: 1,
-      name: $r('app.string.goodsName'),
-      price: $r('app.string.price_199'),
-      quantity: 1,
-      image: $r('app.media.goodsImg'),
-      selected: false
-    },
-    {
-      id: 2,
-      name: $r('app.string.another_goodsName'),
-      price: $r('app.string.price_265'),
-      quantity: 2,
-      image: $r('app.media.goodsImg_2'),
-      selected: false
-    }
-  ];
+  @StorageLink('cartItems') @Watch('onCartChange') cartItems: CartItem[] = [];
   @State isAllSelected: boolean = false;
   @State totalPrice: number = 0;
   @State showPaymentDialog: boolean = false;
@@ -118,9 +101,16 @@ export default struct ShoppingCartPage {
     this.cartItems.forEach(item => {
       if (item.selected && item.price) {
         try {
-          // 1. 将 Resource 对象转换为 string
-          // getStringSync 是同步方法，可以直接在循环里用
-          let priceStr: string = resManager.getStringSync(item.price);
+          let priceStr: string;
+          
+          // 判断价格类型
+          if (typeof item.price === 'string') {
+            priceStr = item.price;
+          } else {
+            // 1. 将 Resource 对象转换为 string
+            // getStringSync 是同步方法，可以直接在循环里用
+            priceStr = resManager.getStringSync(item.price);
+          }
 
           // 2. 清洗字符串，只保留数字和小数点（逻辑同前）
           const priceNum = parseFloat(priceStr.replace(/[^\d.]/g, ''));

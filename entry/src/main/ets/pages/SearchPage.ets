@@ -22,6 +22,7 @@ import {
   NAV_BAR_HEIGHT
 } from '../common/CommonConstants';
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
+import { searchGoods, GoodsListItemType } from '../viewmodel/InitialData';
 
 @Component
 export default struct SearchPage {
@@ -29,11 +30,13 @@ export default struct SearchPage {
   @State isSearching: boolean = false;
   @State showSuggestions: boolean = false;
   @State searchHistory: string[] = ['手机', '笔记本', '耳机', '键盘'];
-  @State hotSearchList: string[] = ['华为手机', '苹果手机', '小米手机', '蓝牙耳机', '机械键盘'];
+  @State hotSearchList: string[] = ['华为手机', '苹果手机', '小米手机', '蓝牙耳机', '机械键盘','家具', '服饰'];
   @State suggestions: string[] = [];
-  @State searchResults: number = 0;
+  @State searchResults: GoodsListItemType[] = [];
+  @State searchKeyword: string = '';
 
   @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
+  @StorageLink('goodsList') goodsList: GoodsListItemType[] = [];
 
   private suggestionLibrary: string[] = [
     '华为 Mate 60', '华为 P60', '华为 平板', '华为 FreeBuds',
@@ -45,8 +48,8 @@ export default struct SearchPage {
     const query = this.searchText.trim();
     if (query.length > 0) {
       this.suggestions = this.suggestionLibrary.filter(item =>
-      item.toLowerCase().includes(query.toLowerCase())
-      );
+        item.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 10); // 最多显示10个建议
       this.isSearching = false;
       this.showSuggestions = true;
     } else {
@@ -63,12 +66,10 @@ export default struct SearchPage {
     if (query.length === 0) return;
 
     this.searchText = query;
+    this.searchKeyword = query;
 
-    // 模拟真实过滤统计
-    const matched = this.suggestionLibrary.filter(item =>
-    item.toLowerCase().includes(query.toLowerCase())
-    );
-    this.searchResults = matched.length;
+    // 使用真实的商品搜索
+    this.searchResults = searchGoods(query);
 
     // 历史记录逻辑
     if (!this.searchHistory.includes(query)) {
@@ -82,10 +83,11 @@ export default struct SearchPage {
 
   handleClear() {
     this.searchText = '';
+    this.searchKeyword = '';
     this.isSearching = false;
     this.showSuggestions = false;
     this.suggestions = [];
-    this.searchResults = 0;
+    this.searchResults = [];
   }
 
   deleteHistoryItem(index: number) {
@@ -222,7 +224,7 @@ export default struct SearchPage {
       Row() {
         Text($r('app.string.search_result_prefix'))
           .fontSize(SMALL_FONT_SIZE).fontColor(this.currentThemeColors.secondaryTextColor)
-        Text(this.searchResults.toString())
+        Text(this.searchResults.length.toString())
           .fontSize(SMALL_FONT_SIZE).fontColor(this.currentThemeColors.accentColor)
           .fontWeight(FontWeight.Bold).margin({ left: 4, right: 4 })
         Text($r('app.string.search_result_suffix'))
@@ -232,7 +234,7 @@ export default struct SearchPage {
       .justifyContent(FlexAlign.Center)
       .backgroundColor(this.currentThemeColors.backgroundColor)
 
-      GoodsList()
+      GoodsList({ searchKeyword: this.searchKeyword })
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT).layoutWeight(1)
   }

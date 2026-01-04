@@ -14,7 +14,7 @@
  */
 
 import * as commonConst from '../common/CommonConstants';
-import { GoodsListItemType } from '../viewmodel/InitialData';
+import { GoodsListItemType, GoodsCategory } from '../viewmodel/InitialData';
 import { ListDataSource } from '../viewmodel/ListDataSource';
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 import router from '@ohos.router';
@@ -24,8 +24,11 @@ import promptAction from '@ohos.promptAction';
 export default struct GoodsList {
   @StorageLink('compareList') compareList: GoodsListItemType[] = [];
   @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
-  @Provide goodsListData: ListDataSource = ListDataSource.getInstance();
-  @Prop layoutMode: 'list' | 'grid' = 'list';
+  @Prop @Watch('onParamsChange') layoutMode: 'list' | 'grid' = 'list';
+  @Prop @Watch('onParamsChange') category: GoodsCategory | null = null; // 类别参数，null表示全部
+  @Prop @Watch('onParamsChange') shuffle: boolean = false; // 是否随机打乱
+  @Prop @Watch('onParamsChange') searchKeyword: string = ''; // 搜索关键字
+  @State goodsListData: ListDataSource = ListDataSource.getInstance(undefined, false);
   @State hasMoreData: boolean = this.goodsListData.hasMore();
   // 控制加载状态
   @State isLoading: boolean = false;
@@ -34,7 +37,26 @@ export default struct GoodsList {
   @State endTipOpacity: number = 1;
   @State endTipAnimated: boolean = false;
   // 定义动画播放一轮的最短时间
-  private readonly ANIMATION_DURATION = 1500;
+  private readonly ANIMATION_DURATION = 200;
+
+  aboutToAppear() {
+    this.updateDataSource();
+  }
+
+  onParamsChange() {
+    this.updateDataSource();
+  }
+
+  updateDataSource() {
+    // 将null转换为undefined，确保精选页面不传category参数
+    const categoryParam = this.category === null ? undefined : this.category;
+    this.goodsListData = ListDataSource.getInstance(
+      categoryParam,
+      this.shuffle,
+      this.searchKeyword || undefined
+    );
+    this.hasMoreData = this.goodsListData.hasMore();
+  }
 
   // 判断商品是否已在对比列表中
   isInCompareList(item: GoodsListItemType): boolean {
