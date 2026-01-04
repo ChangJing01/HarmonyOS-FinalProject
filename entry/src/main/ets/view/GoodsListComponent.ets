@@ -37,7 +37,7 @@ export default struct GoodsList {
   @State endTipOpacity: number = 1;
   @State endTipAnimated: boolean = false;
   // 定义动画播放一轮的最短时间
-  private readonly ANIMATION_DURATION = 1500;
+  private readonly ANIMATION_DURATION = 200;
 
   aboutToAppear() {
     this.updateDataSource();
