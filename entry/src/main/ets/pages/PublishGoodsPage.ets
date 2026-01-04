@@ -18,7 +18,7 @@ import {
   NORMAL_FONT_SIZE,
   BIGGER_FONT_SIZE
 } from '../common/CommonConstants';
-import { GoodsListItemType } from '../viewmodel/InitialData';
+import { GoodsListItemType, GoodsCategory } from '../viewmodel/InitialData';
 import { ListDataSource } from '../viewmodel/ListDataSource';
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 import router from '@ohos.router';
@@ -207,10 +207,11 @@ export default struct PublishGoodsPage {
       Date.now(),
       this.goodsImage,
       this.goodsName,
-      this.goodsPrice
+      this.goodsPrice,
+      GoodsCategory.CLOTHES, // 默认为服饰类
+      this.goodsDescription || '暂无描述',
+      '新发布'
     );
-    newItem.advertisingLanguage = this.goodsDescription || '暂无描述';
-    newItem.evaluate = '新发布';
 
     this.dataSource.addNewItem(newItem);
 

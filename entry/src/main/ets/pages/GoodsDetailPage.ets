@@ -27,7 +27,7 @@ import {
 import { ThemeColors, DEFAULT_THEME } from '../common/Colors';
 import { CartItem } from './ShoppingCartPage';
 import promptAction from '@ohos.promptAction';
-import { BrowsingHistoryItem, CommentItem } from '../viewmodel/InitialData';
+import { BrowsingHistoryItem, CommentItem, GoodsListItemType } from '../viewmodel/InitialData';
 import {CustomToastDialog} from '../view/CustomDialog'
 
 // 在组件外或类中定义一个图片资源池
@@ -57,16 +57,19 @@ const GOODS_PRICES: Resource[] = [
 export default struct GoodsDetailPage {
   @State goodsName: string = (router.getParams() as Record<string, Object>)['goodsName'] as string;
   @State goodsPrice: string = (router.getParams() as Record<string, Object>)['goodsPrice'] as string;
-  @State goodsImg: string = '';
+  @State goodsImg: string | Resource = '';
   @State goodsId: number = 0;
   @State originalPrice: string = '¥299';
-  @State salesCount: string = '6662人已购买';
-  @State rating: string = '95%好评';
+  @State salesCount: number = 0; // 改为数字计数器
+  @State goodReviewCount: number = 0; // 好评计数器
   @State selectedQuantity: number = 1;
   @State commentText: string = ''; // 输入框内容
   @State commentList: CommentItem[] = []; // 当前商品的评论列表
   @State toastMessage: string = '';
   @State publishRating: number = 5;
+  @State showPaymentDialog: boolean = false; // 支付对话框
+  @State selectedPaymentMethod: string = 'alipay'; // 支付方式
+  @State isPaying: boolean = false; // 是否正在支付
   dialogController: CustomDialogController = new CustomDialogController({
     builder: CustomToastDialog({ message: this.toastMessage }),
     customStyle: true, // 允许完全自定义样式（去背景、去圆角等由我们自己控制）
@@ -75,12 +78,24 @@ export default struct GoodsDetailPage {
   })
   @StorageLink('themeColors') currentThemeColors: ThemeColors = DEFAULT_THEME;
   @StorageLink('browsingHistory') browsingHistory: BrowsingHistoryItem[] = [];
+  @StorageLink('goodsList') goodsList: GoodsListItemType[] = [];
 
   aboutToAppear(): void {
     // 获取路由参数
     const params = router.getParams() as Record<string, Object>;
-    this.goodsImg = params['goodsImg'] as string;
+    this.goodsImg = params['goodsImg'] as string | Resource;
     this.goodsId = params['goodsId'] as number;
+    
+    // 从商品列表中获取商品信息
+    const goods = this.goodsList.find(item => item.id === this.goodsId);
+    if (goods) {
+      this.goodsImg = goods.goodsImg;
+      this.goodsName = goods.goodsName as string;
+      this.goodsPrice = goods.price as string;
+      this.salesCount = goods.salesCount;
+      this.goodReviewCount = goods.goodReviewCount;
+    }
+    
     // 记录浏览历史
     this.recordBrowsingHistory();
 
@@ -115,7 +130,7 @@ export default struct GoodsDetailPage {
       // 如果不存在，创建新记录
       const newRecord = new BrowsingHistoryItem(
         this.goodsId,
-        $r('app.media.goodsImg'),
+        this.goodsImg,
         this.goodsName,
         this.goodsPrice,
         Date.now()
@@ -166,17 +181,17 @@ export default struct GoodsDetailPage {
   @Builder
   GoodsImageSwiper() {
     Swiper() {
-      Image($r('app.media.goodsImg'))
+      Image(this.goodsImg)
         .width(LAYOUT_WIDTH_OR_HEIGHT)
         .height(400)
         .objectFit(ImageFit.Cover)
 
-      Image($r('app.media.goodsImg_2'))
+      Image(this.goodsImg)
         .width(LAYOUT_WIDTH_OR_HEIGHT)
         .height(400)
         .objectFit(ImageFit.Cover)
 
-      Image($r('app.media.goodsImg_3'))
+      Image(this.goodsImg)
         .width(LAYOUT_WIDTH_OR_HEIGHT)
         .height(400)
         .objectFit(ImageFit.Cover)
@@ -218,11 +233,11 @@ export default struct GoodsDetailPage {
 
       // 销量和评价
       Row({ space: 16 }) {
-        Text(this.salesCount)
+        Text(`${this.salesCount}人已购买`)
           .fontSize(SMALL_FONT_SIZE)
           .fontColor(this.currentThemeColors.secondaryTextColor)
 
-        Text(this.rating)
+        Text(`好评${this.goodReviewCount}`)
           .fontSize(SMALL_FONT_SIZE)
           .fontColor(this.currentThemeColors.secondaryTextColor)
       }
@@ -417,6 +432,17 @@ export default struct GoodsDetailPage {
 
     this.commentList.unshift(newComment); // 加到最前面
 
+    // 如果是5星好评，增加好评计数器
+    if (this.publishRating === 5) {
+      this.goodReviewCount++;
+      // 更新商品列表中的数据
+      const goodsIndex = this.goodsList.findIndex(item => item.id === this.goodsId);
+      if (goodsIndex !== -1) {
+        this.goodsList[goodsIndex].goodReviewCount++;
+        this.goodsList = [...this.goodsList];
+      }
+    }
+
     this.showCustomToast('评价成功！');
     this.commentText = ''; // 清空输入框
     this.publishRating = 5; // 👇 [新增] 发布完成后重置为 5 星
@@ -454,8 +480,8 @@ export default struct GoodsDetailPage {
           // 从 AppStorage 获取当前的购物车列表（如果不存在则创建一个空数组）
           let currentCart: CartItem[] = AppStorage.get<CartItem[]>('cartItems') || [];
 
-          // 检查商品是否已经在购物车里
-          const index = currentCart.findIndex(item => (item.name === GOODS_NAMES[(currentCart.length + 1) % 2]));
+          // 检查商品是否已经在购物车里（通过商品ID判断）
+          const index = currentCart.findIndex(item => item.id === this.goodsId);
 
           if (index > -1) {
             // 情况 A：商品已存在，数量加 1
@@ -463,11 +489,11 @@ export default struct GoodsDetailPage {
           } else {
             // 情况 B：商品不存在，构造一个新的 CartItem 并添加
             let newItem: CartItem = {
-              id: currentCart.length + 1,
-              name: GOODS_NAMES[(currentCart.length + 1) % 2], // 确保这里的字段名和接口定义一致
-              price: GOODS_PRICES[(currentCart.length + 1) % 2],
+              id: this.goodsId,
+              name: this.goodsName,
+              price: this.goodsPrice,
               quantity: 1,
-              image: GOODS_IMAGES[(currentCart.length + 1) % 2],
+              image: this.goodsImg,
               selected: true // 新加入的默认选中
             };
             currentCart.push(newItem);
@@ -492,7 +518,8 @@ export default struct GoodsDetailPage {
         .borderRadius(BUTTON_BORDER_RADIUS)
         .layoutWeight(1)
         .onClick(() => {
-          // 立即购买逻辑
+          // 立即购买逻辑 - 显示支付对话框
+          this.showPaymentDialog = true;
         })
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
@@ -506,41 +533,246 @@ export default struct GoodsDetailPage {
     })
   }
 
-  build() {
-    Column() {
-      // 顶部导航栏
-      this.TopNavigationBar()
+  // 支付相关方法
+  async processPayment(): Promise<void> {
+    if (this.isPaying) return;
+    this.isPaying = true;
 
-      // 可滚动内容区域
-      Scroll() {
-        Column() {
-          // 商品图片轮播
-          this.GoodsImageSwiper()
+    try {
+      // 模拟支付延迟
+      await new Promise<void>((resolve) => {
+        setTimeout(() => resolve(), 2000);
+      });
 
-          // 商品信息
-          this.GoodsInfoSection()
-
-          // 数量选择器
-          this.QuantitySelector()
-
-          // 商品描述
-          this.GoodsDescription()
-          //评价模块
-          this.CommentSection()
-          Text('').height(80)
-        }
-        .width(LAYOUT_WIDTH_OR_HEIGHT)
+      // 支付成功
+      this.isPaying = false;
+      this.showPaymentDialog = false;
+      
+      // 增加销量计数器
+      this.salesCount += this.selectedQuantity;
+      
+      // 更新商品列表中的数据
+      const goodsIndex = this.goodsList.findIndex(item => item.id === this.goodsId);
+      if (goodsIndex !== -1) {
+        this.goodsList[goodsIndex].salesCount += this.selectedQuantity;
+        this.goodsList = [...this.goodsList];
       }
-      .layoutWeight(1)
-      .backgroundColor(this.currentThemeColors.backgroundColor)
+      
+      this.showCustomToast('支付成功！');
+      this.selectedQuantity = 1; // 重置数量
+      
+    } catch (error) {
+      this.isPaying = false;
+      this.showCustomToast('支付失败，请重试');
+    }
+  }
 
-      // 底部操作栏
-      this.BottomActionBar()
+  cancelPayment() {
+    this.showPaymentDialog = false;
+    this.selectedPaymentMethod = 'alipay';
+  }
+
+  // 计算总价
+  getTotalPrice(): number {
+    const priceStr = this.goodsPrice.replace('¥', '').replace(',', '');
+    const price = parseFloat(priceStr);
+    return price * this.selectedQuantity;
+  }
+
+  @Builder
+  PaymentDialog() {
+    Stack() {
+      // 半透明背景
+      Column()
+        .width(LAYOUT_WIDTH_OR_HEIGHT)
+        .height(LAYOUT_WIDTH_OR_HEIGHT)
+        .backgroundColor('#80000000')
+        .onClick(() => this.cancelPayment())
+
+      // 支付面板
+      Column({ space: 16 }) {
+        Text('确认支付')
+          .fontSize(BIGGER_FONT_SIZE)
+          .fontWeight(FontWeight.Bold)
+          .fontColor(this.currentThemeColors.primaryTextColor)
+          .width('100%')
+          .textAlign(TextAlign.Center)
+
+        Divider().strokeWidth(1).color(this.currentThemeColors.dividerColor)
+
+        // 支付金额
+        Row({ space: 8 }) {
+          Text('支付金额：')
+            .fontSize(NORMAL_FONT_SIZE)
+            .fontColor(this.currentThemeColors.primaryTextColor)
+          Text('¥' + this.getTotalPrice().toFixed(2))
+            .fontSize(24)
+            .fontColor(this.currentThemeColors.accentColor)
+            .fontWeight(FontWeight.Bold)
+        }
+        .width('100%')
+        .justifyContent(FlexAlign.Center)
+        .margin({ top: 10, bottom: 10 })
+
+        // 商品信息
+        Row({ space: 12 }) {
+          Image(this.goodsImg)
+            .width(60)
+            .height(60)
+            .borderRadius(8)
+          Column({ space: 4 }) {
+            Text(this.goodsName)
+              .fontSize(SMALL_FONT_SIZE)
+              .fontColor(this.currentThemeColors.primaryTextColor)
+              .maxLines(2)
+            Text(`x${this.selectedQuantity}`)
+              .fontSize(SMALL_FONT_SIZE)
+              .fontColor(this.currentThemeColors.secondaryTextColor)
+          }
+          .alignItems(HorizontalAlign.Start)
+          .layoutWeight(1)
+        }
+        .width('100%')
+        .padding(12)
+        .backgroundColor(this.currentThemeColors.cardBackgroundColor)
+        .borderRadius(8)
+
+        // 支付方式选择
+        Column({ space: 12 }) {
+          Row({ space: 12 }) {
+            Radio({ value: 'alipay', group: 'paymentGroup' })
+              .checked(this.selectedPaymentMethod === 'alipay')
+              .onChange((isChecked: boolean) => {
+                if (isChecked) this.selectedPaymentMethod = 'alipay';
+              })
+            Text('支付宝')
+              .fontSize(NORMAL_FONT_SIZE)
+              .fontColor(this.currentThemeColors.primaryTextColor)
+              .layoutWeight(1)
+          }
+          .width('100%')
+          .padding(12)
+          .backgroundColor(this.selectedPaymentMethod === 'alipay' ? this.currentThemeColors.tabUnselectedColor : this.currentThemeColors.cardBackgroundColor)
+          .borderRadius(8)
+          .onClick(() => this.selectedPaymentMethod = 'alipay')
+
+          Row({ space: 12 }) {
+            Radio({ value: 'wechat', group: 'paymentGroup' })
+              .checked(this.selectedPaymentMethod === 'wechat')
+              .onChange((isChecked: boolean) => {
+                if (isChecked) this.selectedPaymentMethod = 'wechat';
+              })
+            Text('微信支付')
+              .fontSize(NORMAL_FONT_SIZE)
+              .fontColor(this.currentThemeColors.primaryTextColor)
+              .layoutWeight(1)
+          }
+          .width('100%')
+          .padding(12)
+          .backgroundColor(this.selectedPaymentMethod === 'wechat' ? this.currentThemeColors.tabUnselectedColor : this.currentThemeColors.cardBackgroundColor)
+          .borderRadius(8)
+          .onClick(() => this.selectedPaymentMethod = 'wechat')
+
+          Row({ space: 12 }) {
+            Radio({ value: 'unionpay', group: 'paymentGroup' })
+              .checked(this.selectedPaymentMethod === 'unionpay')
+              .onChange((isChecked: boolean) => {
+                if (isChecked) this.selectedPaymentMethod = 'unionpay';
+              })
+            Text('华为支付')
+              .fontSize(NORMAL_FONT_SIZE)
+              .fontColor(this.currentThemeColors.primaryTextColor)
+              .layoutWeight(1)
+          }
+          .width('100%')
+          .padding(12)
+          .backgroundColor(this.selectedPaymentMethod === 'unionpay' ? this.currentThemeColors.tabUnselectedColor : this.currentThemeColors.cardBackgroundColor)
+          .borderRadius(8)
+          .onClick(() => this.selectedPaymentMethod = 'unionpay')
+        }
+        .width('100%')
+
+        Divider().strokeWidth(1).color(this.currentThemeColors.dividerColor)
+
+        // 按钮组
+        Row({ space: 12 }) {
+          Button('取消')
+            .fontSize(NORMAL_FONT_SIZE)
+            .fontColor(this.currentThemeColors.primaryTextColor)
+            .backgroundColor(this.currentThemeColors.tabUnselectedColor)
+            .layoutWeight(1)
+            .height(48)
+            .borderRadius(8)
+            .enabled(!this.isPaying)
+            .onClick(() => this.cancelPayment())
+
+          Button(this.isPaying ? '支付中...' : '确认支付')
+            .fontSize(NORMAL_FONT_SIZE)
+            .fontColor('#FFFFFF')
+            .backgroundColor(this.currentThemeColors.accentColor)
+            .layoutWeight(1)
+            .height(48)
+            .borderRadius(8)
+            .enabled(!this.isPaying)
+            .onClick(() => this.processPayment())
+        }
+        .width('100%')
+      }
+      .width('85%')
+      .padding(24)
+      .backgroundColor(this.currentThemeColors.backgroundColor)
+      .borderRadius(16)
+      .position({ x: '7.5%', y: '50%' })
+      .translate({ y: '-50%' })
     }
     .width(LAYOUT_WIDTH_OR_HEIGHT)
     .height(LAYOUT_WIDTH_OR_HEIGHT)
-    .backgroundColor(this.currentThemeColors.backgroundColor)
-    .padding({top : 34})
+  }
+
+  build() {
+    Stack() {
+      Column() {
+        // 顶部导航栏
+        this.TopNavigationBar()
+
+        // 可滚动内容区域
+        Scroll() {
+          Column() {
+            // 商品图片轮播
+            this.GoodsImageSwiper()
+
+            // 商品信息
+            this.GoodsInfoSection()
+
+            // 数量选择器
+            this.QuantitySelector()
+
+            // 商品描述
+            this.GoodsDescription()
+            //评价模块
+            this.CommentSection()
+            Text('').height(80)
+          }
+          .width(LAYOUT_WIDTH_OR_HEIGHT)
+        }
+        .layoutWeight(1)
+        .backgroundColor(this.currentThemeColors.backgroundColor)
+
+        // 底部操作栏
+        this.BottomActionBar()
+      }
+      .width(LAYOUT_WIDTH_OR_HEIGHT)
+      .height(LAYOUT_WIDTH_OR_HEIGHT)
+      .backgroundColor(this.currentThemeColors.backgroundColor)
+      .padding({top : 34})
+
+      // 支付对话框
+      if (this.showPaymentDialog) {
+        this.PaymentDialog()
+      }
+    }
+    .width(LAYOUT_WIDTH_OR_HEIGHT)
+    .height(LAYOUT_WIDTH_OR_HEIGHT)
   }
 }
 
