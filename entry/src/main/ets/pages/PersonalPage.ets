@@ -40,7 +40,7 @@ interface MenuItem {
 @Component
 export default struct PersonalPage {
   @State userName: string = '用户名';
-  @State userAvatar: Resource = $r('app.media.ic_avatar');
+  @StorageLink('userAvatar') userAvatar: Resource | string = $r('app.media.ic_avatar');
   //使用 @StorageLink 与全局 AppStorage 双向绑定登录状态
   @StorageLink('isLoggedIn') isLoggedIn: boolean = false;
   @StorageLink('currentUsername') currentUsername: string = '';
@@ -51,6 +51,28 @@ export default struct PersonalPage {
 
   private accountData: AccountData = new AccountData();
   private context: common.Context = getContext(this) as common.Context;
+
+  aboutToAppear(): void {
+    this.loadUserAvatar();
+    this.checkLoginStatus();
+  }
+
+  // 加载用户头像
+  private async loadUserAvatar(): Promise<void> {
+    try {
+      const STORAGE_KEY = 'profile_storage';
+      this.accountData.getStorageValue(this.context, 'avatar', STORAGE_KEY)
+        .then((result) => {
+          const avatarUrl = String(result);
+          if (avatarUrl && avatarUrl !== 'undefined') {
+            this.userAvatar = avatarUrl;
+            AppStorage.setOrCreate('userAvatar', avatarUrl);
+          }
+        }).catch(() => {});
+    } catch (error) {
+      Logger.error(TAG, `loadUserAvatar failed: ${error}`);
+    }
+  }
 
   //为菜单项添加 id，方便识别 (id: 3 对应主题设置)
   private menuItems: MenuItem[] = [
@@ -325,10 +347,6 @@ export default struct PersonalPage {
     } catch (_) {
       Logger.error(TAG, `handleLogout failed`);
     }
-  }
-
-  aboutToAppear() {
-    this.checkLoginStatus();
   }
 
   build() {
