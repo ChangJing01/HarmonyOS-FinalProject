@@ -314,7 +314,7 @@ export default struct GoodsDetailPage {
   @Builder
   CommentSection() {
     Column() {
-      // 1. 标题栏 (保持不变)
+      // 标题栏 (保持不变)
       Text('商品评价 (' + this.commentList.length + ')')
         .fontSize(NORMAL_FONT_SIZE)
         .fontWeight(FontWeight.Bold)
@@ -322,35 +322,30 @@ export default struct GoodsDetailPage {
         .width('100%')
         .padding({ left: 16, top: 16 })
 
-      // 2. 评论列表 (修改星星展示部分)
+      // 评论列表
       List() {
         ForEach(this.commentList, (item: CommentItem) => {
           ListItem() {
             Column({ space: 8 }) {
-              // 用户信息行 (保持不变)
+              // ... (头像、用户名称部分保持不变) ...
               Row() {
-                Image(item.avatar)
-                  .width(30).height(30).borderRadius(15)
-                  .margin({ right: 10 })
-                Text(item.user)
-                  .fontSize(SMALL_FONT_SIZE)
-                  .fontColor(this.currentThemeColors.secondaryTextColor)
+                Image(item.avatar).width(30).height(30).borderRadius(15).margin({ right: 10 })
+                Text(item.user).fontSize(SMALL_FONT_SIZE).fontColor(this.currentThemeColors.secondaryTextColor)
                 Blank()
-                Text(item.time)
-                  .fontSize(12)
-                  .fontColor(this.currentThemeColors.secondaryTextColor)
-              }
-              .width('100%')
+                Text(item.time).fontSize(12).fontColor(this.currentThemeColors.secondaryTextColor)
+              }.width('100%')
 
-              // 评论内容 (保持不变)
               Text(item.content)
                 .fontSize(NORMAL_FONT_SIZE)
                 .fontColor(this.currentThemeColors.primaryTextColor)
                 .margin({ left: 40 })
 
-              // 👇 [修改] 使用新的星星组件 (只读模式)
+              // 👇 【修改点 1】列表中的只读星星
               Row() {
-                this.StarRatingBar(item.rating, false)
+                StarRating({
+                  rating: item.rating,
+                  isInteractive: false
+                })
               }.margin({ left: 40 })
             }
             .padding(16)
@@ -360,20 +355,28 @@ export default struct GoodsDetailPage {
       }
       .divider({ strokeWidth: 1, color: this.currentThemeColors.backgroundColor, startMargin: 16, endMargin: 16 })
 
-      // 3. 发布评论区域 (布局大改：改为 Column 包裹 Row)
+      // 发布评论区域
       Column({ space: 10 }) {
-
-        // 👇 [新增] 评分交互区
+        // 👇 【修改点 2】交互式打分星星
         Row() {
           Text('评分：')
             .fontSize(NORMAL_FONT_SIZE)
             .fontColor(this.currentThemeColors.secondaryTextColor)
-          this.StarRatingBar(this.publishRating, true) // 开启交互模式
+
+          // 使用新组件
+          StarRating({
+            rating: this.publishRating, // 绑定父组件状态
+            isInteractive: true,        // 开启交互
+            onRatingChange: (val: number) => {
+              // 接收子组件传回来的值，更新状态
+              this.publishRating = val;
+            }
+          })
         }
         .width('100%')
         .padding({ left: 4 })
 
-        // 输入框和按钮 (保持原有逻辑，但外层无需再加 padding，统一在父容器加)
+        // 输入框和按钮 (保持不变)
         Row({ space: 10 }) {
           TextInput({ text: this.commentText, placeholder: '看对眼了？写句评价吧~' })
             .layoutWeight(1)
@@ -387,13 +390,13 @@ export default struct GoodsDetailPage {
             .height(36)
             .fontSize(14)
             .backgroundColor(this.currentThemeColors.accentColor)
-            .fontColor(this.currentThemeColors.backgroundColor) // 注意：这里通常用白色，用 backgroundColor 可能看不清，建议改回 Color.White 或对应的主题色
+            .fontColor(Color.White)
             .onClick(() => {
               this.handlePublishComment();
             })
         }
       }
-      .padding(16) // 统一内边距
+      .padding(16)
       .width('100%')
       .backgroundColor(this.currentThemeColors.cardBackgroundColor)
     }
@@ -402,29 +405,6 @@ export default struct GoodsDetailPage {
     .borderRadius(8)
   }
 
-  /**
-   * 打分组件
-   * 通用星星评分条
-   * @param rating 当前分数
-   * @param isInteractive 是否支持点击交互 (true: 可打分, false: 只读展示)
-   */
-  @Builder
-  StarRatingBar(rating: number, isInteractive: boolean = false) {
-    Row() {
-      ForEach([1, 2, 3, 4, 5], (index: number) => {
-        Text(index <= rating ? '★' : '☆') // 实心星 vs 空心星
-          .fontColor('#FF9800') // 橙色
-          .fontSize(isInteractive ? 28 : 14) // 交互模式下星星大一点，方便点击
-          .margin({ right: isInteractive ? 10 : 0 }) // 交互模式下拉开间距
-          .onClick(() => {
-            // 只有开启交互模式时，点击才生效
-            if (isInteractive) {
-              this.publishRating = index;
-            }
-          })
-      })
-    }
-  }
 
   // 发布评论的逻辑
   handlePublishComment() {
@@ -564,3 +544,37 @@ export default struct GoodsDetailPage {
     .padding({top : 34})
   }
 }
+
+// ================== 独立的星星组件 (解决刷新延迟问题) ==================
+@Component
+struct StarRating {
+  // @Prop 装饰器：接收父组件传来的值，且当父组件值变化时自动刷新
+  @Prop rating: number = 0
+
+  // 是否允许交互
+  isInteractive: boolean = false
+
+  // 回调函数：通知父组件分数改变了
+  onRatingChange: (value: number) => void = () => {}
+
+  build() {
+    Row() {
+      ForEach([1, 2, 3, 4, 5], (starValue: number) => {
+        Text(starValue <= this.rating ? '★' : '☆') // 实心 vs 空心
+          .fontColor('#FF9800') // 橙色
+          .fontSize(this.isInteractive ? 28 : 14) // 交互模式大一点
+          .margin({ right: this.isInteractive ? 10 : 0 })
+          .onClick(() => {
+            if (this.isInteractive) {
+              // 调用回调，把新分数传回给父组件
+              this.onRatingChange(starValue)
+            }
+          })
+      }, (item: number) => item.toString())
+    }
+  }
+}
+
+
+
+
