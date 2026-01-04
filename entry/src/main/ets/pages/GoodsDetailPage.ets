@@ -52,7 +52,6 @@ const GOODS_PRICES: Resource[] = [
   $r('app.string.price_999'),
 ];
 
-
 @Entry
 @Component
 export default struct GoodsDetailPage {
